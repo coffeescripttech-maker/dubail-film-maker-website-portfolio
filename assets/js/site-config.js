@@ -281,7 +281,8 @@
       return;
     }
 
-    const preset = headerConfig.activePreset || 'default';
+    // Use preset from critical CSS if already set (from CMS API), otherwise use local config
+    const preset = window.__headerPresetName || headerConfig.activePreset || 'default';
     const presetConfig = headerConfig.presets?.[preset];
 
     if (!presetConfig) {
