@@ -118,7 +118,7 @@ CMS Backend:
 
 ### 3. Public API Serves Data
 ```
-GET http://localhost:3000/api/public/header
+GET https://dubail-film-maker-website-portfolio.vercel.app/api/public/header
 
 Response:
 {
@@ -141,7 +141,7 @@ Response:
 ```javascript
 // data-loader.js
 async function fetchHeader() {
-  const response = await fetch('http://localhost:3000/api/public/header');
+  const response = await fetch('https://dubail-film-maker-website-portfolio.vercel.app/api/public/header');
   const data = await response.json();
   return data;
 }

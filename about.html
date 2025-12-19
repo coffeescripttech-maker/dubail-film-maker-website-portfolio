@@ -94,7 +94,7 @@
           // Try to get active preset from CMS API first
           try {
             // Add timestamp to prevent caching
-            xhr.open('GET', 'http://localhost:3000/api/public/header?t=' + Date.now(), false);
+            xhr.open('GET', 'https://dubail-film-maker-website-portfolio.vercel.app/api/public/header?t=' + Date.now(), false);
             xhr.send();
             if (xhr.status === 200) {
               var cmsData = JSON.parse(xhr.responseText);
@@ -347,5 +347,4 @@
     <script src="assets/js/site-config.js"></script>
   </body>
 
-  <!-- Mirrored from posterco.tv/about by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 17 Oct 2025 13:35:26 GMT -->
-</html>
+  

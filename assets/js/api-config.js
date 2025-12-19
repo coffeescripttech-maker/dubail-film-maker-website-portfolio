@@ -5,7 +5,7 @@ const API_CONFIG = {
   USE_CMS_API: true,
 
   // CMS API base URL (update this with your actual CMS URL)
-  CMS_BASE_URL: 'http://localhost:3000/api/public',
+  CMS_BASE_URL: 'https://dubail-film-maker-website-portfolio.vercel.app/api/public',
 
   // Local JSON fallback paths
   LOCAL_PATHS: {

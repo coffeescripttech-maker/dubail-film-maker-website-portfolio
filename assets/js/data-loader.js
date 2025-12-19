@@ -9,7 +9,7 @@
 
   const API_CONFIG = {
     USE_CMS_API: true,
-    CMS_BASE_URL: 'http://localhost:3000/api/public',
+    CMS_BASE_URL: 'https://dubail-film-maker-website-portfolio.vercel.app/api/public',
     LOCAL_PATHS: {
       projects: 'data/project.json',
       about: 'data/about.json',

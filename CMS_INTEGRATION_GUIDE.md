@@ -39,7 +39,7 @@ This is the central data fetching module that handles all API calls.
 ```javascript
 const API_CONFIG = {
   USE_CMS_API: true,  // Set to true to use CMS API
-  CMS_BASE_URL: 'http://localhost:3000/api/public',
+  CMS_BASE_URL: 'https://dubail-film-maker-website-portfolio.vercel.app/api/public',
   LOCAL_PATHS: {
     projects: 'data/project.json',
     about: 'data/about.json',
@@ -82,28 +82,28 @@ Renders content on specific pages.
 ## API Endpoints Used
 
 ### Projects
-**Endpoint:** `GET http://localhost:3000/api/public/projects`
+**Endpoint:** `GET https://dubail-film-maker-website-portfolio.vercel.app/api/public/projects`
 
 **Used on:** Works page (`/works`)
 
 **Data:** All published projects with videos, images, and metadata
 
 ### About
-**Endpoint:** `GET http://localhost:3000/api/public/about`
+**Endpoint:** `GET https://dubail-film-maker-website-portfolio.vercel.app/api/public/about`
 
 **Used on:** About page (`/about`)
 
 **Data:** Founder info, company description, video button
 
 ### Contact
-**Endpoint:** `GET http://localhost:3000/api/public/contact`
+**Endpoint:** `GET https://dubail-film-maker-website-portfolio.vercel.app/api/public/contact`
 
 **Used on:** Contact page (`/contact`)
 
 **Data:** Email, phone, address, social media links
 
 ### Header
-**Endpoint:** `GET http://localhost:3000/api/public/header`
+**Endpoint:** `GET https://dubail-film-maker-website-portfolio.vercel.app/api/public/header`
 
 **Used on:** All pages (global header)
 
@@ -120,7 +120,7 @@ USE_CMS_API: true
 ### Step 2: Set CMS URL
 For local development:
 ```javascript
-CMS_BASE_URL: 'http://localhost:3000/api/public'
+CMS_BASE_URL: 'https://dubail-film-maker-website-portfolio.vercel.app/api/public'
 ```
 
 For production:
@@ -144,10 +144,10 @@ CMS_BASE_URL: 'https://your-cms-domain.com/api/public'
 
 ### Check if API is working
 Open these URLs in your browser:
-- http://localhost:3000/api/public/projects
-- http://localhost:3000/api/public/about
-- http://localhost:3000/api/public/contact
-- http://localhost:3000/api/public/header
+- https://dubail-film-maker-website-portfolio.vercel.app/api/public/projects
+- https://dubail-film-maker-website-portfolio.vercel.app/api/public/about
+- https://dubail-film-maker-website-portfolio.vercel.app/api/public/contact
+- https://dubail-film-maker-website-portfolio.vercel.app/api/public/header
 
 You should see JSON responses.
 
@@ -161,13 +161,13 @@ Look for:
 
 **1. CORS Error**
 ```
-Access to fetch at 'http://localhost:3000/api/public/...' has been blocked by CORS policy
+Access to fetch at 'https://dubail-film-maker-website-portfolio.vercel.app/api/public/...' has been blocked by CORS policy
 ```
 **Solution:** CMS APIs already have CORS enabled. Make sure CMS is running.
 
 **2. 404 Not Found**
 ```
-GET http://localhost:3000/api/public/header 404 (Not Found)
+GET https://dubail-film-maker-website-portfolio.vercel.app/api/public/header 404 (Not Found)
 ```
 **Solution:** 
 - Check if CMS is running on port 3000
