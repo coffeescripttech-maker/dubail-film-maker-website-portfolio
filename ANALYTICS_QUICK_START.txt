@@ -1,0 +1,58 @@
+═══════════════════════════════════════════════════════════════
+  CLOUDFLARE WEB ANALYTICS - QUICK START
+═══════════════════════════════════════════════════════════════
+
+📍 STEP 1: GET YOUR TOKEN
+──────────────────────────────────────────────────────────────
+1. Go to: https://dash.cloudflare.com
+2. Click: Analytics → Web Analytics
+3. Click: "Add a site"
+4. Enter: dubail-film-maker-website-portfolio.pages.dev
+5. Copy the token from the script
+
+═══════════════════════════════════════════════════════════════
+
+📍 STEP 2: REPLACE TOKEN IN FILES
+──────────────────────────────────────────────────────────────
+Find this in ALL HTML files:
+  data-cf-beacon='{"token": "YOUR_CLOUDFLARE_TOKEN_HERE"}'
+
+Replace with:
+  data-cf-beacon='{"token": "YOUR_ACTUAL_TOKEN"}'
+
+Files to update:
+  ✓ index.html
+  ✓ about.html
+  ✓ contact.html
+  ✓ works.html
+
+═══════════════════════════════════════════════════════════════
+
+📍 STEP 3: DEPLOY
+──────────────────────────────────────────────────────────────
+git add .
+git commit -m "Add Cloudflare Web Analytics"
+git push
+
+═══════════════════════════════════════════════════════════════
+
+📍 STEP 4: VERIFY
+──────────────────────────────────────────────────────────────
+1. Visit: https://dubail-film-maker-website-portfolio.pages.dev
+2. Navigate to different pages
+3. Wait 5-10 minutes
+4. Check Cloudflare Dashboard → Analytics → Web Analytics
+5. You should see real data! 🎉
+
+═══════════════════════════════════════════════════════════════
+
+✅ WHAT YOU'LL GET:
+  • Real page views
+  • Unique visitors
+  • Top pages
+  • Geographic data
+  • Referrers
+  • Browser/Device stats
+  • All privacy-friendly & GDPR compliant!
+
+═══════════════════════════════════════════════════════════════
