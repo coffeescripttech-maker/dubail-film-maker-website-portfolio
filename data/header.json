@@ -6,7 +6,8 @@
       "name": "Default Layout",
       "description": "Logo left, menu right, optimized for horizontal logo",
       "logo": {
-        "src": "assets/img/version_2/dubaifilmmaker.svg",
+        "src": "assets/img/logo/dubaifilmmaker-light.svg",
+        "srcDark": "assets/img/logo/dubaifilmmaker-dark.svg",
         "alt": "DubaiFilmMaker"
       },
       "mobile": {
@@ -42,7 +43,8 @@
       "name": "Reversed Layout",
       "description": "Logo right, menu left - comprehensive layout with navigation positioning",
       "logo": {
-        "src": "assets/img/version_1/dubaifilmmaker.svg",
+        "src": "assets/img/logo/dubaifilmmaker-original-light.svg",
+        "srcDark": "assets/img/logo/dubaifilmmaker-original-dark.svg",
         "alt": "DubaiFilmMaker"
       },
       "mobile": {
@@ -149,7 +151,8 @@
       "name": "Stacked Logo",
       "description": "Optimized for tall stacked logo (DUBAI FILM MAKER)",
       "logo": {
-        "src": "assets/img/dubaifilmmaker123.svg",
+        "src": "assets/img/logo/dubaifilmmaker-light.svg",
+        "srcDark": "assets/img/logo/dubaifilmmaker-dark.svg",
         "alt": "DubaiFilmMaker"
       },
       "mobile": {

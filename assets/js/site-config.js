@@ -295,15 +295,28 @@
     // Update logo source if specified
     if (presetConfig.logo?.src) {
       const logoElements = document.querySelectorAll('.header__logo');
+      
+      // Detect if current page has light background (about, contact)
+      const isLightBackground = document.body.classList.contains('template-about') || 
+                                document.body.classList.contains('template-contact') ||
+                                document.body.classList.contains('body-light');
+      
       logoElements.forEach(logo => {
-        logo.src = presetConfig.logo.src;
+        // Use dark logo for light backgrounds, light logo for dark backgrounds
+        const logoSrc = isLightBackground && presetConfig.logo.srcDark 
+          ? presetConfig.logo.srcDark 
+          : presetConfig.logo.src;
+        
+        logo.src = logoSrc;
         if (presetConfig.logo.alt) {
           logo.alt = presetConfig.logo.alt;
         }
         // Add 'loaded' class to make logo visible with smooth transition
         logo.classList.add('loaded');
       });
-      console.log(`✓ Logo updated to: ${presetConfig.logo.src}`);
+      
+      const logoType = isLightBackground ? 'dark' : 'light';
+      console.log(`✓ Logo updated to: ${isLightBackground && presetConfig.logo.srcDark ? presetConfig.logo.srcDark : presetConfig.logo.src} (${logoType} variant)`);
     }
 
     // Inject dynamic CSS for header styles

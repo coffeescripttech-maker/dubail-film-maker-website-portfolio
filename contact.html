@@ -81,6 +81,14 @@
       .header__logo.loaded {
         opacity: 1;
       }
+      
+      /* Add background color behind logo on light pages */
+      body.template-about .header__logo,
+      body.template-contact .header__logo {
+        background-color: #e7e7e7;
+        padding: 8px 12px;
+        border-radius: 4px;
+      }
     </style>
     
     <!-- Critical header CSS - loads synchronously to prevent FOUC -->
@@ -137,7 +145,8 @@
                 document.addEventListener('DOMContentLoaded', function() {
                   var logos = document.querySelectorAll('.header__logo');
                   logos.forEach(function(logo) {
-                    logo.src = presetConfig.logo.src;
+                    // Use dark logo for light background pages (about, contact)
+                    logo.src = presetConfig.logo.srcDark || presetConfig.logo.src;
                     if (presetConfig.logo.alt) logo.alt = presetConfig.logo.alt;
                     logo.classList.add('loaded');
                   });
@@ -212,7 +221,7 @@
               <a href="index.html" data-navigo class="logo-link">
                 <img
                   class="header__logo"
-                  src="assets/img/dubaifilmmaker-logo-dark-bolder.svg"
+                  src="assets/img/logo/dubaifilmmaker-original-dark.svg"
                   alt="Poster"
                 />
               </a>
