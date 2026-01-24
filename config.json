@@ -132,7 +132,7 @@
   },
   "features": {
     "introAnimation": {
-      "enabled": false,
+      "enabled": true,
       "description": "Show/hide the intro animation (bloc-intro)"
     },
     "navigation": {

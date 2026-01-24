@@ -45,6 +45,8 @@
     <link rel="stylesheet" href="3.7.8/plyr.css" />
 
     <link href="assets/dist/build.min.css" rel="stylesheet" />
+    <link href="assets/css/intro-text-animation.css" rel="stylesheet" />
+    <link href="assets/css/header-logo-match.css" rel="stylesheet" />
 
     <link rel="canonical" href="index.html" />
     <meta property="og:locale" content="en_US" />
@@ -447,18 +449,15 @@
           <div class="page-inner-content">
             <div class="homepage-inner-wrapper">
               <h1 class="hidden">Poster</h1>
-              <!-- 
+           
               <div class="bloc-intro">
                 <div class="intro-anim-surwrapper">
                   <div class="intro-anim-wrapper">
-                    <div
-                      class="intro-anim"
-                      data-animation="assets/img/intro-animation.json"
-                    ></div>
+                    <div class="intro-anim"></div>
                   </div>
                 </div>
                 <div class="intro-timeline"><div class="inner"></div></div>
-              </div> -->
+              </div> 
 
             
             <div class="box box--home">
@@ -597,7 +596,33 @@
     <script src="assets/js/page-renderer.js"></script>
     <script src="assets/js/app-init.js"></script>
     <script src="assets/js/site-config.js"></script>
+    <script src="assets/js/intro-text-animation.js"></script>
     <script src="assets/dist/build.min.js"></script>
+    
+    <!-- Initialize CSS text animation for DUBAIFILMMAKER -->
+    <script>
+      (function() {
+        const introWrapper = document.querySelector('.bloc-intro');
+        if (introWrapper && window.IntroTextAnimation) {
+          const initIntro = () => {
+            const config = window.siteConfig || { features: { introAnimation: { enabled: true } } };
+            if (config.features && config.features.introAnimation && config.features.introAnimation.enabled) {
+              console.log('✓ Initializing DUBAIFILMMAKER text animation');
+              new IntroTextAnimation(introWrapper);
+            } else {
+              introWrapper.style.display = 'none';
+            }
+          };
+          
+          if (window.siteConfig) {
+            initIntro();
+          } else {
+            window.addEventListener('config-loaded', initIntro);
+            setTimeout(initIntro, 100);
+          }
+        }
+      })();
+    </script>
     
     <!-- Cloudflare Web Analytics -->
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "624e41bf9bf046a88fa109aebee0d778"}'></script>

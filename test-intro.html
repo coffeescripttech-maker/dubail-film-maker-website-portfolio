@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro Animation Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #2a2a2a;
+        }
+        .success { background: #2d5016; }
+        .error { background: #501616; }
+        .warning { background: #504516; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #fff;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #ddd;
+        }
+        pre {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎬 Intro Animation Diagnostic Tool</h1>
+        
+        <div class="status" id="config-status">
+            <h3>1. Config.json Status</h3>
+            <p id="config-result">Checking...</p>
+        </div>
+
+        <div class="status" id="element-status">
+            <h3>2. DOM Element Status</h3>
+            <p id="element-result">Checking...</p>
+        </div>
+
+        <div class="status" id="animation-file-status">
+            <h3>3. Animation File Status</h3>
+            <p id="animation-result">Checking...</p>
+        </div>
+
+        <div class="status" id="script-status">
+            <h3>4. Script Loading Status</h3>
+            <p id="script-result">Checking...</p>
+        </div>
+
+        <div class="status">
+            <h3>5. Actions</h3>
+            <button onclick="testIntro()">🧪 Test Intro Animation</button>
+            <button onclick="clearCache()">🗑️ Clear Cache & Reload</button>
+            <button onclick="goToHomepage()">🏠 Go to Homepage</button>
+        </div>
+
+        <div class="status">
+            <h3>6. Console Logs</h3>
+            <pre id="console-logs"></pre>
+        </div>
+    </div>
+
+    <script>
+        const logs = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.push(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+            updateConsole();
+            console.log(message);
+        }
+
+        function updateConsole() {
+            document.getElementById('console-logs').textContent = logs.join('\n');
+        }
+
+        async function checkConfig() {
+            try {
+                const response = await fetch('/config.json?t=' + Date.now());
+                const config = await response.json();
+                const enabled = config.features?.introAnimation?.enabled;
+                
+                const statusEl = document.getElementById('config-status');
+                const resultEl = document.getElementById('config-result');
+                
+                if (enabled) {
+                    statusEl.className = 'status success';
+                    resultEl.innerHTML = '✅ Intro animation is ENABLED in config.json';
+                    log('Config check: ENABLED', 'success');
+                } else {
+                    statusEl.className = 'status error';
+                    resultEl.innerHTML = '❌ Intro animation is DISABLED in config.json';
+                    log('Config check: DISABLED', 'error');
+                }
+                
+                return enabled;
+            } catch (error) {
+                const statusEl = document.getElementById('config-status');
+                const resultEl = document.getElementById('config-result');
+                statusEl.className = 'status error';
+                resultEl.innerHTML = '❌ Failed to load config.json: ' + error.message;
+                log('Config check failed: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        async function checkAnimationFile() {
+            try {
+                const response = await fetch('/assets/img/intro-animation.json?t=' + Date.now());
+                const data = await response.json();
+                
+                const statusEl = document.getElementById('animation-file-status');
+                const resultEl = document.getElementById('animation-result');
+                
+                if (data && data.v) {
+                    statusEl.className = 'status success';
+                    resultEl.innerHTML = `✅ Animation file exists (version: ${data.v})`;
+                    log('Animation file check: EXISTS', 'success');
+                } else {
+                    statusEl.className = 'status warning';
+                    resultEl.innerHTML = '⚠️ Animation file exists but format unclear';
+                    log('Animation file check: FORMAT UNCLEAR', 'warning');
+                }
+                
+                return true;
+            } catch (error) {
+                const statusEl = document.getElementById('animation-file-status');
+                const resultEl = document.getElementById('animation-result');
+                statusEl.className = 'status error';
+                resultEl.innerHTML = '❌ Animation file not found: ' + error.message;
+                log('Animation file check failed: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        function checkDOMElement() {
+            // Simulate checking on homepage
+            const statusEl = document.getElementById('element-status');
+            const resultEl = document.getElementById('element-result');
+            
+            statusEl.className = 'status warning';
+            resultEl.innerHTML = '⚠️ Cannot check DOM element from test page. Check on homepage: <code>.bloc-intro</code> should exist';
+            log('DOM element check: SKIPPED (not on homepage)', 'warning');
+        }
+
+        function checkScripts() {
+            const statusEl = document.getElementById('script-status');
+            const resultEl = document.getElementById('script-result');
+            
+            statusEl.className = 'status warning';
+            resultEl.innerHTML = `
+                ⚠️ Script loading order on homepage should be:<br>
+                1. data-loader.js<br>
+                2. page-renderer.js<br>
+                3. app-init.js<br>
+                4. site-config.js<br>
+                5. build.min.js (initializes intro)
+            `;
+            log('Script check: INFO ONLY', 'info');
+        }
+
+        async function testIntro() {
+            log('Starting diagnostic tests...', 'info');
+            logs.length = 0; // Clear logs
+            
+            const configOk = await checkConfig();
+            const animationOk = await checkAnimationFile();
+            checkDOMElement();
+            checkScripts();
+            
+            log('Diagnostic complete', 'info');
+            
+            if (configOk && animationOk) {
+                log('✅ All checks passed! Intro should work on homepage.', 'success');
+                alert('✅ Configuration looks good! Try going to the homepage and doing a hard refresh (Ctrl+Shift+R)');
+            } else {
+                log('❌ Some checks failed. See results above.', 'error');
+            }
+        }
+
+        function clearCache() {
+            log('Clearing cache and reloading...', 'info');
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 500);
+        }
+
+        function goToHomepage() {
+            log('Navigating to homepage...', 'info');
+            window.location.href = '/index.html';
+        }
+
+        // Auto-run tests on load
+        window.addEventListener('DOMContentLoaded', () => {
+            log('Test page loaded', 'info');
+            setTimeout(testIntro, 500);
+        });
+    </script>
+</body>
+</html>

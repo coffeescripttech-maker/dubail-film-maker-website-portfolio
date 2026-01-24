@@ -1,0 +1,108 @@
+/* CSS Text Animation for DUBAIFILMMAKER */
+.intro-text-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 0;
+  font-family: 'Monument Extended Bold', sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  width: auto;
+  height: auto;
+  
+  /* Match Lottie animation behavior: scale based on viewport */
+  /* Balanced size for good visibility without overwhelming */
+  /* SVG logo: 1115px x 69px (aspect ratio 16.16:1) */
+  font-size: 5.5vw; /* Increased base size */
+  max-width: 90vw; /* Prevent horizontal overflow */
+}
+
+.intro-text-animation .letter {
+  display: inline-block;
+  opacity: 0;
+  transform: scale(0.76);
+  animation: letterReveal 0.8s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+}
+
+/* Stagger animation delays - matching POSTER animation timing exactly */
+/* Frame timing: 25fps, so 1 frame = 40ms */
+/* DUBAIFILMMAKER = 14 letters: D-U-B-A-I-F-I-L-M-M-A-K-E-R */
+
+/* D appears FIRST like P in POSTER (frame 0 = 0ms) */
+.intro-text-animation .letter:nth-child(1) { animation-delay: 0s; } /* D (like early P) */
+
+/* Middle letters appear together (frame 12-14 = 480-560ms) */
+.intro-text-animation .letter:nth-child(8) { animation-delay: 0.48s; } /* L (like R) */
+.intro-text-animation .letter:nth-child(13) { animation-delay: 0.48s; } /* E (like O) */
+.intro-text-animation .letter:nth-child(2) { animation-delay: 0.52s; } /* U */
+.intro-text-animation .letter:nth-child(3) { animation-delay: 0.56s; } /* B */
+.intro-text-animation .letter:nth-child(11) { animation-delay: 0.56s; } /* A (like S) */
+.intro-text-animation .letter:nth-child(9) { animation-delay: 0.56s; } /* M */
+
+/* More letters (frame 16 = 640ms) */
+.intro-text-animation .letter:nth-child(4) { animation-delay: 0.64s; } /* A */
+.intro-text-animation .letter:nth-child(12) { animation-delay: 0.64s; } /* K (like E) */
+.intro-text-animation .letter:nth-child(10) { animation-delay: 0.64s; } /* M */
+
+/* Later letters */
+.intro-text-animation .letter:nth-child(5) { animation-delay: 0.68s; } /* I */
+.intro-text-animation .letter:nth-child(6) { animation-delay: 0.72s; } /* F */
+.intro-text-animation .letter:nth-child(7) { animation-delay: 0.75s; } /* I */
+
+/* R appears LAST like T in POSTER (frame 19.793 = 791ms) */
+.intro-text-animation .letter:nth-child(14) { animation-delay: 0.79s; } /* R (like T) - LAST LETTER */
+
+@keyframes letterReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.76) translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+/* Responsive sizing - matching Lottie animation behavior */
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .intro-text-animation {
+    font-size: 6vw; /* Slightly larger on tablets */
+  }
+}
+
+/* Mobile landscape and portrait */
+@media (max-width: 768px) {
+  .intro-text-animation {
+    font-size: 2vw; /* Optimized for mobile */
+    letter-spacing: 0.01em;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .intro-text-animation {
+    font-size: 5.5vw; /* Fits well on small screens */
+    letter-spacing: 0;
+    max-width: 95vw;
+  }
+}
+
+/* Large desktop - cap the size */
+@media (min-width: 1920px) {
+  .intro-text-animation {
+    font-size: 115px; /* Larger max size */
+  }
+}
+
+/* Extra large screens */
+@media (min-width: 2560px) {
+  .intro-text-animation {
+    font-size: 154px; /* 6vw of 2560px */
+  }
+}
