@@ -69,6 +69,10 @@ class IntroTextAnimation {
     // Listen for main video buffer progress
     if (window.a && window.a.mainPlayerBuffer) {
       window.a.mainPlayerBuffer.listen(this.onBuffer);
+    } else {
+      // Fallback: start animation immediately if no video buffer
+      console.log('No video buffer found, starting animation immediately');
+      setTimeout(() => this.launchAnimation(), 100);
     }
   }
 
@@ -110,6 +114,7 @@ class IntroTextAnimation {
   }
 
   onAnimationEnded() {
+    console.log('Animation ended, adding lottie-ended class');
     this.$introWrapper.classList.add('lottie-ended');
     this.animationComplete = true;
 
@@ -125,9 +130,12 @@ class IntroTextAnimation {
 
     // After 800ms, add intro-ended class to complete the exit animation
     setTimeout(() => {
+      console.log('Adding intro-ended class to document');
       if (document.scrollingElement) {
         document.scrollingElement.classList.add('intro-ended');
       }
+      // Also add to body as fallback
+      document.body.classList.add('intro-ended');
     }, 800);
 
     this.unbind();

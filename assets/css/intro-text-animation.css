@@ -1,10 +1,9 @@
 /* CSS Text Animation for DUBAIFILMMAKER */
 
-/* Ensure parent containers don't clip MAKER when it slides */
-.bloc-intro,
-.intro-anim-surwrapper,
-.intro-anim-wrapper,
-.intro-anim {
+/* Ensure parent containers don't clip MAKER when it slides - but only during animation */
+.bloc-intro:not(.lottie-ended) .intro-anim-surwrapper,
+.bloc-intro:not(.lottie-ended) .intro-anim-wrapper,
+.bloc-intro:not(.lottie-ended) .intro-anim {
   overflow: visible !important;
 }
 
