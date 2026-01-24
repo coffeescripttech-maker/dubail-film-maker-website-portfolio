@@ -43,10 +43,21 @@ class IntroTextAnimation {
     textContainer.className = 'intro-text-animation';
 
     // Split "DUBAIFILMMAKER" into individual letters
+    // D-U-B-A-I-F-I-L-M-M-A-K-E-R
+    // 0-1-2-3-4-5-6-7-8-9-10-11-12-13
     const text = 'DUBAIFILMMAKER';
-    text.split('').forEach(letter => {
+    text.split('').forEach((letter, index) => {
       const span = document.createElement('span');
       span.className = 'letter';
+      
+      // Initial letters: D (index 0) and MAKER (indices 9-13: M-A-K-E-R) 
+      // D will slide LEFT, MAKER will slide RIGHT as one unit (like P and CO)
+      if (index === 0) {
+        span.classList.add('letter-slide-in'); // D slides LEFT like P
+      } else if (index >= 9 && index <= 13) {
+        span.classList.add('letter-exit'); // MAKER (M-A-K-E-R) slides RIGHT like CO
+      }
+      
       span.textContent = letter;
       textContainer.appendChild(span);
     });
@@ -92,10 +103,10 @@ class IntroTextAnimation {
     // Start the CSS animation (already defined in CSS with delays)
     this.$intro.classList.add('animating');
 
-    // After animation completes, trigger end sequence
+    // Total duration: 3000ms initial hold + 2000ms animation = 5000ms
     setTimeout(() => {
       this.onAnimationEnded();
-    }, this.animationDuration);
+    }, 5000);
   }
 
   onAnimationEnded() {

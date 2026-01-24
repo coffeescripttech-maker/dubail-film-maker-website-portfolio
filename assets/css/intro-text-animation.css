@@ -1,4 +1,13 @@
 /* CSS Text Animation for DUBAIFILMMAKER */
+
+/* Ensure parent containers don't clip MAKER when it slides */
+.bloc-intro,
+.intro-anim-surwrapper,
+.intro-anim-wrapper,
+.intro-anim {
+  overflow: visible !important;
+}
+
 .intro-text-animation {
   position: absolute;
   top: 50%;
@@ -13,59 +22,123 @@
   white-space: nowrap;
   width: auto;
   height: auto;
+  overflow: visible; /* Allow MAKER to slide off-screen but stay visible */
   
   /* Match Lottie animation behavior: scale based on viewport */
   /* Balanced size for good visibility without overwhelming */
   /* SVG logo: 1115px x 69px (aspect ratio 16.16:1) */
   font-size: 5.5vw; /* Increased base size */
-  max-width: 90vw; /* Prevent horizontal overflow */
+  max-width: none; /* Remove width constraint so MAKER can slide */
 }
 
 .intro-text-animation .letter {
   display: inline-block;
-  opacity: 0;
-  transform: scale(0.76);
+  opacity: 0; /* Hidden by default */
   animation: letterReveal 0.8s cubic-bezier(0.2, 0, 0.8, 1) forwards;
+}
+
+/* Hidden letters - completely removed from layout flow */
+.intro-text-animation .letter:not(.letter-slide-in):not(.letter-exit) {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Initial letters - D and MAKER are visible from the start */
+.intro-text-animation .letter-slide-in,
+.intro-text-animation .letter-exit {
+  opacity: 1; /* Visible initially */
+  position: relative; /* Take up space in the flow */
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+@keyframes letterReveal {
+  0% {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    transform: scale(0.76492); /* Match POSTERCO scale */
+  }
+  1% {
+    position: relative; /* Switch to relative to take up space */
+    width: auto;
+    height: auto;
+    overflow: visible;
+  }
+  100% {
+    opacity: 1;
+    position: relative;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    transform: scale(1); /* Scale up to 100% */
+  }
+}
+
+/* D stays in place - doesn't move */
+.intro-text-animation .letter-slide-in {
+  opacity: 1;
+  animation: letterStayVisible 1.24s forwards;
+}
+
+/* MAKER stays in place - doesn't move */
+.intro-text-animation .letter-exit {
+  opacity: 1;
+  animation: letterStayVisible 1.24s forwards;
+}
+
+@keyframes letterStayVisible {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Stagger animation delays - matching POSTER animation timing exactly */
 /* Frame timing: 25fps, so 1 frame = 40ms */
 /* DUBAIFILMMAKER = 14 letters: D-U-B-A-I-F-I-L-M-M-A-K-E-R */
+/* Indices:                     0-1-2-3-4-5-6-7-8-9-10-11-12-13 */
 
-/* D appears FIRST like P in POSTER (frame 0 = 0ms) */
-.intro-text-animation .letter:nth-child(1) { animation-delay: 0s; } /* D (like early P) */
+/* D slides LEFT (delay 3s to show initial state for 3 seconds) */
+.intro-text-animation .letter:nth-child(1) { animation-delay: 3s; }
 
-/* Middle letters appear together (frame 12-14 = 480-560ms) */
-.intro-text-animation .letter:nth-child(8) { animation-delay: 0.48s; } /* L (like R) */
-.intro-text-animation .letter:nth-child(13) { animation-delay: 0.48s; } /* E (like O) */
-.intro-text-animation .letter:nth-child(2) { animation-delay: 0.52s; } /* U */
-.intro-text-animation .letter:nth-child(3) { animation-delay: 0.56s; } /* B */
-.intro-text-animation .letter:nth-child(11) { animation-delay: 0.56s; } /* A (like S) */
-.intro-text-animation .letter:nth-child(9) { animation-delay: 0.56s; } /* M */
+/* MAKER (indices 9-13: M-A-K-E-R at positions 10-14) slide RIGHT together as ONE unit (delay 3s) */
+.intro-text-animation .letter:nth-child(10) { animation-delay: 3s; } /* M */
+.intro-text-animation .letter:nth-child(11) { animation-delay: 3s; } /* A */
+.intro-text-animation .letter:nth-child(12) { animation-delay: 3s; } /* K */
+.intro-text-animation .letter:nth-child(13) { animation-delay: 3s; } /* E */
+.intro-text-animation .letter:nth-child(14) { animation-delay: 3s; } /* R */
 
-/* More letters (frame 16 = 640ms) */
-.intro-text-animation .letter:nth-child(4) { animation-delay: 0.64s; } /* A */
-.intro-text-animation .letter:nth-child(12) { animation-delay: 0.64s; } /* K (like E) */
-.intro-text-animation .letter:nth-child(10) { animation-delay: 0.64s; } /* M */
+/* U+B appear together (frame 12 = 480ms + 3000ms delay = 3480ms) */
+.intro-text-animation .letter:nth-child(2) { animation-delay: 3.48s; } /* U (like O) */
+.intro-text-animation .letter:nth-child(3) { animation-delay: 3.48s; } /* B (like R) */
 
-/* Later letters */
-.intro-text-animation .letter:nth-child(5) { animation-delay: 0.68s; } /* I */
-.intro-text-animation .letter:nth-child(6) { animation-delay: 0.72s; } /* F */
-.intro-text-animation .letter:nth-child(7) { animation-delay: 0.75s; } /* I */
+/* A+I appear together (frame 14-16 = 560ms + 3000ms = 3560ms) */
+.intro-text-animation .letter:nth-child(4) { animation-delay: 3.56s; } /* A (like S) */
+.intro-text-animation .letter:nth-child(5) { animation-delay: 3.56s; } /* I (like E) */
 
-/* R appears LAST like T in POSTER (frame 19.793 = 791ms) */
-.intro-text-animation .letter:nth-child(14) { animation-delay: 0.79s; } /* R (like T) - LAST LETTER */
+/* F appears (frame 16-18 = 640ms + 3000ms = 3640ms) */
+.intro-text-animation .letter:nth-child(6) { animation-delay: 3.64s; } /* F */
 
-@keyframes letterReveal {
-  0% {
-    opacity: 0;
-    transform: scale(0.76) translateX(50px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateX(0);
-  }
-}
+/* I appears (frame 18 = 680ms + 3000ms = 3680ms) */
+.intro-text-animation .letter:nth-child(7) { animation-delay: 3.68s; } /* I */
+
+/* L appears (frame 18-19 = 720ms + 3000ms = 3720ms) */
+.intro-text-animation .letter:nth-child(8) { animation-delay: 3.72s; } /* L */
+
+/* M appears (frame 19 = 750ms + 3000ms = 3750ms) */
+.intro-text-animation .letter:nth-child(9) { animation-delay: 3.75s; } /* M (first M in FILMM) */
+
+
 
 /* Responsive sizing - matching Lottie animation behavior */
 
@@ -79,7 +152,7 @@
 /* Mobile landscape and portrait */
 @media (max-width: 768px) {
   .intro-text-animation {
-    font-size: 2vw; /* Optimized for mobile */
+    font-size: 5.5vw; /* Optimized for mobile */
     letter-spacing: 0.01em;
   }
 }
