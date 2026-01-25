@@ -608,7 +608,19 @@
             const config = window.siteConfig || { features: { introAnimation: { enabled: true } } };
             if (config.features && config.features.introAnimation && config.features.introAnimation.enabled) {
               console.log('✓ Initializing DUBAIFILMMAKER text animation');
-              new IntroTextAnimation(introWrapper);
+              
+              // Configuration options:
+              const animConfig = {
+                text: 'DUBAIFILMMAKER',
+                // Option 1: Use letter pattern (easier)
+                initialPattern: 'DR', // Change to 'DR' or any letters you want initially visible
+                // Option 2: Use indices (more precise)
+                // initialLetters: [0, 9, 10, 11, 12, 13], // D and MAKER
+                holdDuration: 3000, // How long to show initial letters (ms)
+                revealStartTime: 3480 // When other letters start appearing (ms)
+              };
+              
+              new IntroTextAnimation(introWrapper, animConfig);
             } else {
               introWrapper.style.display = 'none';
             }

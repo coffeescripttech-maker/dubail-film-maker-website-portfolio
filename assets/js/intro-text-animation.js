@@ -4,12 +4,23 @@
  */
 
 class IntroTextAnimation {
-  constructor(wrapper) {
+  constructor(wrapper, config = {}) {
     this.$introWrapper = wrapper;
     this.$intro = null;
     this.$timeline = null;
     this.animationComplete = false;
     this.animationDuration = 2000; // 2 seconds total (matching Lottie 50 frames @ 25fps)
+    
+    // Configuration
+    this.config = {
+      text: config.text || 'DUBAIFILMMAKER',
+      initialLetters: config.initialLetters || [0, 9, 10, 11, 12, 13], // Default: D and MAKER (indices)
+      // OR use letter-based config:
+      initialPattern: config.initialPattern || null, // e.g., 'DMAKER' or 'DR'
+      holdDuration: config.holdDuration || 3000, // How long to show initial letters
+      revealStartTime: config.revealStartTime || 3480, // When to start revealing other letters
+      letterDelays: config.letterDelays || null // Custom delays for each letter
+    };
     
     this.init();
   }
@@ -42,27 +53,83 @@ class IntroTextAnimation {
     const textContainer = document.createElement('div');
     textContainer.className = 'intro-text-animation';
 
-    // Split "DUBAIFILMMAKER" into individual letters
-    // D-U-B-A-I-F-I-L-M-M-A-K-E-R
-    // 0-1-2-3-4-5-6-7-8-9-10-11-12-13
-    const text = 'DUBAIFILMMAKER';
+    const text = this.config.text;
+    
+    // Determine which letters should be initially visible
+    let initialIndices = this.config.initialLetters;
+    
+    // If initialPattern is provided, calculate indices from pattern
+    if (this.config.initialPattern) {
+      initialIndices = this.getIndicesFromPattern(text, this.config.initialPattern);
+    }
+    
+    // Split text into individual letters
     text.split('').forEach((letter, index) => {
       const span = document.createElement('span');
       span.className = 'letter';
       
-      // Initial letters: D (index 0) and MAKER (indices 9-13: M-A-K-E-R) 
-      // D will slide LEFT, MAKER will slide RIGHT as one unit (like P and CO)
-      if (index === 0) {
-        span.classList.add('letter-slide-in'); // D slides LEFT like P
-      } else if (index >= 9 && index <= 13) {
-        span.classList.add('letter-exit'); // MAKER (M-A-K-E-R) slides RIGHT like CO
+      // Check if this letter should be initially visible
+      if (initialIndices.includes(index)) {
+        span.classList.add('letter-initial');
+        span.setAttribute('data-initial', 'true');
       }
       
       span.textContent = letter;
+      span.setAttribute('data-index', index);
       textContainer.appendChild(span);
     });
 
     this.$intro.appendChild(textContainer);
+    
+    // Apply dynamic animation delays
+    this.applyAnimationDelays(initialIndices);
+  }
+  
+  getIndicesFromPattern(text, pattern) {
+    // Find where the pattern appears in the text
+    const indices = [];
+    let searchStart = 0;
+    
+    for (let char of pattern) {
+      const index = text.indexOf(char, searchStart);
+      if (index !== -1) {
+        indices.push(index);
+        searchStart = index + 1;
+      }
+    }
+    
+    return indices;
+  }
+  
+  applyAnimationDelays(initialIndices) {
+    const letters = this.$intro.querySelectorAll('.letter');
+    const holdDuration = this.config.holdDuration;
+    
+    letters.forEach((letter, index) => {
+      if (initialIndices.includes(index)) {
+        // Initial letters: visible from start, animate at holdDuration
+        letter.style.animationDelay = `${holdDuration}ms`;
+      } else {
+        // Other letters: calculate staggered delay
+        const revealDelay = this.calculateRevealDelay(index, initialIndices);
+        letter.style.animationDelay = `${revealDelay}ms`;
+      }
+    });
+  }
+  
+  calculateRevealDelay(index, initialIndices) {
+    // Custom delays if provided
+    if (this.config.letterDelays && this.config.letterDelays[index]) {
+      return this.config.letterDelays[index];
+    }
+    
+    // Default: stagger based on position
+    // Letters between initial letters get revealed in order
+    const nonInitialIndex = index - initialIndices.filter(i => i < index).length;
+    const baseDelay = this.config.revealStartTime;
+    const staggerDelay = 80; // 80ms between each letter
+    
+    return baseDelay + (nonInitialIndex * staggerDelay);
   }
 
   bind() {
@@ -70,9 +137,9 @@ class IntroTextAnimation {
     if (window.a && window.a.mainPlayerBuffer) {
       window.a.mainPlayerBuffer.listen(this.onBuffer);
     } else {
-      // Fallback: start animation immediately if no video buffer
-      console.log('No video buffer found, starting animation immediately');
-      setTimeout(() => this.launchAnimation(), 100);
+      // Fallback: wait 2 seconds to show DMAKER before starting animation
+      console.log('No video buffer found, waiting 2 seconds before starting animation');
+      setTimeout(() => this.launchAnimation(), 2000);
     }
   }
 

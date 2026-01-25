@@ -37,7 +37,7 @@
 }
 
 /* Hidden letters - completely removed from layout flow */
-.intro-text-animation .letter:not(.letter-slide-in):not(.letter-exit) {
+.intro-text-animation .letter:not(.letter-initial) {
   position: absolute;
   width: 0;
   height: 0;
@@ -46,14 +46,14 @@
   padding: 0;
 }
 
-/* Initial letters - D and MAKER are visible from the start */
-.intro-text-animation .letter-slide-in,
-.intro-text-animation .letter-exit {
+/* Initial letters - visible from the start */
+.intro-text-animation .letter-initial {
   opacity: 1; /* Visible initially */
   position: relative; /* Take up space in the flow */
   width: auto;
   height: auto;
   overflow: visible;
+  animation: letterStayVisible 1.24s forwards;
 }
 
 @keyframes letterReveal {
@@ -81,14 +81,8 @@
   }
 }
 
-/* D stays in place - doesn't move */
-.intro-text-animation .letter-slide-in {
-  opacity: 1;
-  animation: letterStayVisible 1.24s forwards;
-}
-
-/* MAKER stays in place - doesn't move */
-.intro-text-animation .letter-exit {
+/* Initial letters stay visible */
+.intro-text-animation .letter-initial {
   opacity: 1;
   animation: letterStayVisible 1.24s forwards;
 }
@@ -102,40 +96,7 @@
   }
 }
 
-/* Stagger animation delays - matching POSTER animation timing exactly */
-/* Frame timing: 25fps, so 1 frame = 40ms */
-/* DUBAIFILMMAKER = 14 letters: D-U-B-A-I-F-I-L-M-M-A-K-E-R */
-/* Indices:                     0-1-2-3-4-5-6-7-8-9-10-11-12-13 */
-
-/* D slides LEFT (delay 3s to show initial state for 3 seconds) */
-.intro-text-animation .letter:nth-child(1) { animation-delay: 3s; }
-
-/* MAKER (indices 9-13: M-A-K-E-R at positions 10-14) slide RIGHT together as ONE unit (delay 3s) */
-.intro-text-animation .letter:nth-child(10) { animation-delay: 3s; } /* M */
-.intro-text-animation .letter:nth-child(11) { animation-delay: 3s; } /* A */
-.intro-text-animation .letter:nth-child(12) { animation-delay: 3s; } /* K */
-.intro-text-animation .letter:nth-child(13) { animation-delay: 3s; } /* E */
-.intro-text-animation .letter:nth-child(14) { animation-delay: 3s; } /* R */
-
-/* U+B appear together (frame 12 = 480ms + 3000ms delay = 3480ms) */
-.intro-text-animation .letter:nth-child(2) { animation-delay: 3.48s; } /* U (like O) */
-.intro-text-animation .letter:nth-child(3) { animation-delay: 3.48s; } /* B (like R) */
-
-/* A+I appear together (frame 14-16 = 560ms + 3000ms = 3560ms) */
-.intro-text-animation .letter:nth-child(4) { animation-delay: 3.56s; } /* A (like S) */
-.intro-text-animation .letter:nth-child(5) { animation-delay: 3.56s; } /* I (like E) */
-
-/* F appears (frame 16-18 = 640ms + 3000ms = 3640ms) */
-.intro-text-animation .letter:nth-child(6) { animation-delay: 3.64s; } /* F */
-
-/* I appears (frame 18 = 680ms + 3000ms = 3680ms) */
-.intro-text-animation .letter:nth-child(7) { animation-delay: 3.68s; } /* I */
-
-/* L appears (frame 18-19 = 720ms + 3000ms = 3720ms) */
-.intro-text-animation .letter:nth-child(8) { animation-delay: 3.72s; } /* L */
-
-/* M appears (frame 19 = 750ms + 3000ms = 3750ms) */
-.intro-text-animation .letter:nth-child(9) { animation-delay: 3.75s; } /* M (first M in FILMM) */
+/* Animation delays are now applied dynamically via JavaScript */
 
 
 
