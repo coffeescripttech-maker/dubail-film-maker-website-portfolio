@@ -4,8 +4,17 @@ const API_CONFIG = {
   // Set to true to use CMS API, false to use local JSON
   USE_CMS_API: true,
 
-  // CMS API base URL (update this with your actual CMS URL)
-  CMS_BASE_URL: 'https://dubail-film-maker-website-portfolio.vercel.app/api/public',
+  // CMS API base URL - auto-detect environment
+  // When running locally (localhost:3001), use local CMS (localhost:3000)
+  // When deployed, use production CMS URL
+  get CMS_BASE_URL() {
+    // Check if we're running locally
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:3000/api/public';
+    }
+    // Production CMS URL
+    return 'https://dubail-film-maker-website-portfolio.vercel.app/api/public';
+  },
 
   // Local JSON fallback paths
   LOCAL_PATHS: {

@@ -46,7 +46,7 @@
     <meta name="theme-color" content="#ffffff" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" href="../cdn.plyr.io/3.7.8/plyr.css" />
-
+<link rel="stylesheet" href="3.7.8/plyr.css" />
     <link href="assets/dist/build.min.css" rel="stylesheet" />
     <link href="assets/css/templates/about.css" rel="stylesheet" />
     <link rel="canonical" href="about.html" />
@@ -98,10 +98,15 @@
           var config = null;
           var activePresetFromCMS = null;
           
+          // Auto-detect CMS URL based on environment
+          var cmsBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:3000/api/public'
+            : 'https://dubail-film-maker-website-portfolio.vercel.app/api/public';
+          
           // Try to get active preset from CMS API first
           try {
             // Add timestamp to prevent caching
-            xhr.open('GET', 'https://dubail-film-maker-website-portfolio.vercel.app/api/public/header?t=' + Date.now(), false);
+            xhr.open('GET', cmsBaseUrl + '/header?t=' + Date.now(), false);
             xhr.send();
             if (xhr.status === 200) {
               var cmsData = JSON.parse(xhr.responseText);
@@ -284,44 +289,9 @@
 
 
               <div style="margin-top: 30px;"></div>
-              <!-- <ul class="list list--about-images">
-                object(Kirby\Cms\Files)#284 (4) { [0]=> string(52)
-                "about/adv-architecture-et-agencement-advstudio-1.jpg" [1]=>
-                string(52)
-                "about/adv-architecture-et-agencement-advstudio-2.jpg" [2]=>
-                string(52)
-                "about/adv-architecture-et-agencement-advstudio-3.jpg" [3]=>
-                string(50) "about/adv-architecture-et-agencement-advstudio.jpg"
-                }
-                <li>
-                  <img
-                    class="pic"
-                    src="media/pages/about/6f8ea45b91-1724948873/adv-architecture-et-agencement-advstudio-1.jpg"
-                    alt=""
-                  />
-                </li>
-                <li>
-                  <img
-                    class="pic"
-                    src="media/pages/about/9a13aa90ff-1724948879/adv-architecture-et-agencement-advstudio-2.jpg"
-                    alt=""
-                  />
-                </li>
-                <li>
-                  <img
-                    class="pic"
-                    src="media/pages/about/570a1d755d-1724948885/adv-architecture-et-agencement-advstudio-3.jpg"
-                    alt=""
-                  />
-                </li>
-                <li>
-                  <img
-                    class="pic"
-                    src="media/pages/about/fe3e83c953-1724948891/adv-architecture-et-agencement-advstudio.jpg"
-                    alt=""
-                  />
-                </li>
-              </ul> -->
+              <ul class="list list--about-images">
+                <!-- Images will be loaded dynamically from about.json -->
+              </ul>
             </div>
 
             <div

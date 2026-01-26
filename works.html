@@ -68,7 +68,85 @@
     .header__logo.loaded {
       opacity: 1;
     }
+
+    /* Conditional: Force projects-nav to always be visible (controlled by config.json) */
+    body.projects-nav-always-visible .projects-nav,
+    body.projects-nav-always-visible .projects-nav .list--cat,
+    body.projects-nav-always-visible .projects-nav .list--cat li,
+    body.projects-nav-always-visible .projects-nav .list--cat li a {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* Ensure list items are inline for horizontal layout */
+    body.projects-nav-always-visible .projects-nav .list--cat li {
+      display: inline-block !important;
+    }
+
+    /* Prevent text truncation or hiding */
+    body.projects-nav-always-visible .projects-nav .list--cat li a {
+      white-space: nowrap !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      max-width: none !important;
+    }
+
+    /* Override any hiding rules from build.min.css */
+    body.projects-nav-always-visible .template-projects header .list--cat,
+    body.projects-nav-always-visible .template-projects header .projects-nav {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      visibility: visible !important;
+    }
+
+    /* Ensure visibility on all screen sizes when always-visible is enabled */
+    @media (max-width: 767px) {
+      body.projects-nav-always-visible .projects-nav,
+      body.projects-nav-always-visible .projects-nav .list--cat {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+    }
+
+    @media (min-width: 768px) {
+      body.projects-nav-always-visible .projects-nav,
+      body.projects-nav-always-visible .projects-nav .list--cat {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+    }
   </style>
+  
+  <!-- Apply config-based class for projects-nav visibility -->
+  <script>
+    (function() {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/config.json', false);
+        xhr.send();
+        
+        if (xhr.status === 200) {
+          var config = JSON.parse(xhr.responseText);
+          
+          // Check if projectsNav.alwaysVisible is true
+          if (config.features && 
+              config.features.projectsNav && 
+              config.features.projectsNav.alwaysVisible === true) {
+            // Add class to body to enable always-visible CSS rules
+            document.documentElement.classList.add('projects-nav-always-visible');
+            console.log('✓ Projects navigation set to always visible');
+          } else {
+            console.log('✓ Projects navigation using default scroll-based visibility');
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load config for projects-nav visibility:', e);
+      }
+    })();
+  </script>
   
   <!-- Critical header CSS - loads synchronously to prevent FOUC -->
   <script>
@@ -271,40 +349,17 @@
 
             <div class="projects-nav">
               <ul class="list list--cat">
-
-                 <li>
-                    <a href="#works" class="js-filter-cat" data-cat="*">all</a>
-                  </li>
-                  <li>
-                    <a
-                      href="#works"
-                      class="js-filter-cat"
-                      data-cat="*"
-                      >TVC / Brand Films</a
-                    >
-                  </li>
-
-                   <li>
-                    <a
-                      href="#works"
-                      class="js-filter-cat"
-                      data-cat="*"
-                      >Narrative Films</a
-                    >
-                  </li>
-
-                <!-- <li>
-                  <a href="#works" class="js-filter-cat" data-cat="*">all</a>
+                <li>
+                  <a href="#works" class="js-filter-cat is-active" data-cat="*">all</a>
                 </li>
                 <li>
-                  <a href="#works" class="js-filter-cat" data-cat="featured-film">Featured film</a>
+                  <a
+                    href="#works"
+                    class="js-filter-cat"
+                    data-cat="TVC"
+                    >TVC / Brand Films</a
+                  >
                 </li>
-                <li>
-                  <a href="#works" class="js-filter-cat" data-cat="commercials">Commercials</a>
-                </li>
-                <li>
-                  <a href="#works" class="js-filter-cat" data-cat="music-videos">Music videos</a>
-                </li> -->
               </ul>
             </div>
           </div>

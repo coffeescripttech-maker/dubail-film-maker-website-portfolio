@@ -151,7 +151,9 @@
     },
     "projectsNav": {
       "enabled": true,
-      "description": "Enable/disable projects category navigation (Featured film, Commercials, etc.)"
+      "description": "Enable/disable projects category navigation (Featured film, Commercials, etc.)",
+      "alwaysVisible": true,
+      "alwaysVisibleDescription": "When true, filter navigation stays visible at all times. When false, uses default scroll-based visibility behavior"
     },
     "homeBoxLinks": {
       "videoClickable": {

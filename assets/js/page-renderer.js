@@ -436,6 +436,8 @@
     console.log('Rendering about page content...');
     const aboutBox = document.querySelector('.box--about');
     const aboutButton = document.querySelector('.player-link');
+    const aboutImagesList = document.querySelector('.list--about-images');
+    const videoElement = document.querySelector('.js-popin-video video');
 
     let contentHTML = '';
     
@@ -458,6 +460,26 @@
       aboutButton.innerHTML = `<svg width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M7.25 4.56699C7.58333 4.75944 7.58333 5.24056 7.25 5.43301L1.25 8.89711C0.916667 9.08956 0.500001 8.849 0.500001 8.4641L0.500001 1.5359C0.500001 1.151 0.916668 0.910436 1.25 1.10289L7.25 4.56699Z" stroke="currentColor"/>
 </svg> ${pageData.content.video_button.text}`;
+    }
+
+    // Update video URL in popup if available
+    if (videoElement && pageData.content && pageData.content.video_button && pageData.content.video_button.video_url) {
+      videoElement.src = pageData.content.video_button.video_url;
+      console.log('✓ Video URL updated:', pageData.content.video_button.video_url);
+    }
+
+    // Render about images dynamically
+    if (aboutImagesList && pageData.images && pageData.images.length > 0) {
+      let imagesHTML = '';
+      pageData.images.forEach(image => {
+        imagesHTML += `
+          <li>
+            <img class="pic" src="${image.url}" alt="${image.alt || ''}" />
+          </li>
+        `;
+      });
+      aboutImagesList.innerHTML = imagesHTML;
+      console.log(`✓ Rendered ${pageData.images.length} about images`);
     }
   }
 
@@ -496,8 +518,8 @@
   <p>${pageData.address.street ? pageData.address.street + '<br />' : ''}
   ${pageData.address.city}</p>
   <p>
-    T&nbsp;: <a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a><br/>
-    E&nbsp;: <a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a>
+    <span style="white-space: nowrap;">T: <a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
+    <span style="white-space: nowrap;">E: <a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a></span>
   </p>
 `;
       

@@ -205,6 +205,56 @@
         visibility: visible !important;
       }
 
+      /* Conditional: Force projects-nav to always be visible (controlled by config.json) */
+      html.projects-nav-always-visible .projects-nav,
+      html.projects-nav-always-visible .projects-nav .list--cat,
+      html.projects-nav-always-visible .projects-nav .list--cat li,
+      html.projects-nav-always-visible .projects-nav .list--cat li a {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+
+      /* Ensure list items are inline for horizontal layout */
+      html.projects-nav-always-visible .projects-nav .list--cat li {
+        display: inline-block !important;
+      }
+
+      /* Prevent text truncation or hiding */
+      html.projects-nav-always-visible .projects-nav .list--cat li a {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        max-width: none !important;
+      }
+
+      /* Override any hiding rules from build.min.css */
+      html.projects-nav-always-visible .template-homepage header:not(.on-works-section) .list--cat,
+      html.projects-nav-always-visible .template-homepage header:not(.on-works-section) .projects-nav {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        visibility: visible !important;
+      }
+
+      /* Ensure visibility on all screen sizes when always-visible is enabled */
+      @media (max-width: 767px) {
+        html.projects-nav-always-visible .projects-nav,
+        html.projects-nav-always-visible .projects-nav .list--cat {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+      }
+
+      @media (min-width: 768px) {
+        html.projects-nav-always-visible .projects-nav,
+        html.projects-nav-always-visible .projects-nav .list--cat {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        }
+      }
+
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -214,6 +264,34 @@
         }
       }
     </style>
+    
+    <!-- Apply config-based class for projects-nav visibility -->
+    <script>
+      (function() {
+        try {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', '/config.json', false);
+          xhr.send();
+          
+          if (xhr.status === 200) {
+            var config = JSON.parse(xhr.responseText);
+            
+            // Check if projectsNav.alwaysVisible is true
+            if (config.features && 
+                config.features.projectsNav && 
+                config.features.projectsNav.alwaysVisible === true) {
+              // Add class to body to enable always-visible CSS rules
+              document.documentElement.classList.add('projects-nav-always-visible');
+              console.log('✓ Projects navigation set to always visible');
+            } else {
+              console.log('✓ Projects navigation using default scroll-based visibility');
+            }
+          }
+        } catch (e) {
+          console.warn('Could not load config for projects-nav visibility:', e);
+        }
+      })();
+    </script>
     
     <!-- Critical header CSS - loads synchronously to prevent FOUC -->
     <script>
@@ -429,16 +507,7 @@
                       href="#works"
                       class="js-filter-cat"
                       data-cat="TVC"
-                      >TVC</a
-                    >
-                  </li>
-
-                   <li>
-                    <a
-                      href="#works"
-                      class="js-filter-cat"
-                      data-cat="BRAND FILM"
-                      >Brand Films</a
+                      >TVC / Brand Films</a
                     >
                   </li>
   
@@ -613,7 +682,7 @@
               const animConfig = {
                 text: 'DUBAIFILMMAKER',
                 // Option 1: Use letter pattern (easier)
-                initialPattern: 'DR', // Change to 'DR' or any letters you want initially visible
+                initialPattern: 'DMAKER', // Change to 'DR' or any letters you want initially visible
                 // Option 2: Use indices (more precise)
                 // initialLetters: [0, 9, 10, 11, 12, 13], // D and MAKER
                 holdDuration: 3000, // How long to show initial letters (ms)

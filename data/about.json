@@ -13,6 +13,24 @@
         "text": "view DubaiFilmMaker reel 2025",
         "video_url": "https://video.wixstatic.com/video/8c2c22_981846f43f714f73845393b8c1d66a5f/720p/mp4/file.mp4"
       }
-    }
+    },
+    "images": [
+      {
+        "url": "media/pages/about/6f8ea45b91-1724948873/adv-architecture-et-agencement-advstudio-1.jpg",
+        "alt": "DXP Studio Image 1"
+      },
+      {
+        "url": "media/pages/about/9a13aa90ff-1724948879/adv-architecture-et-agencement-advstudio-2.jpg",
+        "alt": "DXP Studio Image 2"
+      },
+      {
+        "url": "media/pages/about/570a1d755d-1724948885/adv-architecture-et-agencement-advstudio-3.jpg",
+        "alt": "DXP Studio Image 3"
+      },
+      {
+        "url": "media/pages/about/fe3e83c953-1724948891/adv-architecture-et-agencement-advstudio.jpg",
+        "alt": "DXP Studio Image 4"
+      }
+    ]
   }
 }
