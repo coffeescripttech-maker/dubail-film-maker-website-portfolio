@@ -51,6 +51,10 @@ class IntroTextAnimation {
     // Clear existing content
     this.$intro.innerHTML = '';
 
+    // Create wrapper container for better positioning control
+    const wrapper = document.createElement('div');
+    wrapper.className = 'intro-text-wrapper';
+
     // Create text container
     const textContainer = document.createElement('div');
     textContainer.className = 'intro-text-animation';
@@ -69,7 +73,8 @@ class IntroTextAnimation {
       textContainer.appendChild(letter);
     });
 
-    this.$intro.appendChild(textContainer);
+    wrapper.appendChild(textContainer);
+    this.$intro.appendChild(wrapper);
 
     // Apply animation delays
     this.applyAnimationDelays(initialIndices);
@@ -171,32 +176,26 @@ class IntroTextAnimation {
   }
 
   onAnimationEnded() {
-    console.log('🎯 Animation ended, transitioning to header');
+    console.log('🎯 Animation ended, text will move up and stick to header');
     
-    // Get header logo and set it up
-    const headerLogo = document.querySelector('.header__logo');
+    const preloaderText = this.$intro.querySelector('.intro-text-animation');
     
-    if (headerLogo) {
-      // Get logo source from header config (if available)
-      const logoSrc = window.__headerPreset?.logo?.src || 
-                      'assets/img/logo/dubaifilmmaker-light.svg';
-      
-      headerLogo.src = logoSrc;
-      headerLogo.alt = 'DubaiFilmMaker';
-      
-      console.log('✓ Header logo src set to:', headerLogo.src);
-      
-      // Wait a frame then show header logo
-      requestAnimationFrame(() => {
-        headerLogo.style.opacity = '1';
-        headerLogo.style.visibility = 'visible';
-        headerLogo.classList.add('loaded');
-        
-        console.log('✓ Header logo now visible');
-      });
+    // Keep preloader text visible - no fade out
+    if (preloaderText) {
+      preloaderText.style.transition = 'none';
+      preloaderText.style.opacity = '1';
+      console.log('✓ Preloader text will stay visible during movement');
     }
     
-    // Add completion class
+    // Hide the header logo image - we'll use the preloader text instead
+    const headerLogo = document.querySelector('.header__logo');
+    if (headerLogo) {
+      headerLogo.style.opacity = '0';
+      headerLogo.style.visibility = 'hidden';
+      console.log('✓ Header logo hidden - preloader text will replace it');
+    }
+    
+    // Add completion class - this triggers the upward movement via CSS
     this.$introWrapper.classList.add('lottie-ended');
     this.animationComplete = true;
 
@@ -211,13 +210,18 @@ class IntroTextAnimation {
     }
 
     // After 800ms, add intro-ended class to complete the exit animation
+    // The preloader text will move up and stick to header position
     setTimeout(() => {
-      console.log('Adding intro-ended class to document');
+      console.log('Adding intro-ended class - text moving to header position');
       if (document.scrollingElement) {
         document.scrollingElement.classList.add('intro-ended');
       }
       // Also add to body as fallback
       document.body.classList.add('intro-ended');
+      
+      // After movement completes, we can optionally swap to actual logo
+      // For now, keep the text visible
+      console.log('✓ Text should now be at header position');
     }, 800);
 
     this.unbind();

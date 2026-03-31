@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capture Preloader Text as SVG</title>
+  
+  <!-- Load html2canvas library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <!-- Load Monument Extended Bold font -->
+  <style>
+    @font-face {
+      font-family: 'Monument Extended Bold';
+      src: url('assets/fonts/monument-extended-bold.woff2') format('woff2'),
+           url('assets/fonts/monument-extended-bold.woff') format('woff'),
+           url('assets/fonts/monument-extended-bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+    
+    body {
+      margin: 0;
+      padding: 40px;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    
+    .preview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      background: #1a1a1a;
+      margin-bottom: 20px;
+      padding: 40px;
+    }
+    
+    /* Copy the exact preloader text styles */
+    .intro-text-animation {
+      position: relative;
+      display: flex;
+      gap: 0;
+      font-family: 'Monument Extended Bold', sans-serif;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      font-size: 5.5vw;
+      max-width: none;
+    }
+    
+    .intro-text-animation .letter {
+      display: inline-block;
+      opacity: 1;
+    }
+    
+    /* Responsive sizing to match actual preloader */
+    @media (max-width: 1024px) {
+      .intro-text-animation {
+        font-size: 6vw;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .intro-text-animation {
+        font-size: 5.5vw;
+        letter-spacing: 0.01em;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .intro-text-animation {
+        font-size: 5.5vw;
+        letter-spacing: 0;
+        max-width: 95vw;
+      }
+    }
+    
+    @media (min-width: 1920px) {
+      .intro-text-animation {
+        font-size: 115px;
+      }
+    }
+    
+    @media (min-width: 2560px) {
+      .intro-text-animation {
+        font-size: 154px;
+      }
+    }
+    
+    button {
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    
+    button:hover {
+      background: #ddd;
+    }
+    
+    #output {
+      margin-top: 20px;
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 4px;
+      max-height: 400px;
+      overflow: auto;
+    }
+    
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Capture Preloader Text as SVG</h1>
+  <p>This tool captures the preloader text and converts it to SVG format.</p>
+  
+  <div>
+    <label>Target Width (px): <input type="number" id="targetWidth" value="1920" min="320" max="3840" step="10"></label>
+    <button onclick="updatePreview()">Update Preview</button>
+    <p id="sizeInfo" style="color: #999; font-size: 14px;"></p>
+  </div>
+  
+  <div class="preview" id="preview">
+    <div class="intro-text-animation" id="preloaderText">
+      <span class="letter">D</span>
+      <span class="letter">U</span>
+      <span class="letter">B</span>
+      <span class="letter">A</span>
+      <span class="letter">I</span>
+      <span class="letter">F</span>
+      <span class="letter">I</span>
+      <span class="letter">L</span>
+      <span class="letter">M</span>
+      <span class="letter">M</span>
+      <span class="letter">A</span>
+      <span class="letter">K</span>
+      <span class="letter">E</span>
+      <span class="letter">R</span>
+    </div>
+  </div>
+  
+  <button onclick="generateSVG()">Generate SVG</button>
+  <button onclick="downloadSVG()">Download SVG</button>
+  <button onclick="copySVG()">Copy SVG Code</button>
+  
+  <div id="output"></div>
+  
+  <script>
+    let svgCode = '';
+    
+    // Wait for font to load before generating
+    document.fonts.ready.then(() => {
+      console.log('Fonts loaded');
+      updatePreview();
+    });
+    
+    function updatePreview() {
+      const targetWidth = parseInt(document.getElementById('targetWidth').value) || 1920;
+      const fontSize = targetWidth * 0.055; // 5.5vw
+      
+      // Update preview
+      const preview = document.getElementById('preview');
+      preview.innerHTML = `
+        <div class="intro-text-animation" id="preloaderText" style="font-size: ${fontSize}px;">
+          <span class="letter">D</span>
+          <span class="letter">U</span>
+          <span class="letter">B</span>
+          <span class="letter">A</span>
+          <span class="letter">I</span>
+          <span class="letter">F</span>
+          <span class="letter">I</span>
+          <span class="letter">L</span>
+          <span class="letter">M</span>
+          <span class="letter">M</span>
+          <span class="letter">A</span>
+          <span class="letter">K</span>
+          <span class="letter">E</span>
+          <span class="letter">R</span>
+        </div>
+      `;
+      
+      document.getElementById('sizeInfo').textContent = `Font size: ${fontSize.toFixed(1)}px (5.5vw of ${targetWidth}px)`;
+      
+      setTimeout(generateSVG, 500);
+    }
+    
+    async function generateSVG() {
+      const textElement = document.getElementById('preloaderText');
+      
+      try {
+        // Use html2canvas to capture the text with proper font rendering
+        const canvas = await html2canvas(textElement, {
+          backgroundColor: null, // Transparent background
+          scale: 2, // Higher quality
+          logging: false
+        });
+        
+        // Get dimensions
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // Convert canvas to data URL
+        const dataUrl = canvas.toDataURL('image/png');
+        
+        // Create SVG with embedded image
+        svgCode = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  <image href="${dataUrl}" width="${width}" height="${height}" />
+</svg>`;
+        
+        document.getElementById('output').innerHTML = `<h3>Generated SVG:</h3><p>SVG created with embedded PNG (${width}x${height}px)</p><pre>${escapeHtml(svgCode.substring(0, 300))}... [data truncated]</pre>`;
+        
+        console.log('SVG generated successfully');
+      } catch (error) {
+        console.error('Error generating SVG:', error);
+        document.getElementById('output').innerHTML = `<h3>Error:</h3><p>${error.message}</p>`;
+      }
+    }
+    
+    function downloadSVG() {
+      if (!svgCode) {
+        alert('Please generate SVG first!');
+        return;
+      }
+      
+      const blob = new Blob([svgCode], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'dubaifilmmaker-preloader.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('SVG downloaded as dubaifilmmaker-preloader.svg');
+    }
+    
+    function copySVG() {
+      if (!svgCode) {
+        alert('Please generate SVG first!');
+        return;
+      }
+      
+      navigator.clipboard.writeText(svgCode).then(() => {
+        alert('SVG code copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy. Please copy manually from the output below.');
+      });
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    // Auto-generate on load - removed, now using document.fonts.ready above
+  </script>
+</body>
+</html>

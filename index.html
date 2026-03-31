@@ -47,6 +47,8 @@
     <link href="assets/dist/build.min.css" rel="stylesheet" />
     <link href="assets/css/intro-text-animation.css" rel="stylesheet" />
     <link href="assets/css/header-logo-match.css" rel="stylesheet" />
+    <link href="assets/css/view-other-films-cta.css" rel="stylesheet" />
+    <link href="assets/css/homepage-pagination-desktop.css" rel="stylesheet" />
 
     <link rel="canonical" href="index.html" />
     <meta property="og:locale" content="en_US" />
@@ -113,6 +115,42 @@
         display: flex;
         flex-direction: column;
         width: 100%;
+      }
+
+      /* Force slider wrapper visibility on desktop */
+      @media (min-width: 768px) {
+        .slider-wrapper {
+          display: flex !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          min-height: 50px !important;
+        }
+
+        /* Force list visibility on desktop - HIDE the text list */
+        .list--home {
+          display: none !important;
+        }
+
+        /* Show arrows on desktop like mobile */
+        .box--home__buttons-mobile {
+          display: flex !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          position: relative !important;
+          bottom: auto !important;
+          right: auto !important;
+          margin-top: 1rem !important;
+          justify-content: center !important;
+        }
+
+        .box--home__buttons-mobile .mobile-link {
+          display: none !important; /* Hide "view project" button on desktop */
+        }
+
+        .box--home__buttons-mobile .arrows {
+          display: flex !important;
+          gap: 1rem !important;
+        }
       }
 
       /* Homepage slider loading state */
@@ -565,6 +603,14 @@
                       <span class="is-animated"></span>
                     </div>
                   </div>
+
+                  <!-- View Other Films CTA -->
+                  <a href="works.html" class="view-other-films-cta" data-navigo>
+                    <span class="cta-text">View Other Films</span>
+                    <svg class="cta-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </a>
                 </div>
 
                 <!-- Empty container - will be populated by page-renderer.js -->

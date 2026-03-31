@@ -1,0 +1,78 @@
+/* Ensure homepage pagination is visible on desktop */
+
+/* Force the box--home__info to be visible after intro ends */
+@media (min-width: 768px) {
+  .intro-ended .box--home__info {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  /* Ensure the slider wrapper is visible */
+  .intro-ended .box--home__info .slider-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  /* Ensure the slider list is visible and horizontal */
+  .intro-ended .list--home {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    position: relative !important;
+  }
+
+  /* Show all list items on desktop */
+  .intro-ended .list--home > li {
+    display: inline-flex !important;
+    position: relative !important;
+  }
+
+  /* Style the pagination items */
+  .intro-ended .list--home > li a {
+    box-sizing: border-box;
+    max-width: 240px;
+    opacity: 0.5;
+    padding: 20px 40px;
+    pointer-events: auto;
+    transition: opacity 0.3s cubic-bezier(0.63, 0.01, 0, 0.83);
+    color: var(--light-color, #ffffff);
+    text-decoration: none;
+    display: block;
+  }
+
+  /* Active state */
+  .intro-ended .list--home > li.is-active a {
+    opacity: 1 !important;
+    font-weight: 700;
+  }
+
+  /* Hover state */
+  .intro-ended .list--home > li a:hover,
+  .intro-ended .list--home > li a:active {
+    opacity: 1;
+  }
+
+  /* Hide counter on desktop */
+  .box--home__info__counter {
+    display: none !important;
+  }
+
+  /* Ensure timeline is visible and full width on desktop */
+  .intro-ended .box--home__timeline {
+    margin-top: 0 !important;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  /* Ensure cursor player is hidden on desktop (only show text pagination) */
+  .intro-ended .cursor-player-animated {
+    display: block !important;
+  }
+}
+
