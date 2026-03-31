@@ -31,12 +31,13 @@
     worksContainer.innerHTML = '';
 
     projects.forEach(project => {
+      const displayClient = project.client_short || project.client;
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="${project.link}" class="box--work__link js-has-cursor-text" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${project.link}'; return false;">
           <div class="box--work__info">
             <h2>${project.title}</h2>
-            <p>${project.client}</p>
+            <p>${displayClient}</p>
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
@@ -56,7 +57,7 @@
             </div>
             <div class="mooving-elements shift cursor-main-text" data-friction="5">
               <h2>${project.title}</h2>
-              <p>${project.client}</p>
+              <p>${displayClient}</p>
               <p>${project.category}</p>
             </div>
           </div>
@@ -141,13 +142,14 @@
       
       // Then append the remaining projects
       projects.slice(initialCount).forEach(project => {
+      const displayClient = project.client_short || project.client;
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
         onclick="window.location.replace('${project.link}'); return false;">
           <div class="box--work__info">
             <h2>${project.title}</h2>
-            <p>${project.client}</p>
+            <p>${displayClient}</p>
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
@@ -167,7 +169,7 @@
             </div>
             <div class="mooving-elements shift cursor-main-text" data-friction="5">
               <h2>${project.title}</h2>
-              <p>${project.client}</p>
+              <p>${displayClient}</p>
               <p>${project.category}</p>
             </div>
           </div>
@@ -183,13 +185,14 @@
       worksContainer.innerHTML = '';
       
       projects.forEach(project => {
+        const displayClient = project.client_short || project.client;
         const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
         onclick="window.location.replace('${project.link}'); return false;">
           <div class="box--work__info">
             <h2>${project.title}</h2>
-            <p>${project.client}</p>
+            <p>${displayClient}</p>
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
@@ -209,7 +212,7 @@
             </div>
             <div class="mooving-elements shift cursor-main-text" data-friction="5">
               <h2>${project.title}</h2>
-              <p>${project.client}</p>
+              <p>${displayClient}</p>
               <p>${project.category}</p>
             </div>
           </div>
@@ -377,11 +380,12 @@
 
     let listItemsHTML = '';
     projects.forEach((project, index) => {
+      const displayClient = project.client_short || project.client;
       listItemsHTML += `
         <li class="${index === 0 ? 'is-active' : ''}" data-project-index="${index}">
           <a href="${project.link}" class="js-change-video">
             <h2>${project.title}</h2>
-             <p>${project.client}</p>
+             <p>${displayClient}</p>
            <p>${project.classification}</p>
           </a>
         </li>
@@ -541,10 +545,12 @@
   function renderProjectDetail(project) {
     console.log('Rendering project detail:', project.title);
     
+    const displayClient = project.client_short || project.client;
+    
     document.getElementById('page-title').textContent = `DubaiFilmMaker – ${project.title}`;
-    document.getElementById('page-description').setAttribute('content', `${project.title} - ${project.client}`);
+    document.getElementById('page-description').setAttribute('content', `${project.title} - ${displayClient}`);
     document.getElementById('project-title').textContent = project.title;
-    document.getElementById('project-client').textContent = project.client;
+    document.getElementById('project-client').textContent = displayClient;
 
     const videoElement = document.getElementById('project-video');
     const highQualityVideo = project.video_url;

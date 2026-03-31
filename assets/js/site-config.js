@@ -302,6 +302,16 @@
                                 document.body.classList.contains('body-light');
       
       logoElements.forEach(logo => {
+        // Check if we're on homepage with intro animation
+        const hasIntroAnimation = document.querySelector('.bloc-intro');
+        const isHomepage = document.body.classList.contains('template-homepage');
+        
+        // On homepage with intro, skip setting src - preloader will handle it
+        if (hasIntroAnimation && isHomepage) {
+          console.log('✓ Skipping logo src on homepage - preloader will set it');
+          return; // Skip this logo
+        }
+        
         // Use dark logo for light backgrounds, light logo for dark backgrounds
         const logoSrc = isLightBackground && presetConfig.logo.srcDark 
           ? presetConfig.logo.srcDark 
@@ -311,6 +321,7 @@
         if (presetConfig.logo.alt) {
           logo.alt = presetConfig.logo.alt;
         }
+        
         // Add 'loaded' class to make logo visible with smooth transition
         logo.classList.add('loaded');
       });

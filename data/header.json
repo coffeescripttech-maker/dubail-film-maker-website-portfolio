@@ -10,6 +10,12 @@
         "srcDark": "assets/img/logo/dubaifilmmaker-dark.svg",
         "alt": "DubaiFilmMaker"
       },
+      "introAnimation": {
+        "text": "DUBAIFILMMAKER",
+        "initialPattern": "DUBAIFILMMAKER",
+        "holdDuration": 3000,
+        "revealStartTime": 3480
+      },
       "mobile": {
         "headerNav": {
           "alignItems": "center",
@@ -46,6 +52,12 @@
         "src": "assets/img/logo/dubaifilmmaker-original-light.svg",
         "srcDark": "assets/img/logo/dubaifilmmaker-original-dark.svg",
         "alt": "DubaiFilmMaker"
+      },
+      "introAnimation": {
+        "text": "DUBAIFILMMAKER",
+        "initialPattern": "DMAKER",
+        "holdDuration": 3000,
+        "revealStartTime": 3480
       },
       "mobile": {
         "headerNav": {

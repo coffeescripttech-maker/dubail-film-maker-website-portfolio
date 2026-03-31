@@ -3,6 +3,8 @@
  * Replaces Lottie animation with CSS-based text reveal
  */
 
+console.log('🚀 intro-text-animation.js loaded - VERSION 2');
+
 class IntroTextAnimation {
   constructor(wrapper, config = {}) {
     this.$introWrapper = wrapper;
@@ -53,35 +55,23 @@ class IntroTextAnimation {
     const textContainer = document.createElement('div');
     textContainer.className = 'intro-text-animation';
 
-    const text = this.config.text;
-    
-    // Determine which letters should be initially visible
+    // Determine which letters to show initially
     let initialIndices = this.config.initialLetters;
-    
-    // If initialPattern is provided, calculate indices from pattern
     if (this.config.initialPattern) {
-      initialIndices = this.getIndicesFromPattern(text, this.config.initialPattern);
+      initialIndices = this.getIndicesFromPattern(this.config.text, this.config.initialPattern);
     }
-    
-    // Split text into individual letters
-    text.split('').forEach((letter, index) => {
-      const span = document.createElement('span');
-      span.className = 'letter';
-      
-      // Check if this letter should be initially visible
-      if (initialIndices.includes(index)) {
-        span.classList.add('letter-initial');
-        span.setAttribute('data-initial', 'true');
-      }
-      
-      span.textContent = letter;
-      span.setAttribute('data-index', index);
-      textContainer.appendChild(span);
+
+    // Create letter spans
+    this.config.text.split('').forEach((char, index) => {
+      const letter = document.createElement('span');
+      letter.className = initialIndices.includes(index) ? 'letter letter-initial' : 'letter';
+      letter.textContent = char;
+      textContainer.appendChild(letter);
     });
 
     this.$intro.appendChild(textContainer);
-    
-    // Apply dynamic animation delays
+
+    // Apply animation delays
     this.applyAnimationDelays(initialIndices);
   }
   
@@ -181,7 +171,32 @@ class IntroTextAnimation {
   }
 
   onAnimationEnded() {
-    console.log('Animation ended, adding lottie-ended class');
+    console.log('🎯 Animation ended, transitioning to header');
+    
+    // Get header logo and set it up
+    const headerLogo = document.querySelector('.header__logo');
+    
+    if (headerLogo) {
+      // Get logo source from header config (if available)
+      const logoSrc = window.__headerPreset?.logo?.src || 
+                      'assets/img/logo/dubaifilmmaker-light.svg';
+      
+      headerLogo.src = logoSrc;
+      headerLogo.alt = 'DubaiFilmMaker';
+      
+      console.log('✓ Header logo src set to:', headerLogo.src);
+      
+      // Wait a frame then show header logo
+      requestAnimationFrame(() => {
+        headerLogo.style.opacity = '1';
+        headerLogo.style.visibility = 'visible';
+        headerLogo.classList.add('loaded');
+        
+        console.log('✓ Header logo now visible');
+      });
+    }
+    
+    // Add completion class
     this.$introWrapper.classList.add('lottie-ended');
     this.animationComplete = true;
 

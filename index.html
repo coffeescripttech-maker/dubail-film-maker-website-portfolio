@@ -93,7 +93,18 @@
         transition: opacity 0.15s ease-in;
       }
       
-      .header__logo.loaded {
+      /* On homepage, keep header logo hidden until intro completes */
+      body.template-homepage .header__logo {
+        opacity: 0 !important;
+      }
+      
+      /* After intro ends, allow header logo to be visible */
+      body.template-homepage.intro-ended .header__logo.loaded {
+        opacity: 1 !important;
+      }
+      
+      /* On other pages, show logo normally */
+      body:not(.template-homepage) .header__logo.loaded {
         opacity: 1;
       }
 
@@ -347,6 +358,16 @@
               // Update logo src immediately when DOM is ready
               if (presetConfig.logo && presetConfig.logo.src) {
                 document.addEventListener('DOMContentLoaded', function() {
+                  // Check if we're on homepage with intro animation
+                  var hasIntroAnimation = document.querySelector('.bloc-intro');
+                  var isHomepage = document.body.classList.contains('template-homepage');
+                  
+                  // Skip on homepage with intro - preloader will handle it
+                  if (hasIntroAnimation && isHomepage) {
+                    console.log('✓ Skipping logo src on homepage - preloader will set it');
+                    return;
+                  }
+                  
                   var logos = document.querySelectorAll('.header__logo');
                   logos.forEach(function(logo) {
                     logo.src = presetConfig.logo.src;
@@ -460,8 +481,8 @@
               <a href="index" data-navigo class="logo-link">
                 <img
                   class="header__logo"
-                  src="assets/img/version_2/dubaifilmmaker.svg"
-                  alt="Poster"
+                  src=""
+                  alt="DubaiFilmMaker"
                 />
               </a>
               <a href="#main_menu" class="btn btn--menu">
@@ -665,7 +686,7 @@
     <script src="assets/js/page-renderer.js"></script>
     <script src="assets/js/app-init.js"></script>
     <script src="assets/js/site-config.js"></script>
-    <script src="assets/js/intro-text-animation.js"></script>
+    <script src="assets/js/intro-text-animation.js?v=4"></script>
     <script src="assets/dist/build.min.js"></script>
     
     <!-- Initialize CSS text animation for DUBAIFILMMAKER -->
@@ -676,17 +697,31 @@
           const initIntro = () => {
             const config = window.siteConfig || { features: { introAnimation: { enabled: true } } };
             if (config.features && config.features.introAnimation && config.features.introAnimation.enabled) {
-              console.log('✓ Initializing DUBAIFILMMAKER text animation');
+              console.log('✓ Initializing intro text animation');
+              
+              // Get text from header config (from CMS or local config)
+              const headerPreset = window.__headerPreset;
+              let animText = 'DUBAIFILMMAKER'; // Default fallback
+              let animPattern = 'DMAKER'; // Default pattern
+              
+              // Try to get text from header config
+              if (headerPreset && headerPreset.introAnimation) {
+                if (headerPreset.introAnimation.text) {
+                  animText = headerPreset.introAnimation.text;
+                }
+                if (headerPreset.introAnimation.initialPattern) {
+                  animPattern = headerPreset.introAnimation.initialPattern;
+                }
+              }
+              
+              console.log(`Using intro text: "${animText}" with pattern: "${animPattern}"`);
               
               // Configuration options:
               const animConfig = {
-                text: 'DUBAIFILMMAKER',
-                // Option 1: Use letter pattern (easier)
-                initialPattern: 'DMAKER', // Change to 'DR' or any letters you want initially visible
-                // Option 2: Use indices (more precise)
-                // initialLetters: [0, 9, 10, 11, 12, 13], // D and MAKER
-                holdDuration: 3000, // How long to show initial letters (ms)
-                revealStartTime: 3480 // When other letters start appearing (ms)
+                text: animText,
+                initialPattern: animPattern,
+                holdDuration: headerPreset?.introAnimation?.holdDuration || 3000,
+                revealStartTime: headerPreset?.introAnimation?.revealStartTime || 3480
               };
               
               new IntroTextAnimation(introWrapper, animConfig);

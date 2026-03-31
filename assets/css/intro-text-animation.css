@@ -1,12 +1,73 @@
-/* CSS Text Animation for DUBAIFILMMAKER */
+/* CSS Logo Animation for DUBAIFILMMAKER */
 
-/* Ensure parent containers don't clip MAKER when it slides - but only during animation */
+/* Ensure parent containers don't clip logo during animation */
 .bloc-intro:not(.lottie-ended) .intro-anim-surwrapper,
 .bloc-intro:not(.lottie-ended) .intro-anim-wrapper,
 .bloc-intro:not(.lottie-ended) .intro-anim {
   overflow: visible !important;
 }
 
+/* Logo animation container */
+.intro-logo-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.2, 0, 0.8, 1);
+}
+
+.intro-logo-animation.visible {
+  opacity: 1;
+}
+
+/* Logo image - matches header logo sizing exactly */
+.intro-logo {
+  display: block;
+  /* Match header logo sizing - much smaller to fit properly */
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Responsive sizing - match header logo exactly */
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .intro-logo {
+    max-height: 70px;
+  }
+}
+
+/* Mobile landscape and portrait */
+@media (max-width: 768px) {
+  .intro-logo {
+    max-height: 60px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .intro-logo {
+    max-height: 50px;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1920px) {
+  .intro-logo {
+    max-height: 100px;
+  }
+}
+
+/* Extra large screens */
+@media (min-width: 2560px) {
+  .intro-logo {
+    max-height: 120px;
+  }
+}
+
+/* Legacy text animation styles - kept for backward compatibility */
 .intro-text-animation {
   position: absolute;
   top: 50%;
@@ -21,22 +82,17 @@
   white-space: nowrap;
   width: auto;
   height: auto;
-  overflow: visible; /* Allow MAKER to slide off-screen but stay visible */
-  
-  /* Match Lottie animation behavior: scale based on viewport */
-  /* Balanced size for good visibility without overwhelming */
-  /* SVG logo: 1115px x 69px (aspect ratio 16.16:1) */
-  font-size: 5.5vw; /* Increased base size */
-  max-width: none; /* Remove width constraint so MAKER can slide */
+  overflow: visible;
+  font-size: 5.5vw;
+  max-width: none;
 }
 
 .intro-text-animation .letter {
   display: inline-block;
-  opacity: 0; /* Hidden by default */
+  opacity: 0;
   animation: letterReveal 0.8s cubic-bezier(0.2, 0, 0.8, 1) forwards;
 }
 
-/* Hidden letters - completely removed from layout flow */
 .intro-text-animation .letter:not(.letter-initial) {
   position: absolute;
   width: 0;
@@ -46,10 +102,9 @@
   padding: 0;
 }
 
-/* Initial letters - visible from the start */
 .intro-text-animation .letter-initial {
-  opacity: 1; /* Visible initially */
-  position: relative; /* Take up space in the flow */
+  opacity: 1;
+  position: relative;
   width: auto;
   height: auto;
   overflow: visible;
@@ -63,10 +118,10 @@
     width: 0;
     height: 0;
     overflow: hidden;
-    transform: scale(0.76492); /* Match POSTERCO scale */
+    transform: scale(0.76492);
   }
   1% {
-    position: relative; /* Switch to relative to take up space */
+    position: relative;
     width: auto;
     height: auto;
     overflow: visible;
@@ -77,14 +132,8 @@
     width: auto;
     height: auto;
     overflow: visible;
-    transform: scale(1); /* Scale up to 100% */
+    transform: scale(1);
   }
-}
-
-/* Initial letters stay visible */
-.intro-text-animation .letter-initial {
-  opacity: 1;
-  animation: letterStayVisible 1.24s forwards;
 }
 
 @keyframes letterStayVisible {
@@ -96,23 +145,17 @@
   }
 }
 
-/* Animation delays are now applied dynamically via JavaScript */
-
-
-
-/* Responsive sizing - matching Lottie animation behavior */
-
 /* Tablet and below */
 @media (max-width: 1024px) {
   .intro-text-animation {
-    font-size: 6vw; /* Slightly larger on tablets */
+    font-size: 6vw;
   }
 }
 
 /* Mobile landscape and portrait */
 @media (max-width: 768px) {
   .intro-text-animation {
-    font-size: 5.5vw; /* Optimized for mobile */
+    font-size: 5.5vw;
     letter-spacing: 0.01em;
   }
 }
@@ -120,7 +163,7 @@
 /* Small mobile */
 @media (max-width: 480px) {
   .intro-text-animation {
-    font-size: 5.5vw; /* Fits well on small screens */
+    font-size: 5.5vw;
     letter-spacing: 0;
     max-width: 95vw;
   }
@@ -129,13 +172,13 @@
 /* Large desktop - cap the size */
 @media (min-width: 1920px) {
   .intro-text-animation {
-    font-size: 115px; /* Larger max size */
+    font-size: 115px;
   }
 }
 
 /* Extra large screens */
 @media (min-width: 2560px) {
   .intro-text-animation {
-    font-size: 154px; /* 6vw of 2560px */
+    font-size: 154px;
   }
 }
