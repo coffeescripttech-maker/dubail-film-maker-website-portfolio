@@ -5,3 +5,118 @@
 .contact .h1 {
   margin-bottom: 1.5rem;
 }
+
+/* Override build.min.css default horizontal scroll behavior */
+.about-inner-wrapper .list--about-images {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  white-space: normal !important;
+  height: auto !important;
+  position: static !important;
+  font-size: inherit !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: auto !important;
+}
+
+.about-inner-wrapper .list--about-images > .about-image-item {
+  display: block !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+/* About page two-column layout on desktop */
+@media (min-width: 1024px) {
+  .about-inner-wrapper {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 3rem !important;
+    align-items: start !important;
+  }
+  
+  .content-wrapper {
+    grid-column: 1 !important;
+  }
+  
+  .list--about-images {
+    grid-column: 2 !important;
+    margin-top: 0 !important;
+  }
+  
+  /* Remove the spacing div on desktop */
+  .about-inner-wrapper > div[style*="margin-top: 30px"] {
+    display: none !important;
+  }
+}
+
+/* Photo gallery - tight grid */
+.list--about-images {
+  display: grid !important;
+  gap: 2px !important;
+  margin: 0 !important;
+  padding: 0 70px 0 0 !important;
+  list-style: none !important;
+  grid-auto-flow: dense !important;
+}
+
+/* Mobile: 2 columns */
+@media (max-width: 767px) {
+  .list--about-images {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: 150px !important;
+    margin-top: 2rem !important;
+  }
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .list--about-images {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: 180px !important;
+    margin-top: 2rem !important;
+  }
+}
+
+/* Desktop: 2 columns in right column */
+@media (min-width: 1024px) {
+  .list--about-images {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-auto-rows: 200px !important;
+  }
+}
+
+.list--about-images li {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+
+.list--about-images .about-image-item {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+
+.list--about-images .pic {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.list--about-images li:hover .pic {
+  opacity: 0.85 !important;
+}
+
+/* Masonry pattern - varied sizes */
+.list--about-images .about-image-item:nth-child(5n+1) {
+  grid-row: span 2 !important;
+}
+
+.list--about-images .about-image-item:nth-child(5n+4) {
+  grid-column: span 2 !important;
+}

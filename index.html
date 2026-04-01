@@ -50,6 +50,7 @@
     <link href="assets/css/header-logo-match.css" rel="stylesheet" />
     <link href="assets/css/view-other-films-cta.css" rel="stylesheet" />
     <link href="assets/css/homepage-pagination-desktop.css" rel="stylesheet" />
+    <link href="assets/css/slider-vertical-arrows.css" rel="stylesheet" />
 
     <link rel="canonical" href="index.html" />
     <meta property="og:locale" content="en_US" />
@@ -590,6 +591,9 @@
                 <div class="box--home__info">
                   <div class="box--home__info__counter"><span>1</span>/<span id="slider-total">-</span></div>
 
+                  <!-- Desktop navigation arrows (outside slider) -->
+                  <button class="arrow-prev slider-nav-arrow" aria-label="Previous project">←</button>
+                  
                   <!-- Slider wrapper for better pagination positioning -->
                   <div class="slider-wrapper">
                     <!-- Empty container - will be populated by page-renderer.js -->
@@ -597,10 +601,13 @@
                       <!-- Loading state -->
                       <div style="padding: 2rem; text-align: center; color: #999;">Loading projects...</div>
                     </ul>
+                    
                     <div class="box--home__timeline">
                       <span class="is-animated"></span>
                     </div>
                   </div>
+                  
+                  <button class="arrow-next slider-nav-arrow" aria-label="Next project">→</button>
 
                   <!-- View Other Films CTA -->
                   <a href="works.html" class="view-other-films-cta" data-navigo>
@@ -662,13 +669,13 @@
               </div>
 
 
-              <!-- <div class="bloc-projects-listing">
+              <div class="bloc-projects-listing">
                 <ul id="works" class="list list--works" data-initial-count="">
                 
                 
               
                 </ul>
-              </div> -->
+              </div>
             </div>
           </div>
         </div>
@@ -1045,10 +1052,11 @@
         });
         
         // Handle mobile arrows prev/next (like build.min.js line 23928-23930)
-        const mobileArrowPrev = document.querySelector('.box--home__buttons-mobile .arrow-prev');
-        const mobileArrowNext = document.querySelector('.box--home__buttons-mobile .arrow-next');
+        // Now also handles desktop slider arrows with same classes
+        const mobileArrowPrev = document.querySelectorAll('.arrow-prev');
+        const mobileArrowNext = document.querySelectorAll('.arrow-next');
         
-        console.log('Mobile arrows found:', { prev: mobileArrowPrev, next: mobileArrowNext });
+        console.log('Navigation arrows found:', { prev: mobileArrowPrev.length, next: mobileArrowNext.length });
         
         // Track current video index like build.min.js does (line 23931)
         let currentlyPlaying = 0;
@@ -1119,9 +1127,9 @@
           console.log(`✓ Switched to video ${targetIndex + 1}`);
         }
         
-        // onPrevClick - like build.min.js line 24022-24026
-        if (mobileArrowPrev) {
-          mobileArrowPrev.addEventListener('click', function(e) {
+        // onPrevClick - handle all prev arrows (mobile + desktop)
+        mobileArrowPrev.forEach(arrow => {
+          arrow.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             console.log('← Prev arrow clicked');
@@ -1130,11 +1138,11 @@
             console.log(`currentlyPlaying: ${currentlyPlaying}`);
             switchToVideo(currentlyPlaying);
           });
-        }
+        });
         
-        // onNextClick - like build.min.js line 24027-24030
-        if (mobileArrowNext) {
-          mobileArrowNext.addEventListener('click', function(e) {
+        // onNextClick - handle all next arrows (mobile + desktop)
+        mobileArrowNext.forEach(arrow => {
+          arrow.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             console.log('→ Next arrow clicked');
@@ -1143,7 +1151,7 @@
             console.log(`currentlyPlaying: ${currentlyPlaying}`);
             switchToVideo(currentlyPlaying);
           });
-        }
+        });
         
         console.log('✓ Video switching, timeline, and arrows re-initialized');
       }, { once: true });

@@ -36,8 +36,9 @@
       <li class="box box--work" data-cat="${project.classification}">
         <a href="${project.link}" class="box--work__link js-has-cursor-text" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${project.link}'; return false;">
           <div class="box--work__info">
-            <h2>${project.title}</h2>
             <p>${displayClient}</p>
+            <h2>${project.title}</h2>
+          
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
@@ -148,8 +149,9 @@
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
         onclick="window.location.replace('${project.link}'); return false;">
           <div class="box--work__info">
+             <p>${displayClient}</p>
             <h2>${project.title}</h2>
-            <p>${displayClient}</p>
+         
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
@@ -191,8 +193,9 @@
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
         onclick="window.location.replace('${project.link}'); return false;">
           <div class="box--work__info">
+                <p>${displayClient}</p>
             <h2>${project.title}</h2>
-            <p>${displayClient}</p>
+      
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
@@ -384,8 +387,9 @@
       listItemsHTML += `
         <li class="${index === 0 ? 'is-active' : ''}" data-project-index="${index}">
           <a href="${project.link}" class="js-change-video">
-            <h2>${project.title}</h2>
-             <p>${displayClient}</p>
+           
+              <p>${displayClient}</p>
+          <h2>${project.title}</h2>
            <p>${project.classification}</p>
           </a>
         </li>
@@ -477,9 +481,9 @@
       let imagesHTML = '';
       pageData.images.forEach(image => {
         imagesHTML += `
-          <li>
+          <div class="about-image-item">
             <img class="pic" src="${image.url}" alt="${image.alt || ''}" />
-          </li>
+          </div>
         `;
       });
       aboutImagesList.innerHTML = imagesHTML;
@@ -522,18 +526,18 @@
   <p>${pageData.address.street ? pageData.address.street + '<br />' : ''}
   ${pageData.address.city}</p>
   <p>
-    <span style="white-space: nowrap;">T: <a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
-    <span style="white-space: nowrap;">E: <a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a></span>
+    <span style="white-space: nowrap;"><span class="contact-label">T :</span> <a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
+    <span style="white-space: nowrap;"><span class="contact-label">E :</span> <a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a></span>
   </p>
 `;
       
       if (pageData.social) {
         addressHTML += '<p>';
         if (pageData.social.vimeo) {
-          addressHTML += `Vimeo: <a class="lnk lnk--through" href="${pageData.social.vimeo}" target="_blank" rel="noopener">dubaifilmmaker</a><br/>`;
+          addressHTML += `<span class="contact-label">Vimeo :</span> <a class="lnk lnk--through" href="${pageData.social.vimeo}" target="_blank" rel="noopener">dubaifilmmaker</a><br/>`;
         }
         if (pageData.social.instagram) {
-          addressHTML += `Instagram: <a class="lnk lnk--through" href="${pageData.social.instagram}" target="_blank" rel="noopener">@dubaifilmmaker</a>`;
+          addressHTML += `<span class="contact-label">Instagram :</span> <a class="lnk lnk--through" href="${pageData.social.instagram}" target="_blank" rel="noopener">@dubaifilmmaker</a>`;
         }
         addressHTML += '</p>';
       }
