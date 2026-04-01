@@ -32,6 +32,14 @@
 
     projects.forEach(project => {
       const displayClient = project.client_short || project.client;
+      
+      // Debug logging for poster images
+      console.log(`[${project.title}] Poster Image:`, {
+        poster_image: project.poster_image,
+        poster_image_srcset: project.poster_image_srcset,
+        using_src: project.poster_image
+      });
+      
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="${project.link}" class="box--work__link js-has-cursor-text" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${project.link}'; return false;">
@@ -44,7 +52,6 @@
           <div class="box--work__video video-wrapper has-poster">
             <img class="video-img-poster lazy-media loaded"
               src="${project.poster_image}"
-              srcset="${project.poster_image_srcset}"
               alt="">
             <video class="js-video lazy-media loaded"
              src="${project.video_url}"
@@ -144,6 +151,13 @@
       // Then append the remaining projects
       projects.slice(initialCount).forEach(project => {
       const displayClient = project.client_short || project.client;
+      
+      // Debug logging for poster images
+      console.log(`[${project.title}] Poster Image:`, {
+        poster_image: project.poster_image,
+        using_src: project.poster_image
+      });
+      
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
@@ -157,7 +171,6 @@
           <div class="box--work__video video-wrapper has-poster">
             <img class="video-img-poster lazy-media loaded"
               src="${project.poster_image}"
-              srcset="${project.poster_image_srcset}"
               alt="">
             <video class="js-video lazy-media loaded"
              src="${project.video_url}"
@@ -188,6 +201,13 @@
       
       projects.forEach(project => {
         const displayClient = project.client_short || project.client;
+        
+        // Debug logging for poster images
+        console.log(`[${project.title}] Poster Image:`, {
+          poster_image: project.poster_image,
+          using_src: project.poster_image
+        });
+        
         const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
@@ -201,7 +221,6 @@
           <div class="box--work__video video-wrapper has-poster">
             <img class="video-img-poster lazy-media loaded"
               src="${project.poster_image}"
-              srcset="${project.poster_image_srcset}"
               alt="">
             <video class="js-video lazy-media loaded"
              src="${project.video_url}"
