@@ -294,6 +294,16 @@
 
     // Update logo source if specified
     if (presetConfig.logo?.src) {
+      // Check if text logo is active from preloader
+      const logoType = sessionStorage.getItem('logoType');
+      const logoText = sessionStorage.getItem('logoText');
+      
+      // If text logo is active, let text-logo-handler.js handle it
+      if (logoType === 'text' && logoText) {
+        console.log('✓ Text logo active from preloader - skipping SVG logo update');
+        return;
+      }
+      
       const logoElements = document.querySelectorAll('.header__logo');
       
       // Detect if current page has light background (about, contact)
@@ -326,8 +336,8 @@
         logo.classList.add('loaded');
       });
       
-      const logoType = isLightBackground ? 'dark' : 'light';
-      console.log(`✓ Logo updated to: ${isLightBackground && presetConfig.logo.srcDark ? presetConfig.logo.srcDark : presetConfig.logo.src} (${logoType} variant)`);
+      const logoVariant = isLightBackground ? 'dark' : 'light';
+      console.log(`✓ Logo updated to: ${isLightBackground && presetConfig.logo.srcDark ? presetConfig.logo.srcDark : presetConfig.logo.src} (${logoVariant} variant)`);
     }
 
     // Inject dynamic CSS for header styles
@@ -1182,6 +1192,13 @@
           updateBodyClass(targetSlug);
           if (headerConfig) {
             applyHeaderStyles();
+          }
+          
+          // Trigger text logo replacement if needed (for SPA navigation)
+          if (typeof window.replaceLogoWithText === 'function') {
+            setTimeout(() => {
+              window.replaceLogoWithText();
+            }, 100);
           }
           
           // Trigger page-specific content loading

@@ -1,5 +1,15 @@
 /* CSS Logo Animation for DUBAIFILMMAKER */
 
+/* body.header {
+    left: 0 !important;
+    margin: 10px 20px 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    z-index: 3!important;
+} */
+
 /* Ensure parent containers don't clip logo during animation */
 .bloc-intro:not(.lottie-ended) .intro-anim-surwrapper,
 .bloc-intro:not(.lottie-ended) .intro-anim-wrapper,
@@ -8,7 +18,7 @@
 }
 
 /* Keep preloader text visible during transition - override build.min.css */
-/* Target both html.intro-ended and body.intro-ended */
+/* CRITICAL: Override build.min.css rule that hides .intro-ended .bloc-intro */
 html.intro-ended .bloc-intro.lottie-ended,
 body.intro-ended .bloc-intro.lottie-ended,
 .intro-ended .bloc-intro.lottie-ended {
@@ -26,10 +36,9 @@ body.intro-ended .bloc-intro.lottie-ended .intro-anim {
   opacity: 1 !important;
 }
 
-/* Keep the text itself visible */
-html.intro-ended .bloc-intro .intro-text-animation,
-body.intro-ended .bloc-intro .intro-text-animation,
-.intro-ended .bloc-intro .intro-text-animation {
+/* Keep the text itself visible - HOMEPAGE ONLY */
+html.intro-ended body.template-homepage .bloc-intro .intro-text-animation,
+body.template-homepage.intro-ended .bloc-intro .intro-text-animation {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
@@ -41,40 +50,74 @@ body.intro-ended .bloc-intro .intro-text-animation,
   backdrop-filter: blur(0) !important;
 }
 
+/* ========================================
+   NON-HOMEPAGE PAGES - Text logo in header
+   ======================================== */
+
+/* Style the text logo in header */
+.header-text-logo {
+  font-family: 'Monument Extended Bold', sans-serif;
+  font-weight: 700;
+  font-size: 3.8vw;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: #000000; /* Black for light pages */
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* White text for dark pages */
+body.template-projects .header-text-logo,
+body.template-homepage .header-text-logo {
+  color: #ffffff;
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .header-text-logo {
+    font-size: 4.2vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-text-logo {
+    font-size: 4.5vw;
+  }
+}
+
+@media (min-width: 1920px) {
+  .header-text-logo {
+    font-size: 73px;
+  }
+}
+
 /* Position the text to match header logo position after movement */
 .bloc-intro.lottie-ended .intro-text-animation {
   /* Keep it visible and positioned */
-  opacity: 1 !important;
+  /* opacity: 1 !important;
   visibility: visible !important;
   /* Adjust position to match header logo location */
   position: relative !important;
   /* Add padding to push it down and right to match header */
-  padding-top: 20px !important;
-  padding-left: 20px !important;
+ padding-top: 17px !important;
+
 }
 
 @media (min-width: 768px) {
   .bloc-intro.lottie-ended .intro-text-animation {
-    padding-top: 17px !important;
-    padding-left: 30px !important;
+    padding-top: 15px !important;
+    /* padding-left: 30px !important; */
   }
 }
 
 @media (max-width: 767px) {
-  .bloc-intro.lottie-ended .intro-text-animation {
-    padding-top: 10px !important; /* Less top padding on mobile */
-    padding-left: 20px !important;
-  }
+
 }
 
 /* Logo animation container */
 .intro-logo-animation {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.2, 0, 0.8, 1);
+
 }
 
 .intro-logo-animation.visible {
@@ -280,3 +323,5 @@ body.intro-ended .bloc-intro .intro-text-animation,
     font-size: 130px;
   }
 }
+
+

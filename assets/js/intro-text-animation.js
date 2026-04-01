@@ -163,6 +163,31 @@ class IntroTextAnimation {
   };
 
   launchAnimation() {
+    // Check if homepage
+    const isHomepage = document.body.classList.contains('template-homepage');
+    
+    if (!isHomepage) {
+      // // Non-homepage: Skip animation entirely, just mark as complete
+      // // console.log('⏭️ Non-homepage - skipping animation, applying final position');
+      // // this.$introWrapper.classList.add('lottie-started');
+      // // this.$introWrapper.classList.add('lottie-ended');
+      // this.animationComplete = true;
+      
+      // // Unlock scroll immediately
+      // if (window.c && window.c.unlockScroll) {
+      //   window.c.unlockScroll.dispatch();
+      // }
+      
+      // // Add intro-ended class immediately (no delay needed)
+      // document.body.classList.add('intro-ended');
+      // console.log('✓ Text positioned at header, ready to show');
+      
+      // this.unbind();
+      // return;
+    }
+    
+    console.log('✓ Homepage - running full animation');
+    
     // Add lottie-started class for background transition
     this.$introWrapper.classList.add('lottie-started');
     
@@ -176,6 +201,7 @@ class IntroTextAnimation {
   }
 
   onAnimationEnded() {
+    // This only runs on homepage now
     console.log('🎯 Animation ended, text will move up and stick to header');
     
     const preloaderText = this.$intro.querySelector('.intro-text-animation');
@@ -210,18 +236,13 @@ class IntroTextAnimation {
     }
 
     // After 800ms, add intro-ended class to complete the exit animation
-    // The preloader text will move up and stick to header position
     setTimeout(() => {
-      console.log('Adding intro-ended class - text moving to header position');
+      console.log('Adding intro-ended class - text at header position');
       if (document.scrollingElement) {
         document.scrollingElement.classList.add('intro-ended');
       }
-      // Also add to body as fallback
       document.body.classList.add('intro-ended');
-      
-      // After movement completes, we can optionally swap to actual logo
-      // For now, keep the text visible
-      console.log('✓ Text should now be at header position');
+      console.log('✓ Text should now be at header position and visible');
     }, 800);
 
     this.unbind();
