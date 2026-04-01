@@ -60,6 +60,13 @@ body.intro-ended .bloc-intro .intro-text-animation,
   }
 }
 
+@media (max-width: 767px) {
+  .bloc-intro.lottie-ended .intro-text-animation {
+    padding-top: 10px !important; /* Less top padding on mobile */
+    padding-left: 20px !important;
+  }
+}
+
 /* Logo animation container */
 .intro-logo-animation {
   position: absolute;
@@ -164,19 +171,19 @@ body.intro-ended .bloc-intro .intro-text-animation,
   width: auto;
   height: auto;
   overflow: visible;
-  font-size: 4.2vw;
+  font-size: 3.8vw;
   max-width: 100%;
   box-sizing: border-box;
   justify-content: center;
 }
 
 /* Override wrapper positioning to ensure text is truly centered */
-.bloc-intro:not(.lottie-ended) .intro-anim-wrapper {
+/* .bloc-intro:not(.lottie-ended) .intro-anim-wrapper {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
   margin: 0 auto !important;
-}
+} */
 
 .intro-text-animation .letter {
   display: inline-block;

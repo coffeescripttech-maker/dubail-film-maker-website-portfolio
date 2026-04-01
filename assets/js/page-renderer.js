@@ -739,3 +739,5 @@
   window.PageRenderer = PageRenderer;
   console.log('✓ PageRenderer module initialized');
 })();
+
+
