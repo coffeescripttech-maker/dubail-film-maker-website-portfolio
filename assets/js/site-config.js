@@ -1057,6 +1057,21 @@
       const projects = await window.fetchProjects();
       window.PageRenderer.renderIndexProjects(projects);
       window.PageRenderer.renderHomepageSlider(projects);
+      
+      // Ensure header logo is visible when navigating back to homepage
+      const body = document.body;
+      const hasIntroEnded = body.classList.contains('intro-ended');
+      
+      if (hasIntroEnded) {
+        body.classList.add('intro-ended'); // Ensure it's added
+        const headerLogo = document.querySelector('.header__logo');
+        if (headerLogo) {
+          headerLogo.classList.add('loaded');
+          headerLogo.style.opacity = '1';
+          headerLogo.style.visibility = 'visible';
+          console.log('✓ Header logo visibility ensured on homepage navigation');
+        }
+      }
     } catch (error) {
       console.error('Error loading projects:', error);
     }
@@ -1089,6 +1104,27 @@
     let newClass = '';
     if (slug === 'homepage') {
       newClass = 'template-homepage';
+      
+      // When navigating back to homepage (not initial load), show header logo
+      // The intro animation only runs on initial page load
+      const blocIntro = document.querySelector('.bloc-intro');
+      const hasIntroEnded = body.classList.contains('intro-ended');
+      
+      // If intro has already ended (navigating back), ensure logo is visible
+      if (hasIntroEnded || !blocIntro) {
+        // Add intro-ended class if not present
+        if (!hasIntroEnded) {
+          body.classList.add('intro-ended');
+        }
+        
+        const headerLogo = document.querySelector('.header__logo');
+        if (headerLogo) {
+          headerLogo.classList.add('loaded');
+          headerLogo.style.opacity = '1';
+          headerLogo.style.visibility = 'visible';
+          console.log('✓ Header logo shown on homepage navigation');
+        }
+      }
     } else if (slug === 'works') {
       newClass = 'template-projects';
     } else if (slug === 'about') {

@@ -1,5 +1,5 @@
 {
-  "activePreset": "default",
+  "activePreset": "reversed",
   "description": "Header configuration - switch between different header layouts and logo styles",
   "presets": {
     "default": {
@@ -11,6 +11,7 @@
         "alt": "DubaiFilmMaker"
       },
       "introAnimation": {
+        "type": "text",
         "text": "DUBAIFILMMAKER",
         "initialPattern": "DUBAIFILMMAKER",
         "holdDuration": 3000,
@@ -54,10 +55,10 @@
         "alt": "DubaiFilmMaker"
       },
       "introAnimation": {
-        "text": "DUBAIFILMMAKER",
-        "initialPattern": "DMAKER",
-        "holdDuration": 3000,
-        "revealStartTime": 3480
+        "type": "svg",
+        "logoSrc": "assets/img/logo/dubaifilmmaker-light.svg",
+        "holdDuration": 2000,
+        "fadeInDuration": 1000
       },
       "mobile": {
         "headerNav": {

@@ -15,13 +15,17 @@ class IntroTextAnimation {
     
     // Configuration
     this.config = {
+      type: config.type || 'text', // 'text' or 'svg'
       text: config.text || 'DUBAIFILMMAKER',
       initialLetters: config.initialLetters || [0, 9, 10, 11, 12, 13], // Default: D and MAKER (indices)
       // OR use letter-based config:
       initialPattern: config.initialPattern || null, // e.g., 'DMAKER' or 'DR'
       holdDuration: config.holdDuration || 3000, // How long to show initial letters
       revealStartTime: config.revealStartTime || 3480, // When to start revealing other letters
-      letterDelays: config.letterDelays || null // Custom delays for each letter
+      letterDelays: config.letterDelays || null, // Custom delays for each letter
+      // SVG animation config
+      logoSrc: config.logoSrc || 'assets/img/logo/dubaifilmmaker-light.svg',
+      fadeInDuration: config.fadeInDuration || 1000
     };
     
     this.init();
@@ -48,6 +52,13 @@ class IntroTextAnimation {
   }
 
   createTextAnimation() {
+    // Check animation type
+    if (this.config.type === 'svg') {
+      this.createSVGAnimation();
+      return;
+    }
+    
+    // Text animation (existing code)
     // Clear existing content
     this.$intro.innerHTML = '';
 
@@ -78,6 +89,90 @@ class IntroTextAnimation {
 
     // Apply animation delays
     this.applyAnimationDelays(initialIndices);
+  }
+  
+  createSVGAnimation() {
+    // Clear existing content
+    this.$intro.innerHTML = '';
+
+    // Create wrapper container
+    const wrapper = document.createElement('div');
+    wrapper.className = 'intro-logo-wrapper';
+
+    // Create SVG logo
+    const logo = document.createElement('img');
+    logo.className = 'intro-logo-svg';
+    logo.src = this.config.logoSrc;
+    logo.alt = 'Logo';
+    
+    // Get preset config from window (set by header-critical-css in index.html)
+    const headerConfig = window.__headerConfig;
+    const presetName = window.__headerPresetName || 'default';
+    const preset = headerConfig?.presets?.[presetName];
+    
+    if (!preset) {
+      console.error('❌ Preset not found:', presetName);
+      console.log('Available presets:', headerConfig?.presets ? Object.keys(headerConfig.presets) : 'none');
+    }
+    
+    console.log('📐 SVG Intro Logo using preset "' + presetName + '"');
+    
+    // Inject CSS for intro logo using same generateHeaderCSS logic
+    if (preset && !document.getElementById('intro-logo-critical-css')) {
+      const style = document.createElement('style');
+      style.id = 'intro-logo-critical-css';
+      
+      let css = '';
+      
+      // Mobile styles
+      if (preset.mobile && preset.mobile.logo) {
+        css += '@media (max-width: 767px) {';
+        css += '.intro-logo-svg {';
+        css += 'display: block !important;';
+        css += 'max-height: ' + preset.mobile.logo.maxHeight + ' !important;';
+        css += 'max-width: ' + preset.mobile.logo.maxWidth + ' !important;';
+        css += 'width: ' + preset.mobile.logo.width + ' !important;';
+        css += 'object-fit: contain !important;';
+        css += 'height: auto !important;';
+        css += '}';
+        css += '}';
+      }
+      
+      // Desktop styles
+      if (preset.desktop && preset.desktop.logo) {
+        css += '@media (min-width: 768px) {';
+        css += '.intro-logo-svg {';
+        css += 'display: block !important;';
+        css += 'max-height: ' + preset.desktop.logo.maxHeight + ' !important;';
+        css += 'width: ' + preset.desktop.logo.width + ' !important;';
+        css += 'object-fit: contain !important;';
+        css += 'height: auto !important;';
+        css += '}';
+        css += '}';
+      }
+      
+      // Extra large styles
+      if (preset.extraLarge && preset.extraLarge.logo) {
+        css += '@media (min-width: 1200px) {';
+        css += '.intro-logo-svg {';
+        css += 'max-height: ' + preset.extraLarge.logo.maxHeight + ' !important;';
+        css += '}';
+        css += '}';
+      }
+      
+      style.textContent = css;
+      document.head.appendChild(style);
+      console.log('✓ Intro logo CSS injected from preset');
+    }
+
+    wrapper.appendChild(logo);
+    this.$intro.appendChild(wrapper);
+
+    // Fade in the logo
+    setTimeout(() => {
+      logo.style.transition = `opacity ${this.config.fadeInDuration}ms ease`;
+      logo.style.opacity = '1';
+    }, 100);
   }
   
   getIndicesFromPattern(text, pattern) {

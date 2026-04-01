@@ -97,7 +97,7 @@
       }
       
       /* On homepage, keep header logo hidden until intro completes */
-      body.template-homepage .header__logo {
+      body.template-homepage:not(.intro-ended) .header__logo {
         opacity: 0 !important;
       }
       
@@ -106,6 +106,7 @@
         opacity: 1 !important;
       }
       
+   
       /* On other pages, show logo normally */
       body:not(.template-homepage) .header__logo.loaded {
         opacity: 1;
@@ -516,13 +517,9 @@
       <div class="app-container">
         <div class="app-container-inner">
           <header class="header">
-            <div class="header__nav">
+          <div class="header__nav">
               <a href="index" data-navigo class="logo-link">
-                <img
-                  class="header__logo"
-                  src="assets/img/final_logo.svg"
-                  alt="DubaiFilmMaker"
-                />
+                <img class="header__logo" src="assets/img/logo/dubaifilmmaker-light.svg" alt="Dubai Film Maker" />
               </a>
               <a href="#main_menu" class="btn btn--menu">
                 <span>menu.</span>
@@ -701,7 +698,7 @@
               // Get text from header config (from CMS or local config)
               const headerPreset = window.__headerPreset;
               let animText = 'DUBAIFILMMAKER'; // Default fallback
-              let animPattern = 'DMAKER'; // Default pattern
+              let animPattern = 'DUBAIFILMMAKER'; // Default pattern
               
               // Try to get text from header config
               if (headerPreset && headerPreset.introAnimation) {
@@ -717,10 +714,13 @@
               
               // Configuration options:
               const animConfig = {
+                type: headerPreset?.introAnimation?.type || 'text',
                 text: animText,
                 initialPattern: animPattern,
                 holdDuration: headerPreset?.introAnimation?.holdDuration || 3000,
-                revealStartTime: headerPreset?.introAnimation?.revealStartTime || 3480
+                revealStartTime: headerPreset?.introAnimation?.revealStartTime || 3480,
+                logoSrc: headerPreset?.introAnimation?.logoSrc || 'assets/img/logo/dubaifilmmaker-light.svg',
+                fadeInDuration: headerPreset?.introAnimation?.fadeInDuration || 1000
               };
               
               new IntroTextAnimation(introWrapper, animConfig);
