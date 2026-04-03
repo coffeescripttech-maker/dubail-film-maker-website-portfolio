@@ -3,8 +3,8 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
+  width: 65px;
+  height: 65px;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.6);
@@ -19,8 +19,8 @@
 }
 
 .slider-nav-arrow svg {
-  width: 14px;
-  height: 22px;
+  width: 24px;
+  height: 36px;
   transition: all 0.3s ease;
 }
 
