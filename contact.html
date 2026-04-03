@@ -72,6 +72,14 @@
     <title> Contact</title>
 
     <style>
+      /* Fix contact label spacing - remove excessive letter-spacing and word-spacing */
+      .contact-label {
+        letter-spacing: 0 !important;
+        word-spacing: 0 !important;
+        margin-right: 0 !important;
+        padding-right: 0 !important;
+      }
+      
       /* Header styles loaded from data/header.json - prevent FOUC */
       .header__logo {
         object-fit: contain !important;
@@ -267,14 +275,14 @@
                 <ul class="list list--staff">
                   <!-- Staff content will be loaded from JSON -->
                   <li>
-                    <h2>Loading staff...</h2>
+                    <!-- <h2>Loading staff...</h2> -->
                   </li>
                 </ul>
               </div>
 
               <div class="box box--address">
                 <!-- Address content will be loaded from JSON -->
-                <p>Loading address...</p>
+                <!-- <p>Loading address...</p> -->
               </div>
             </div>
           </div>

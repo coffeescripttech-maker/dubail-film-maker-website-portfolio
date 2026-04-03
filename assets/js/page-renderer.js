@@ -545,18 +545,18 @@
   <p>${pageData.address.street ? pageData.address.street + '<br />' : ''}
   ${pageData.address.city}</p>
   <p>
-    <span style="white-space: nowrap;"><span class="contact-label">T :</span> <a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
-    <span style="white-space: nowrap;"><span class="contact-label">E :</span> <a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a></span>
+    <span style="white-space: nowrap;"><span class="contact-label">T:</span><a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
+    <span style="white-space: nowrap;"><span class="contact-label">E:</span><a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a></span>
   </p>
 `;
       
       if (pageData.social) {
         addressHTML += '<p>';
         if (pageData.social.vimeo) {
-          addressHTML += `<span class="contact-label">Vimeo :</span> <a class="lnk lnk--through" href="${pageData.social.vimeo}" target="_blank" rel="noopener">dubaifilmmaker</a><br/>`;
+          addressHTML += `<span class="contact-label">Vimeo:</span><a class="lnk lnk--through" href="${pageData.social.vimeo}" target="_blank" rel="noopener">dubaifilmmaker</a><br/>`;
         }
         if (pageData.social.instagram) {
-          addressHTML += `<span class="contact-label">Instagram :</span> <a class="lnk lnk--through" href="${pageData.social.instagram}" target="_blank" rel="noopener">@dubaifilmmaker</a>`;
+          addressHTML += `<span class="contact-label">Instagram:</span><a class="lnk lnk--through" href="${pageData.social.instagram}" target="_blank" rel="noopener">@dubaifilmmaker</a>`;
         }
         addressHTML += '</p>';
       }
