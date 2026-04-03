@@ -335,22 +335,36 @@
         visibility: visible !important;
       }
 
-      /* Ensure visibility on all screen sizes when always-visible is enabled */
-      @media (max-width: 767px) {
-        html.projects-nav-always-visible .projects-nav,
-        html.projects-nav-always-visible .projects-nav .list--cat {
-          display: block !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-        }
-      }
-
+      /* Desktop: Ensure visibility when always-visible is enabled */
       @media (min-width: 768px) {
         html.projects-nav-always-visible .projects-nav,
         html.projects-nav-always-visible .projects-nav .list--cat {
           display: block !important;
           visibility: visible !important;
           opacity: 1 !important;
+        }
+        
+        html.projects-nav-always-visible .template-homepage header:not(.on-works-section) .list--cat,
+        html.projects-nav-always-visible .template-homepage header:not(.on-works-section) .projects-nav {
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+      }
+
+      /* Mobile: Use scroll-based behavior (hide when not on projects section) */
+      @media (max-width: 767px) {
+        html.projects-nav-always-visible.mobile-scroll-behavior .template-homepage header:not(.on-works-section) .list--cat,
+        html.projects-nav-always-visible.mobile-scroll-behavior .template-homepage header:not(.on-works-section) .projects-nav {
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+        }
+        
+        html.projects-nav-always-visible.mobile-scroll-behavior .template-homepage header.on-works-section .list--cat,
+        html.projects-nav-always-visible.mobile-scroll-behavior .template-homepage header.on-works-section .projects-nav {
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: auto !important;
         }
       }
 
@@ -382,6 +396,12 @@
               // Add class to body to enable always-visible CSS rules
               document.documentElement.classList.add('projects-nav-always-visible');
               console.log('✓ Projects navigation set to always visible');
+              
+              // Check if mobile should use scroll behavior
+              if (config.features.projectsNav.mobileScrollBehavior === true) {
+                document.documentElement.classList.add('mobile-scroll-behavior');
+                console.log('✓ Mobile: Using scroll-based visibility for projects navigation');
+              }
             } else {
               console.log('✓ Projects navigation using default scroll-based visibility');
             }

@@ -153,7 +153,9 @@
       "enabled": true,
       "description": "Enable/disable projects category navigation (Featured film, Commercials, etc.)",
       "alwaysVisible": true,
-      "alwaysVisibleDescription": "When true, filter navigation stays visible at all times. When false, uses default scroll-based visibility behavior"
+      "alwaysVisibleDescription": "When true, filter navigation stays visible at all times. When false, uses default scroll-based visibility behavior",
+      "mobileScrollBehavior": true,
+      "mobileScrollBehaviorDescription": "When true, on mobile the filters are hidden by default and only appear when scrolling to projects section"
     },
     "homeBoxLinks": {
       "videoClickable": {
