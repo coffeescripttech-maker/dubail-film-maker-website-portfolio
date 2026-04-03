@@ -33,11 +33,11 @@
     projects.forEach(project => {
       const displayClient = project.client_short || project.client;
       
-      // Debug logging for poster images
-      console.log(`[${project.title}] Poster Image:`, {
-        poster_image: project.poster_image,
-        poster_image_srcset: project.poster_image_srcset,
-        using_src: project.poster_image
+      // Debug logging for video URLs
+      console.log(`[${project.title}] Video URLs:`, {
+        video_url: project.video_url,
+        video_thumbnail_url: project.video_thumbnail_url,
+        using: project.video_thumbnail_url || project.video_url
       });
       
       const projectHTML = `
@@ -152,10 +152,11 @@
       projects.slice(initialCount).forEach(project => {
       const displayClient = project.client_short || project.client;
       
-      // Debug logging for poster images
-      console.log(`[${project.title}] Poster Image:`, {
-        poster_image: project.poster_image,
-        using_src: project.poster_image
+      // Debug logging for video URLs
+      console.log(`[${project.title}] Video URLs:`, {
+        video_url: project.video_url,
+        video_thumbnail_url: project.video_thumbnail_url,
+        using: project.video_thumbnail_url || project.video_url
       });
       
       const projectHTML = `
@@ -202,10 +203,11 @@
       projects.forEach(project => {
         const displayClient = project.client_short || project.client;
         
-        // Debug logging for poster images
-        console.log(`[${project.title}] Poster Image:`, {
-          poster_image: project.poster_image,
-          using_src: project.poster_image
+        // Debug logging for video URLs
+        console.log(`[${project.title}] Video URLs:`, {
+          video_url: project.video_url,
+          video_thumbnail_url: project.video_thumbnail_url,
+          using: project.video_thumbnail_url || project.video_url
         });
         
         const projectHTML = `
@@ -223,7 +225,7 @@
               src="${project.poster_image}"
               alt="">
             <video class="js-video lazy-media loaded"
-             src="${project.video_url}"
+             src="${project.video_thumbnail_url || project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
