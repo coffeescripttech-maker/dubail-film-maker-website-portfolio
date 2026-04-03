@@ -54,7 +54,7 @@
               src="${project.poster_image}"
               alt="">
             <video class="js-video lazy-media loaded"
-             src="${project.video_url}"
+             src="${project.video_thumbnail_url || project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
@@ -127,8 +127,8 @@
           }
           
           const video = initialProjects[index].querySelector('video.js-video');
-          if (video && project.video_url) {
-            video.src = project.video_url;
+          if (video && (project.video_thumbnail_url || project.video_url)) {
+            video.src = project.video_thumbnail_url || project.video_url;
             video.load();
           }
           
@@ -173,7 +173,7 @@
               src="${project.poster_image}"
               alt="">
             <video class="js-video lazy-media loaded"
-             src="${project.video_url}"
+             src="${project.video_thumbnail_url || project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
@@ -319,7 +319,7 @@
         videosHTML += `
           <video
             class="js-main-video"
-            data-src="${project.video_url}"
+            data-src="${project.video_thumbnail_url || project.video_url}"
             muted
             playsinline
           ></video>
@@ -387,7 +387,7 @@
       cursorPlayerHTML += `
           <video
             class="js-video player-animated-player"
-            data-src="${project.video_url}"
+            data-src="${project.video_thumbnail_url || project.video_url}"
             playsinline=""
             loop=""
             muted=""
