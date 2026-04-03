@@ -11,7 +11,7 @@
         "alt": "DubaiFilmMaker"
       },
       "introAnimation": {
-        "type": "text",
+        "type": "svg",
         "text": "DUBAIFILMMAKER",
         "initialPattern": "DUBAIFILMMAKER",
         "holdDuration": 3000,

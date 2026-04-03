@@ -97,16 +97,36 @@
         transition: opacity 0.15s ease-in;
       }
       
-      /* On homepage, keep header logo hidden until intro completes */
+      /* Add quick, seamless transition to header logo */
+      .header__logo {
+        transition: opacity 0.4s ease-out !important;
+      }
+      
+      /* On homepage FIRST VISIT ONLY, keep header logo hidden until intro completes */
       body.template-homepage:not(.intro-ended) .header__logo {
-        opacity: 0 !important;
+        /* opacity: 0 !important; */
+        /* visibility: hidden !important; */
       }
       
-      /* After intro ends, allow header logo to be visible */
-      body.template-homepage.intro-ended .header__logo.loaded {
+      /* After intro ends on homepage, show header logo with quick fade */
+      body.template-homepage.intro-ended .header__logo {
         opacity: 1 !important;
+        visibility: visible !important;
       }
       
+      /* CRITICAL OVERRIDE: If intro-ended exists, ALWAYS show logo (handles navigation back) */
+      body.intro-ended .header__logo {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+      }
+      
+      /* NUCLEAR OPTION: Force visibility with highest specificity */
+      html body.intro-ended .header__logo {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+      }
    
       /* On other pages, show logo normally */
       body:not(.template-homepage) .header__logo.loaded {
@@ -255,6 +275,33 @@
       header.filter-active .header__navigations-wrapper {
         opacity: 1 !important;
         visibility: visible !important;
+      }
+      
+      /* Ensure header navigation elements are always on top and clickable */
+      /* .header__navigations-wrapper {
+        z-index: 10000 !important;
+        position: relative !important;
+      }
+      
+      .header__subnav {
+        z-index: 10001 !important;
+        position: relative !important;
+      }
+      
+      .projects-nav {
+        z-index: 10002 !important;
+        position: relative !important;
+      }
+      
+      .projects-nav .list--cat {
+        z-index: 10003 !important;
+        position: relative !important;
+      } */
+      
+      .projects-nav .list--cat li a {
+        z-index: 10004 !important;
+        position: relative !important;
+        pointer-events: auto !important;
       }
 
       /* Conditional: Force projects-nav to always be visible (controlled by config.json) */
@@ -568,6 +615,16 @@
                       >TVC / Brand Films</a
                     >
                   </li>
+
+                  <li>
+                    <a
+                      href="#works"
+                      class="js-filter-cat"
+                      data-cat="narrative"
+                      >Narrative Films</a
+                    >
+                  </li>
+
   
                 </ul>
               </div>
@@ -591,23 +648,30 @@
                 <div class="box--home__info">
                   <div class="box--home__info__counter"><span>1</span>/<span id="slider-total">-</span></div>
 
-                  <!-- Desktop navigation arrows (outside slider) -->
-                  <button class="arrow-prev slider-nav-arrow" aria-label="Previous project">←</button>
-                  
                   <!-- Slider wrapper for better pagination positioning -->
                   <div class="slider-wrapper">
+                    <!-- Desktop navigation arrows (inside slider-wrapper for proper centering) -->
+                    <button class="arrow-prev slider-nav-arrow" aria-label="Previous project">
+                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2L2 10L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button class="arrow-next slider-nav-arrow" aria-label="Next project">
+                      <svg width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 2L10 10L2 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    
                     <!-- Empty container - will be populated by page-renderer.js -->
                     <ul class="list list--home js-has-cursor-player" id="homepage-slider">
                       <!-- Loading state -->
-                      <div style="padding: 2rem; text-align: center; color: #999;">Loading projects...</div>
+                      <!-- <div style="padding: 2rem; text-align: center; color: #999;">Loading projects...</div> -->
                     </ul>
                     
                     <div class="box--home__timeline">
                       <span class="is-animated"></span>
                     </div>
                   </div>
-                  
-                  <button class="arrow-next slider-nav-arrow" aria-label="Next project">→</button>
 
                   <!-- View Other Films CTA -->
                   <a href="works.html" class="view-other-films-cta" data-navigo>

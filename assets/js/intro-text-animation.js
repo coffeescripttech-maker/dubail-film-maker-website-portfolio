@@ -283,6 +283,10 @@ class IntroTextAnimation {
     
     console.log('✓ Homepage - running full animation');
     
+    // Add intro-active class to hide logo during animation
+    document.body.classList.add('intro-active');
+    console.log('✓ Added intro-active class - logo hidden during animation');
+    
     // Add lottie-started class for background transition
     this.$introWrapper.classList.add('lottie-started');
     
@@ -297,23 +301,36 @@ class IntroTextAnimation {
 
   onAnimationEnded() {
     // This only runs on homepage now
-    console.log('🎯 Animation ended, text will move up and stick to header');
+    console.log('🎯 Animation ended, fading out preloader text and showing header logo');
+    
+    // Remove intro-active class to show logo
+    document.body.classList.remove('intro-active');
+    console.log('✓ Removed intro-active class - logo now visible');
     
     const preloaderText = this.$intro.querySelector('.intro-text-animation');
     
-    // Keep preloader text visible - no fade out
+    // Fade out the preloader text
     if (preloaderText) {
-      preloaderText.style.transition = 'none';
-      preloaderText.style.opacity = '1';
-      console.log('✓ Preloader text will stay visible during movement');
+      preloaderText.style.transition = 'opacity 0.5s ease';
+      preloaderText.style.opacity = '0';
+      console.log('✓ Preloader text fading out');
     }
     
-    // Hide the header logo image - we'll use the preloader text instead
+    // Show the header logo
     const headerLogo = document.querySelector('.header__logo');
     if (headerLogo) {
-      headerLogo.style.opacity = '0';
-      headerLogo.style.visibility = 'hidden';
-      console.log('✓ Header logo hidden - preloader text will replace it');
+      // Make sure logo has src set
+      if (!headerLogo.src || headerLogo.src.includes('undefined')) {
+        const presetConfig = window.__headerPreset;
+        if (presetConfig && presetConfig.logo && presetConfig.logo.src) {
+          headerLogo.src = presetConfig.logo.src;
+          console.log('✓ Header logo src set:', presetConfig.logo.src);
+        }
+      }
+      
+      // Add loaded class to trigger visibility
+      headerLogo.classList.add('loaded');
+      console.log('✓ Header logo will be visible');
     }
     
     // Add completion class - this triggers the upward movement via CSS
@@ -330,14 +347,19 @@ class IntroTextAnimation {
       window.a.introEnded.dispatch();
     }
 
-    // After 800ms, add intro-ended class to complete the exit animation
+    // After 800ms, add intro-ended class and hide intro completely
     setTimeout(() => {
-      console.log('Adding intro-ended class - text at header position');
+      console.log('Adding intro-ended class - header logo visible, intro hidden');
       if (document.scrollingElement) {
         document.scrollingElement.classList.add('intro-ended');
       }
       document.body.classList.add('intro-ended');
-      console.log('✓ Text should now be at header position and visible');
+      
+      // Hide the entire intro wrapper after transition
+      setTimeout(() => {
+        this.$introWrapper.style.display = 'none';
+        console.log('✓ Intro wrapper hidden completely');
+      }, 500);
     }, 800);
 
     this.unbind();

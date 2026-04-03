@@ -3,31 +3,38 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  width: 40px;
+  height: 40px;
+  border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
-  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
   z-index: 5;
-  border-radius: 4px;
   pointer-events: auto;
+  padding: 0;
+}
+
+.slider-nav-arrow svg {
+  width: 14px;
+  height: 22px;
+  transition: all 0.3s ease;
 }
 
 .slider-nav-arrow:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.6);
   color: rgba(255, 255, 255, 1);
   transform: translateY(-50%) scale(1.1);
 }
 
+.slider-nav-arrow:hover svg {
+  transform: scale(1.15);
+}
+
 .slider-nav-arrow:active {
-  transform: translateY(-50%) scale(1.05);
+  transform: translateY(-50%) scale(1);
 }
 
 .slider-nav-arrow.arrow-prev {
@@ -38,16 +45,13 @@
   right: -3rem;
 }
 
+
+
 /* Mobile: hide these desktop arrows since mobile has its own at bottom */
 @media (max-width: 767px) {
   .slider-nav-arrow {
     display: none;
   }
-}
-
-/* Hide arrows when there are few items or on mobile */
-@media (max-width: 767px) {
-  /* Keep arrows visible on mobile but adjust size */
 }
 
 /* Adjust slider wrapper to accommodate arrows */

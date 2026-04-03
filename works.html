@@ -120,6 +120,29 @@
         opacity: 1 !important;
       }
     }
+
+    /* Category filtering styles */
+    .box--work.hidden {
+      display: none !important;
+    }
+
+    /* Force projects-nav to stay visible when filtering is active */
+    header.filter-active .projects-nav {
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+    }
+
+    /* Ensure filter links remain visible and clickable when filter is active */
+    header.filter-active .header__navigations-wrapper {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    header.filter-active .list--cat {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
   </style>
   
   <!-- Apply config-based class for projects-nav visibility -->
@@ -359,6 +382,16 @@
                     >TVC / Brand Films</a
                   >
                 </li>
+
+                   <li>
+                    <a
+                      href="#works"
+                      class="js-filter-cat"
+                      data-cat="narrative"
+                      >Narrative Films</a
+                    >
+                  </li>
+
               </ul>
             </div>
           </div>
@@ -463,6 +496,99 @@
         console.log('✓ Hover effects and cursor text re-initialized on works page');
       }
     }, { once: true });
+
+    // Category filtering - replicate build.min.js logic
+    window.addEventListener('projects-rendered', function() {
+      console.log('🔄 Initializing category filtering on works page...');
+      
+      const filterLinks = document.querySelectorAll('.js-filter-cat');
+      const worksList = document.querySelector('.list--works');
+      const header = document.querySelector('header.header');
+
+      if (!filterLinks.length || !worksList) {
+        console.warn('Filter links or works list not found');
+        return;
+      }
+      
+      // Store current filter state
+      let currentFilter = '*';
+      
+      // Add click handlers to filter links
+      filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const selectedCategory = this.getAttribute('data-cat');
+          console.log(`Filter clicked: ${selectedCategory}`);
+          
+          // Update active state on filter links
+          filterLinks.forEach(l => l.classList.remove('is-active'));
+          this.classList.add('is-active');
+          
+          // Store current filter
+          currentFilter = selectedCategory;
+          
+          // Get all work items
+          const allWorks = worksList.querySelectorAll('.box--work');
+          console.log(`Filtering ${allWorks.length} projects by category: ${selectedCategory}`);
+          
+          // Filter logic: show items matching filter or if filter is "*" (all)
+          allWorks.forEach(work => {
+            const workCategory = work.getAttribute('data-cat');
+            
+            // Case-insensitive comparison
+            const matches = selectedCategory === '*' || 
+                           (workCategory && workCategory.toLowerCase() === selectedCategory.toLowerCase());
+            
+            if (matches) {
+              work.classList.remove('hidden');
+              work.style.display = '';
+              console.log(`✓ Showing: ${work.querySelector('h2')?.textContent || 'Unknown'} (${workCategory})`);
+            } else {
+              work.classList.add('hidden');
+              work.style.display = 'none';
+              console.log(`✗ Hiding: ${work.querySelector('h2')?.textContent || 'Unknown'} (${workCategory})`);
+            }
+          });
+          
+          // Force header to stay in "on-works-section" state when filtering is active
+          // This ensures projects-nav remains visible even with fewer projects
+          if (header) {
+            if (selectedCategory === '*') {
+              // "All" filter - let normal scroll behavior control visibility
+              header.classList.remove('filter-active');
+              console.log('✓ Removed filter-active class - normal scroll behavior');
+            } else {
+              // Specific filter active - force projects-nav to stay visible
+              header.classList.add('on-works-section', 'filter-active');
+              console.log('✓ Added filter-active class - projects-nav forced visible');
+            }
+          }
+          
+          console.log(`✓ Filtering complete - showing projects with category: ${selectedCategory}`);
+        });
+      });
+      
+      console.log('✓ Category filtering initialized on works page');
+      
+      // Override scroll behavior to maintain projects-nav visibility during filtering
+      function preventScrollHide() {
+        const header = document.querySelector('header.header');
+        if (header && header.classList.contains('filter-active')) {
+          // Force on-works-section to stay active during filtering
+          if (!header.classList.contains('on-works-section')) {
+            header.classList.add('on-works-section');
+            console.log('✓ Maintained on-works-section during filtering');
+          }
+        }
+      }
+      
+      // Add scroll listener to maintain filter visibility
+      window.addEventListener('scroll', preventScrollHide);
+      
+      console.log('✓ Scroll override for filtering initialized on works page');
+    });
   </script>
 
   <!-- Cloudflare Web Analytics -->

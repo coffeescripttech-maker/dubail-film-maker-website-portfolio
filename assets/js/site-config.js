@@ -9,6 +9,10 @@
   let config = null;
   let projectsData = null;
   let headerConfig = null;
+  
+  // Global flag to track if intro animation has completed
+  // Check immediately if intro-ended class already exists
+  let introHasEnded = document.body?.classList?.contains('intro-ended') || false;
 
   const DEBUG_LOGS = false;
 
@@ -1082,8 +1086,19 @@
     console.log('🔄 updateBodyClass called with slug:', slug);
     const body = document.body;
     
+    // IMPORTANT: Preserve intro-ended class if it exists
+    const hadIntroEnded = body.classList.contains('intro-ended');
+    if (hadIntroEnded) {
+      console.log('✓ Preserving intro-ended class');
+    }
+    
     // Remove all template classes
     body.classList.remove('template-homepage', 'template-projects', 'template-about', 'template-contact');
+    
+    // Restore intro-ended if it was present
+    if (hadIntroEnded) {
+      body.classList.add('intro-ended');
+    }
     
     // If no slug provided, try to detect from URL or current active link
     if (!slug) {
@@ -1108,21 +1123,32 @@
       // When navigating back to homepage (not initial load), show header logo
       // The intro animation only runs on initial page load
       const blocIntro = document.querySelector('.bloc-intro');
-      const hasIntroEnded = body.classList.contains('intro-ended');
+      const hasIntroEnded = body.classList.contains('intro-ended') || introHasEnded;
+      
+      console.log('📍 Homepage navigation - hasIntroEnded:', hasIntroEnded, 'introHasEnded flag:', introHasEnded);
       
       // If intro has already ended (navigating back), ensure logo is visible
       if (hasIntroEnded || !blocIntro) {
-        // Add intro-ended class if not present
-        if (!hasIntroEnded) {
-          body.classList.add('intro-ended');
-        }
+        // FORCE intro-ended class to be present
+        body.classList.add('intro-ended');
+        introHasEnded = true; // Set global flag
+        console.log('✓ Added intro-ended class to body');
         
+        // Force logo visibility immediately with inline styles
         const headerLogo = document.querySelector('.header__logo');
         if (headerLogo) {
           headerLogo.classList.add('loaded');
           headerLogo.style.opacity = '1';
           headerLogo.style.visibility = 'visible';
-          console.log('✓ Header logo shown on homepage navigation');
+          headerLogo.style.display = 'block';
+          console.log('✓ Header logo forced visible with inline styles');
+        }
+        
+        // Hide intro wrapper if it exists
+        const introWrapper = document.querySelector('.intro-wrapper');
+        if (introWrapper) {
+          introWrapper.style.display = 'none';
+          console.log('✓ Intro wrapper hidden');
         }
       }
     } else if (slug === 'works') {
@@ -1170,6 +1196,22 @@
           targetSlug = slug;
           contentChangeDetected = false;
           console.log('✅ Target page set:', targetSlug);
+          
+          // IMMEDIATE FIX: If clicking homepage link and intro has ended, show logo immediately
+          if (slug === 'homepage' && (introHasEnded || localStorage.getItem('introHasEnded') === 'true')) {
+            console.log('🏠 Homepage link clicked - forcing logo visible immediately');
+            const headerLogo = document.querySelector('.header__logo');
+            if (headerLogo) {
+              headerLogo.style.setProperty('opacity', '1', 'important');
+              headerLogo.style.setProperty('visibility', 'visible', 'important');
+              headerLogo.style.setProperty('display', 'block', 'important');
+              console.log('✓ Logo forced visible on homepage click');
+            }
+            // Ensure intro-ended class and localStorage are set
+            document.body.classList.add('intro-ended');
+            localStorage.setItem('introHasEnded', 'true');
+            introHasEnded = true;
+          }
         } else {
           console.warn('⚠ Link has no data-slug attribute');
         }
@@ -1341,6 +1383,22 @@
     }
     
     console.log('✓ SPA navigation setup complete');
+    
+    // Listen for intro animation completion
+    if (window.a && window.a.introEnded) {
+      window.a.introEnded.listen(() => {
+        console.log('🎯 Intro animation completed - setting global flag');
+        introHasEnded = true;
+        document.body.classList.add('intro-ended');
+      });
+      console.log('✓ Intro ended listener registered');
+    } else {
+      // Fallback: check if intro-ended class already exists
+      if (document.body.classList.contains('intro-ended')) {
+        introHasEnded = true;
+        console.log('✓ Intro already ended (class found on body)');
+      }
+    }
   }
 
   // Initialize when DOM is ready

@@ -22,9 +22,9 @@
 html.intro-ended .bloc-intro.lottie-ended,
 body.intro-ended .bloc-intro.lottie-ended,
 .intro-ended .bloc-intro.lottie-ended {
-  opacity: 1 !important;
+  opacity: 0 !important;
   pointer-events: none !important; /* Allow clicks to pass through */
-  z-index: 1 !important; /* Below header navigation */
+  z-index: 0 !important; /* Below header navigation */
 }
 
 /* Keep all parent containers visible */
