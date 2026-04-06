@@ -33,13 +33,6 @@
     projects.forEach(project => {
       const displayClient = project.client_short || project.client;
       
-      // Debug logging for video URLs
-      console.log(`[${project.title}] Video URLs:`, {
-        video_url: project.video_url,
-        video_thumbnail_url: project.video_thumbnail_url,
-        using: project.video_thumbnail_url || project.video_url
-      });
-      
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="${project.link}" class="box--work__link js-has-cursor-text" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${project.link}'; return false;">
@@ -54,7 +47,7 @@
               src="${project.poster_image}"
               alt="">
             <video class="js-video lazy-media loaded"
-             src="${project.video_thumbnail_url || project.video_url}"
+             src="${project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
@@ -127,8 +120,8 @@
           }
           
           const video = initialProjects[index].querySelector('video.js-video');
-          if (video && (project.video_thumbnail_url || project.video_url)) {
-            video.src = project.video_thumbnail_url || project.video_url;
+          if (video && project.video_url) {
+            video.src = project.video_url;
             video.load();
           }
           
@@ -152,13 +145,6 @@
       projects.slice(initialCount).forEach(project => {
       const displayClient = project.client_short || project.client;
       
-      // Debug logging for video URLs
-      console.log(`[${project.title}] Video URLs:`, {
-        video_url: project.video_url,
-        video_thumbnail_url: project.video_thumbnail_url,
-        using: project.video_thumbnail_url || project.video_url
-      });
-      
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
@@ -174,7 +160,7 @@
               src="${project.poster_image}"
               alt="">
             <video class="js-video lazy-media loaded"
-             src="${project.video_thumbnail_url || project.video_url}"
+             src="${project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
@@ -203,13 +189,6 @@
       projects.forEach(project => {
         const displayClient = project.client_short || project.client;
         
-        // Debug logging for video URLs
-        console.log(`[${project.title}] Video URLs:`, {
-          video_url: project.video_url,
-          video_thumbnail_url: project.video_thumbnail_url,
-          using: project.video_thumbnail_url || project.video_url
-        });
-        
         const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
         <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
@@ -225,7 +204,7 @@
               src="${project.poster_image}"
               alt="">
             <video class="js-video lazy-media loaded"
-             src="${project.video_thumbnail_url || project.video_url}"
+             src="${project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
@@ -281,6 +260,235 @@
     const sliderProjects = projects.slice(0, 6);
     console.log(`Using ${sliderProjects.length} projects for slider (from ${projects.length} total)`);
 
+    // CRITICAL: Inject first video into wrapper IMMEDIATELY so it loads during intro animation
+    if (sliderProjects.length > 0) {
+      const videoWrapper = document.getElementById('homepage-main-video-wrapper');
+      if (videoWrapper) {
+        // Check if preload video already exists from early preload script
+        const preloadVideo = window.__preloadVideo || document.getElementById('preload-video');
+        const firstVideoUrl = window.__firstVideoUrl || sliderProjects[0].video_thumbnail_url || sliderProjects[0].video_url;
+        
+        if (preloadVideo && preloadVideo.src && preloadVideo.src.includes(firstVideoUrl.split('/').pop())) {
+          console.log('✅ VIDEO PRELOAD: Using existing preloaded video element at', new Date().toLocaleTimeString());
+          console.log('📊 VIDEO PRELOAD: Current readyState:', preloadVideo.readyState, getReadyStateText(preloadVideo.readyState));
+          console.log('📊 VIDEO PRELOAD: Current networkState:', preloadVideo.networkState, getNetworkStateText(preloadVideo.networkState));
+          console.log('📊 VIDEO PRELOAD: Current time:', preloadVideo.currentTime.toFixed(2) + 's');
+          console.log('📊 VIDEO PRELOAD: Paused:', preloadVideo.paused);
+          
+          const buffered = preloadVideo.buffered.length > 0 ? preloadVideo.buffered.end(0) : 0;
+          const duration = preloadVideo.duration || 0;
+          const percent = duration > 0 ? ((buffered / duration) * 100).toFixed(1) : 0;
+          console.log('📊 VIDEO PRELOAD: Buffered:', percent + '%');
+          
+          // Set autoplay on existing video
+          preloadVideo.setAttribute('autoplay', '');
+          preloadVideo.autoplay = true;
+          
+          // Check video state and handle accordingly
+          if (preloadVideo.readyState >= 3) {
+            if (preloadVideo.paused) {
+              console.log('🚀 VIDEO PRELOAD: Video ready but paused, calling play() at', new Date().toLocaleTimeString());
+              preloadVideo.play()
+                .then(() => {
+                  console.log('✅ VIDEO PRELOAD: play() promise resolved - video playing at', new Date().toLocaleTimeString());
+                  console.log('   Current time:', preloadVideo.currentTime.toFixed(2) + 's');
+                  console.log('   Paused:', preloadVideo.paused);
+                })
+                .catch(err => console.log('❌ VIDEO PRELOAD: Auto-play prevented:', err.message));
+            } else {
+              console.log('✅ VIDEO PRELOAD: Video already playing! No need to call play()');
+              console.log('   Current time:', preloadVideo.currentTime.toFixed(2) + 's');
+            }
+          } else {
+            console.log('⏳ VIDEO PRELOAD: Video not ready yet (readyState=' + preloadVideo.readyState + '), will auto-play when ready');
+          }
+        } else {
+          // Preload video not found or different URL, create new one
+          console.log('⚠️ VIDEO PRELOAD: Preload video not found, creating new element');
+          const startTime = performance.now();
+          
+          console.log('🚀 ========== VIDEO PRELOAD STARTED ==========');
+          console.log('📹 Video URL:', firstVideoUrl);
+          console.log('⏱️  Start time:', new Date().toLocaleTimeString());
+          console.log('🎯 Using preloaded URL:', !!window.__firstVideoUrl);
+          
+          // Create video element directly (not via innerHTML)
+          const video = document.createElement('video');
+          video.className = 'js-main-video visible loaded';
+          video.setAttribute('preload', 'auto');
+          video.setAttribute('muted', '');
+          video.setAttribute('playsinline', '');
+          video.muted = true; // Ensure muted for autoplay
+          video.playsInline = true;
+          
+          // Clear wrapper and add video
+          videoWrapper.innerHTML = '';
+          videoWrapper.appendChild(video);
+          
+          // CRITICAL: Set src AFTER appending to DOM
+          video.src = firstVideoUrl;
+          
+          console.log('📊 Initial readyState:', video.readyState, getReadyStateText(video.readyState));
+          console.log('📊 Video element:', video);
+          console.log('📊 Video src set:', video.src);
+          console.log('📊 Video in DOM:', document.body.contains(video));
+          console.log('📊 Video wrapper visible:', videoWrapper.offsetParent !== null);
+          
+          // Force load
+          try {
+            video.load();
+            console.log('✅ video.load() called successfully');
+          } catch (e) {
+            console.error('❌ video.load() failed:', e);
+          }
+          
+          // CRITICAL: Set autoplay AFTER load() to prevent it from being reset
+          video.setAttribute('autoplay', '');
+          video.autoplay = true;
+          console.log('✅ Autoplay set after load():', video.autoplay);
+          
+          // Check currentSrc after a moment
+          setTimeout(() => {
+            console.log('📊 Video currentSrc (after 100ms):', video.currentSrc);
+            console.log('📊 Video networkState:', video.networkState, getNetworkStateText(video.networkState));
+          }, 100);
+          
+          // Add error handler
+          video.addEventListener('error', (e) => {
+            console.error('❌ Video loading error:', {
+              error: video.error,
+            code: video.error?.code,
+            message: video.error?.message,
+            src: video.src,
+            networkState: video.networkState
+          });
+        });
+        
+        // Periodic status check
+        const statusInterval = setInterval(() => {
+          const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+          const buffered = video.buffered.length > 0 ? video.buffered.end(0) : 0;
+          const duration = video.duration || 0;
+          const percent = duration > 0 ? ((buffered / duration) * 100).toFixed(1) : 0;
+          const networkState = video.networkState;
+          
+          console.log(`⏳ [${elapsed}s] readyState=${video.readyState} (${getReadyStateText(video.readyState)}), networkState=${networkState} (${getNetworkStateText(networkState)}), buffered=${percent}%, paused=${video.paused}`);
+          
+          // Stop checking after 10 seconds or when playing
+          if (elapsed > 10 || !video.paused) {
+            clearInterval(statusInterval);
+            if (!video.paused) {
+              console.log('✅ Video is playing, stopping status checks');
+            } else {
+              console.log('⚠️ Video still not playing after 10s');
+              console.log('🔍 Debug info:', {
+                src: video.src,
+                currentSrc: video.currentSrc,
+                readyState: video.readyState,
+                networkState: video.networkState,
+                error: video.error,
+                paused: video.paused,
+                muted: video.muted,
+                autoplay: video.autoplay,
+                preload: video.preload
+              });
+            }
+          }
+        }, 500);
+        
+        // Track loading progress
+        const logProgress = () => {
+          const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+          const buffered = video.buffered.length > 0 ? video.buffered.end(0) : 0;
+          const duration = video.duration || 0;
+          const percent = duration > 0 ? ((buffered / duration) * 100).toFixed(1) : 0;
+          console.log(`� [${elapsed}s] Progress: ${percent}% buffered (${buffered.toFixed(1)}s / ${duration.toFixed(1)}s) - readyState: ${video.readyState}`);
+          
+          // Try to play as soon as we reach readyState 3 during download
+          if (video.readyState >= 3 && video.paused) {
+            console.log(`🎯 ReadyState 3 reached during download! Attempting instant playback...`);
+            tryPlay('progress-readystate-3');
+          }
+        };
+        
+        video.addEventListener('progress', logProgress);
+        
+        // Play as soon as we have enough data (readyState >= 3)
+        const tryPlay = (eventName) => {
+          const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+          const buffered = video.buffered.length > 0 ? video.buffered.end(0) : 0;
+          const duration = video.duration || 0;
+          const percent = duration > 0 ? ((buffered / duration) * 100).toFixed(1) : 0;
+          
+          console.log(`🎬 [${elapsed}s] Event: ${eventName}`);
+          console.log(`   readyState: ${video.readyState} (${getReadyStateText(video.readyState)})`);
+          console.log(`   Buffered: ${percent}% (${buffered.toFixed(1)}s / ${duration.toFixed(1)}s)`);
+          
+          // Play at readyState 3 (HAVE_FUTURE_DATA) for instant playback
+          if (video.readyState >= 3 && video.paused) {
+            console.log(`🚀 Attempting playback at readyState ${video.readyState}...`);
+            video.play()
+              .then(() => {
+                console.log('✅ ========== VIDEO PLAYING ==========');
+                console.log(`   Started after ${elapsed}s`);
+                console.log(`   readyState: ${video.readyState} (${getReadyStateText(video.readyState)})`);
+                console.log(`   Playing with ${percent}% buffered (instant playback mode)`);
+                console.log('============================================');
+                video.removeEventListener('progress', logProgress);
+                clearInterval(statusInterval);
+              })
+              .catch(err => {
+                console.log('❌ Auto-play prevented:', err.message, err);
+              });
+          } else if (video.readyState < 3) {
+            console.log(`⏸️ Not ready yet (readyState ${video.readyState}), waiting for more data...`);
+          }
+        };
+        
+        // Try multiple events for maximum compatibility
+        video.addEventListener('loadstart', () => console.log('🎬 Event: loadstart'), { once: true });
+        video.addEventListener('loadedmetadata', () => tryPlay('loadedmetadata'), { once: true });
+        video.addEventListener('loadeddata', () => tryPlay('loadeddata'), { once: true });
+        video.addEventListener('canplay', () => tryPlay('canplay'), { once: true });
+        video.addEventListener('canplaythrough', () => tryPlay('canplaythrough'), { once: true });
+        
+        // Also try immediately in case video is already cached
+        setTimeout(() => {
+          if (video.readyState >= 3) {
+            console.log('⚡ Video already cached!');
+            tryPlay('immediate-cached');
+          } else if (video.readyState === 0 && video.networkState === 2) {
+            console.log('⚠️ Video stuck at readyState 0, trying to reload...');
+            video.load();
+          }
+        }, 100);
+        }
+      }
+    }
+    
+    // Helper function to get readable readyState text
+    function getReadyStateText(state) {
+      const states = {
+        0: 'HAVE_NOTHING',
+        1: 'HAVE_METADATA',
+        2: 'HAVE_CURRENT_DATA',
+        3: 'HAVE_FUTURE_DATA',
+        4: 'HAVE_ENOUGH_DATA'
+      };
+      return states[state] || 'UNKNOWN';
+    }
+    
+    // Helper function to get readable networkState text
+    function getNetworkStateText(state) {
+      const states = {
+        0: 'NETWORK_EMPTY',
+        1: 'NETWORK_IDLE',
+        2: 'NETWORK_LOADING',
+        3: 'NETWORK_NO_SOURCE'
+      };
+      return states[state] || 'UNKNOWN';
+    }
+
     // Fade in effect for smooth loading
     sliderContainer.style.opacity = '0';
     sliderContainer.style.transition = 'opacity 0.3s ease';
@@ -315,40 +523,90 @@
     console.log('Updating main video section with:', firstProject);
     
     if (videoWrapper) {
-      // Clear loading state and render videos
-      let videosHTML = '';
-      projects.forEach(project => {
-        videosHTML += `
-          <video
-            class="js-main-video"
-            data-src="${project.video_thumbnail_url || project.video_url}"
-            muted
-            playsinline
-          ></video>
-        `;
-      });
-      videoWrapper.innerHTML = videosHTML;
+      // Check if first video is already loaded (from early injection in renderHomepageSlider)
+      const existingFirstVideo = videoWrapper.querySelector('video.js-main-video');
+      const firstVideoUrl = projects[0].video_thumbnail_url || projects[0].video_url;
       
-      // Load and initialize videos
-      setTimeout(() => {
+      if (existingFirstVideo && existingFirstVideo.src.includes(firstVideoUrl.split('/').pop())) {
+        console.log('✓ First video already loaded, adding remaining videos');
+        
+        // First video already exists, just add the rest
+        let additionalVideosHTML = '';
+        projects.slice(1).forEach((project) => {
+          additionalVideosHTML += `
+            <video
+              class="js-main-video"
+              data-src="${project.video_thumbnail_url || project.video_url}"
+              muted
+              playsinline
+            ></video>
+          `;
+        });
+        
+        // Append additional videos
+        videoWrapper.innerHTML += additionalVideosHTML;
+        
+        // Load additional videos
+        const additionalVideos = videoWrapper.querySelectorAll('video[data-src]');
+        additionalVideos.forEach((video) => {
+          if (video.dataset.src && !video.src) {
+            video.src = video.dataset.src;
+            setTimeout(() => video.load(), 100);
+          }
+        });
+        
+        console.log('✓ Loaded', additionalVideos.length, 'additional main videos');
+      } else {
+        // First video not found or different, render all videos
+        console.log('⚠ First video not pre-loaded, rendering all videos');
+        let videosHTML = '';
+        projects.forEach((project, index) => {
+          const preloadAttr = index === 0 ? 'preload="auto"' : '';
+          videosHTML += `
+            <video
+              class="js-main-video"
+              data-src="${project.video_thumbnail_url || project.video_url}"
+              ${preloadAttr}
+              muted
+              playsinline
+            ></video>
+          `;
+        });
+        videoWrapper.innerHTML = videosHTML;
+        
+        // Load and initialize videos immediately (no delay)
         const videos = videoWrapper.querySelectorAll('video[data-src]');
         videos.forEach((video, index) => {
           if (video.dataset.src && !video.src) {
             video.src = video.dataset.src;
-            video.load();
             
-            // Make first video visible and auto-play
+            // Make first video visible and start loading immediately
             if (index === 0) {
               video.classList.add('visible', 'loaded');
-              video.addEventListener('loadeddata', function() {
-                this.play().catch(err => console.log('Auto-play prevented:', err));
-                console.log('✓ First video visible and auto-playing');
+              video.load(); // Start loading immediately
+              
+              // Try to play as soon as we have enough data
+              video.addEventListener('canplay', function() {
+                if (this.paused) {
+                  this.play().catch(err => console.log('Auto-play prevented:', err));
+                  console.log('✓ First video visible and auto-playing');
+                }
               }, { once: true });
+              
+              // Fallback: also listen for loadeddata
+              video.addEventListener('loadeddata', function() {
+                if (this.paused) {
+                  this.play().catch(err => console.log('Auto-play prevented:', err));
+                }
+              }, { once: true });
+            } else {
+              // Load other videos with slight delay to prioritize first video
+              setTimeout(() => video.load(), 100);
             }
           }
         });
         console.log('✓ Loaded', videos.length, 'main videos');
-      }, 50);
+      }
       
       // Update links and enable interaction
       const itemTitle = firstProject.title || 'Project';
@@ -389,7 +647,7 @@
       cursorPlayerHTML += `
           <video
             class="js-video player-animated-player"
-            data-src="${project.video_thumbnail_url || project.video_url}"
+            data-src="${project.video_url}"
             playsinline=""
             loop=""
             muted=""

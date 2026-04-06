@@ -7,6 +7,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com/" />
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    
+    <!-- Preconnect to R2 storage for faster video loading -->
+    <link rel="preconnect" href="https://pub-e4e29f1338964c2d89ce48344d55d9fe.r2.dev" crossorigin />
+    <link rel="dns-prefetch" href="https://pub-e4e29f1338964c2d89ce48344d55d9fe.r2.dev" />
+    
     <link
       href="https://fonts.googleapis.com/css2?family=Azeret+Mono&amp;display=swap"
       rel="stylesheet"
@@ -707,7 +712,7 @@
                   href="#"
                   class="box--home__link js-has-cursor-text"
                   id="homepage-main-link"
-                  style="pointer-events: none; opacity: 0.5;"
+                  style="pointer-events: none; opacity: 1;"
                 >
                   <div class="box--home__wrapper video-wrapper" id="homepage-main-video-wrapper">
                     <!-- Loading state -->
@@ -769,6 +774,10 @@
     <!--  -->
 
     <script src="assets/js/data-loader.js"></script>
+    
+    <!-- CRITICAL: Preload projects data AND video BEFORE intro animation -->
+    <script src="assets/js/video-preloader.js"></script>
+    
     <script src="assets/js/page-renderer.js"></script>
     <script src="assets/js/app-init.js"></script>
     <script src="assets/js/site-config.js"></script>
@@ -987,6 +996,9 @@
         const mobileLink = document.getElementById('homepage-mobile-link');
         const counter = document.querySelector('.box--home__info__counter span');
         
+        // Track if this is the first video switch after intro (to avoid resetting currentTime)
+        let isFirstVideoAfterIntro = true;
+        
         console.log(`Setting up video switching for ${listItems.length} items`);
         
         // Ensure all cursor player videos have src loaded once and add 'loaded' class
@@ -1055,7 +1067,11 @@
               // Switch videos - remove visible from all, add to selected
               mainVideos.forEach((video, videoIndex) => {
                 if (videoIndex === index) {
-                  video.currentTime = 0;
+                  // Only reset currentTime if this is NOT the first video after intro
+                  // (first video is already playing from intro, don't restart it)
+                  if (!(isFirstVideoAfterIntro && index === 0)) {
+                    video.currentTime = 0;
+                  }
                   video.classList.add('visible', 'loaded');
                   video.play().catch(err => console.log('Play prevented:', err));
                 } else {
@@ -1063,6 +1079,12 @@
                   video.pause();
                 }
               });
+              
+              // Mark that we've done the first switch
+              if (isFirstVideoAfterIntro) {
+                isFirstVideoAfterIntro = false;
+                console.log('✓ First video after intro - continuing from current time');
+              }
               
               // Add timeline animation class
               if (timeline) timeline.classList.add('is-animated');

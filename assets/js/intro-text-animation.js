@@ -11,6 +11,7 @@ class IntroTextAnimation {
     this.$intro = null;
     this.$timeline = null;
     this.animationComplete = false;
+    this.animationStarted = false; // Prevent multiple animation starts
     this.animationDuration = 2000; // 2 seconds total (matching Lottie 50 frames @ 25fps)
     
     // Configuration
@@ -227,10 +228,112 @@ class IntroTextAnimation {
     if (window.a && window.a.mainPlayerBuffer) {
       window.a.mainPlayerBuffer.listen(this.onBuffer);
     } else {
-      // Fallback: wait 2 seconds to show DMAKER before starting animation
-      console.log('No video buffer found, waiting 2 seconds before starting animation');
-      setTimeout(() => this.launchAnimation(), 2000);
+      // Wait for video to be ready before starting animation (like Posterco)
+      console.log('Waiting for video to be ready before starting intro animation...');
+      this.waitForVideoReady();
     }
+  }
+  
+  waitForVideoReady() {
+    const checkVideo = () => {
+      const video = window.__preloadVideo || document.getElementById('preload-video');
+      
+      if (!video) {
+        console.log('⏳ Video element not created yet, checking again in 100ms...');
+        setTimeout(checkVideo, 100);
+        return;
+      }
+      
+      // CRITICAL: Dynamic buffer calculation based on video duration
+      // This works for ANY video length - short or long
+      const duration = video.duration || 0;
+      
+      // Calculate minimum buffer needed dynamically:
+      // We need enough buffer to cover the intro animation (5 seconds)
+      // But be realistic - don't wait for too much or user waits forever
+      let minBufferNeeded;
+      if (duration > 0) {
+        // For any video, we need at least 5 seconds (intro duration)
+        // But cap at 50% of video length to avoid waiting too long
+        minBufferNeeded = Math.min(5, duration * 0.5);
+      } else {
+        minBufferNeeded = 3; // Default fallback if duration unknown
+      }
+      
+      // Check if buffer starts at 0 and is continuous (no gaps)
+      let continuousBuffer = 0;
+      if (video.buffered.length > 0) {
+        // Check if buffer starts at or near 0 (within 100ms)
+        if (video.buffered.start(0) < 0.1) {
+          continuousBuffer = video.buffered.end(0);
+        }
+      }
+      
+      // Check if video has enough CONTINUOUS data from start
+      // readyState 4 (HAVE_ENOUGH_DATA) means browser thinks it can play through without stalling
+      // This is what Posterco waits for
+      if (video.readyState >= 4 && continuousBuffer >= minBufferNeeded) {
+        const bufferPercent = duration > 0 ? ((continuousBuffer / duration) * 100).toFixed(1) : 0;
+        console.log('✅ Video ready! Starting intro animation');
+        console.log('   Duration:', duration.toFixed(1) + 's');
+        console.log('   ReadyState:', video.readyState, '(HAVE_ENOUGH_DATA)');
+        console.log('   Continuous buffer:', continuousBuffer.toFixed(1) + 's (' + bufferPercent + '%)');
+        console.log('   Required buffer:', minBufferNeeded.toFixed(1) + 's');
+        this.animationStarted = true;
+        this.launchAnimation();
+      } else {
+        const bufferPercent = duration > 0 ? ((continuousBuffer / duration) * 100).toFixed(1) : 0;
+        console.log('⏳ Video not ready yet - waiting for HAVE_ENOUGH_DATA');
+        console.log('   Duration:', duration > 0 ? duration.toFixed(1) + 's' : 'unknown');
+        console.log('   ReadyState:', video.readyState, '(need 4 for HAVE_ENOUGH_DATA)');
+        console.log('   Continuous buffer:', continuousBuffer.toFixed(1) + 's (' + bufferPercent + '%)');
+        console.log('   Required buffer:', minBufferNeeded.toFixed(1) + 's');
+        
+        // Listen for when video becomes ready
+        const onReady = () => {
+          // Prevent multiple calls
+          if (this.animationStarted) {
+            return;
+          }
+          
+          // Recalculate in case duration changed
+          const currentDuration = video.duration || 0;
+          let currentMinBuffer;
+          if (currentDuration > 0) {
+            // Need at least 5 seconds (intro duration) but cap at 50% of video
+            currentMinBuffer = Math.min(5, currentDuration * 0.5);
+          } else {
+            currentMinBuffer = 3;
+          }
+          
+          // Check continuous buffer again
+          let currentContinuousBuffer = 0;
+          if (video.buffered.length > 0 && video.buffered.start(0) < 0.1) {
+            currentContinuousBuffer = video.buffered.end(0);
+          }
+          
+          // readyState 4 (HAVE_ENOUGH_DATA) like Posterco
+          if (video.readyState >= 4 && currentContinuousBuffer >= currentMinBuffer) {
+            const bufferPercent = currentDuration > 0 ? ((currentContinuousBuffer / currentDuration) * 100).toFixed(1) : 0;
+            console.log('✅ Video ready! Starting intro animation');
+            console.log('   Duration:', currentDuration.toFixed(1) + 's');
+            console.log('   Continuous buffer:', currentContinuousBuffer.toFixed(1) + 's (' + bufferPercent + '%)');
+            this.animationStarted = true;
+            this.launchAnimation();
+          }
+        };
+        
+        // Listen for progress events (buffering)
+        video.addEventListener('progress', onReady);
+        video.addEventListener('canplaythrough', onReady); // This fires when readyState reaches 4
+        
+        // NO TIMEOUT - Wait indefinitely like Posterco
+        // The preloader will stay visible until video is ready
+        console.log('⏳ Waiting for video to be ready (no timeout - like Posterco)...');
+      }
+    };
+    
+    checkVideo();
   }
 
   unbind() {
@@ -282,6 +385,7 @@ class IntroTextAnimation {
     }
     
     console.log('✓ Homepage - running full animation');
+    console.log('🎬 INTRO ANIMATION: Starting at', new Date().toLocaleTimeString());
     
     // Add intro-active class to hide logo during animation
     document.body.classList.add('intro-active');
@@ -301,41 +405,99 @@ class IntroTextAnimation {
 
   onAnimationEnded() {
     // This only runs on homepage now
-    console.log('🎯 Animation ended, fading out preloader text and showing header logo');
+    console.log('🎯 INTRO ANIMATION: Animation ended at', new Date().toLocaleTimeString(), '- transitioning to header logo');
     
-    // Remove intro-active class to show logo
-    document.body.classList.remove('intro-active');
-    console.log('✓ Removed intro-active class - logo now visible');
+    // Get preloader logo element for position tracking
+    const preloaderLogo = this.$intro.querySelector('.intro-logo-svg') || this.$intro.querySelector('.intro-text-animation');
+    const headerLogo = document.querySelector('.header__logo');
     
-    const preloaderText = this.$intro.querySelector('.intro-text-animation');
-    
-    // Fade out the preloader text
-    if (preloaderText) {
-      preloaderText.style.transition = 'opacity 0.5s ease';
-      preloaderText.style.opacity = '0';
-      console.log('✓ Preloader text fading out');
+    // Log initial positions
+    if (preloaderLogo) {
+      const preloaderRect = preloaderLogo.getBoundingClientRect();
+      console.log('📍 PRELOADER POSITION (before upward movement):');
+      console.log('   Top:', preloaderRect.top + 'px');
+      console.log('   Left:', preloaderRect.left + 'px');
+      console.log('   Width:', preloaderRect.width + 'px');
+      console.log('   Height:', preloaderRect.height + 'px');
     }
     
-    // Show the header logo
-    const headerLogo = document.querySelector('.header__logo');
     if (headerLogo) {
-      // Make sure logo has src set
-      if (!headerLogo.src || headerLogo.src.includes('undefined')) {
-        const presetConfig = window.__headerPreset;
-        if (presetConfig && presetConfig.logo && presetConfig.logo.src) {
-          headerLogo.src = presetConfig.logo.src;
-          console.log('✓ Header logo src set:', presetConfig.logo.src);
-        }
-      }
-      
-      // Add loaded class to trigger visibility
-      headerLogo.classList.add('loaded');
-      console.log('✓ Header logo will be visible');
+      const headerRect = headerLogo.getBoundingClientRect();
+      console.log('📍 HEADER LOGO POSITION (target):');
+      console.log('   Top:', headerRect.top + 'px');
+      console.log('   Left:', headerRect.left + 'px');
+      console.log('   Width:', headerRect.width + 'px');
+      console.log('   Height:', headerRect.height + 'px');
     }
     
     // Add completion class - this triggers the upward movement via CSS
     this.$introWrapper.classList.add('lottie-ended');
     this.animationComplete = true;
+    
+    console.log('🚀 UPWARD MOVEMENT: Started (0.8s CSS transition)');
+    
+    // Track position during animation (sample at intervals)
+    let sampleCount = 0;
+    const sampleInterval = setInterval(() => {
+      if (preloaderLogo && sampleCount < 8) {
+        const rect = preloaderLogo.getBoundingClientRect();
+        const progress = ((sampleCount + 1) / 8 * 100).toFixed(0);
+        console.log(`📊 UPWARD MOVEMENT [${progress}%]: Top=${rect.top.toFixed(1)}px, Opacity=${window.getComputedStyle(preloaderLogo).opacity}`);
+        sampleCount++;
+      } else {
+        clearInterval(sampleInterval);
+      }
+    }, 100); // Sample every 100ms during 800ms transition
+    
+    // CRITICAL: Keep preloader logo visible during upward movement (0.8s transition)
+    // Then fade it out and show header logo
+    setTimeout(() => {
+      if (preloaderLogo) {
+        const finalRect = preloaderLogo.getBoundingClientRect();
+        console.log('📍 PRELOADER POSITION (after upward movement):');
+        console.log('   Top:', finalRect.top + 'px');
+        console.log('   Left:', finalRect.left + 'px');
+      }
+      
+      // Show header logo INSTANTLY when preloader reaches header position
+      if (headerLogo) {
+        // Make sure logo has src set
+        if (!headerLogo.src || headerLogo.src.includes('undefined')) {
+          const presetConfig = window.__headerPreset;
+          if (presetConfig && presetConfig.logo && presetConfig.logo.src) {
+            headerLogo.src = presetConfig.logo.src;
+            console.log('✓ Header logo src set:', presetConfig.logo.src);
+          }
+        }
+        
+        // Show header logo instantly (no transition delay)
+        headerLogo.style.opacity = '1';
+        headerLogo.style.transition = 'none'; // Remove transition for instant appearance
+        headerLogo.classList.add('loaded');
+        
+        const headerRect = headerLogo.getBoundingClientRect();
+        console.log('✓ Header logo visible instantly at:');
+        console.log('   Top:', headerRect.top + 'px');
+        console.log('   Left:', headerRect.left + 'px');
+        console.log('   Opacity:', window.getComputedStyle(headerLogo).opacity);
+        
+        // Re-enable transitions after a frame for future interactions
+        setTimeout(() => {
+          headerLogo.style.transition = '';
+        }, 50);
+      }
+      
+      // Fade out the preloader logo now that header logo is visible
+      if (preloaderLogo) {
+        preloaderLogo.style.transition = 'opacity 0.2s ease';
+        preloaderLogo.style.opacity = '0';
+        console.log('✓ Preloader logo fading out');
+      }
+    }, 800); // Wait for upward movement to complete (0.8s CSS transition)
+    
+    // Remove intro-active class
+    document.body.classList.remove('intro-active');
+    console.log('✓ Removed intro-active class');
 
     // Unlock scroll
     if (window.c && window.c.unlockScroll) {
@@ -349,7 +511,7 @@ class IntroTextAnimation {
 
     // After 800ms, add intro-ended class and hide intro completely
     setTimeout(() => {
-      console.log('Adding intro-ended class - header logo visible, intro hidden');
+      console.log('🏁 INTRO ANIMATION: Adding intro-ended class at', new Date().toLocaleTimeString(), '- intro hidden');
       if (document.scrollingElement) {
         document.scrollingElement.classList.add('intro-ended');
       }
@@ -358,9 +520,9 @@ class IntroTextAnimation {
       // Hide the entire intro wrapper after transition
       setTimeout(() => {
         this.$introWrapper.style.display = 'none';
-        console.log('✓ Intro wrapper hidden completely');
+        console.log('✅ INTRO ANIMATION: Intro wrapper hidden completely at', new Date().toLocaleTimeString());
       }, 500);
-    }, 800);
+    }, 1000); // Increased to 1000ms to account for logo swap
 
     this.unbind();
   }
