@@ -404,6 +404,13 @@ class IntroTextAnimation {
   }
 
   onAnimationEnded() {
+    // Prevent duplicate calls
+    if (this._animationEndedCalled) {
+      console.log('⏭️ onAnimationEnded already called, skipping duplicate');
+      return;
+    }
+    this._animationEndedCalled = true;
+    
     // This only runs on homepage now
     console.log('🎯 INTRO ANIMATION: Animation ended at', new Date().toLocaleTimeString(), '- transitioning to header logo');
     
