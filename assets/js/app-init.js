@@ -76,7 +76,7 @@
         if (currentPath.includes('/works')) {
           console.log('Works page detected');
         } else if (currentPath === '/' || currentPath.includes('index')) {
-          checkAndLoadIndexProjects();
+         // checkAndLoadIndexProjects();
         } else if (currentPath.includes('/about')) {
           checkAndLoadAboutContent();
         } else if (currentPath.includes('/contact')) {
@@ -96,7 +96,7 @@
     const pathname = window.location.pathname;
     
     if (pathname === '/' || pathname.includes('index')) {
-      checkAndLoadIndexProjects();
+     // checkAndLoadIndexProjects();
     } else if (pathname.includes('/about')) {
       checkAndLoadAboutContent();
     } else if (pathname.includes('/contact')) {

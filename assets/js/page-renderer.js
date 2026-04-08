@@ -43,11 +43,11 @@
             <p>${project.category}</p>
           </div>
           <div class="box--work__video video-wrapper has-poster">
-            <img class="video-img-poster lazy-media loaded"
-              src="${project.poster_image}"
+            <img class="video-img-poster lazy-media"
+              data-src="${project.poster_image}"
               alt="">
-            <video class="js-video lazy-media loaded"
-             src="${project.video_url}"
+            <video class="js-video lazy-media"
+             data-src="${project.video_url}"
               playsinline loop muted></video>
           </div>
           <div class="cursor-text-animated js-cursor-text-animated">
@@ -69,18 +69,39 @@
       worksContainer.innerHTML += projectHTML;
     });
 
+    // Initialize LazyLoad for dynamically added elements (matching index.html pattern)
     setTimeout(() => {
-      if (typeof LazyLoad !== 'undefined' && window.lazyLoadInstance) {
-        window.lazyLoadInstance.update();
+      const lazyElements = worksContainer.querySelectorAll('.lazy-media');
+      console.log(`Found ${lazyElements.length} lazy elements to initialize on works page`);
+      
+      if (typeof LazyLoad !== 'undefined') {
+        // Create new LazyLoad instance for dynamic content
+        const worksLazyLoad = new LazyLoad({
+          elements_selector: '#works-list-project .lazy-media',
+          threshold: 0,
+          callback_loaded: (el) => {
+            el.classList.add('loaded');
+            console.log('✓ Lazy loaded:', el.tagName);
+          }
+        });
+        console.log('✓ LazyLoad initialized for', projects.length, 'projects on works page');
+      } else {
+        console.warn('LazyLoad not available, loading all media immediately');
+        // Fallback: convert data-src to src immediately
+        lazyElements.forEach(el => {
+          if (el.dataset.src) {
+            el.src = el.dataset.src;
+            el.classList.add('loaded');
+          }
+        });
       }
       
-      const videos = worksContainer.querySelectorAll('video.js-video');
-      videos.forEach(video => {
-        if (video.src && video.readyState < 2) {
-          video.load();
-        }
-      });
-      console.log('✓ Initialized', videos.length, 'project videos for works page');
+      // Add 'ready' class to fade in the listing
+      const blocListing = document.querySelector('.bloc-projects-listing');
+      if (blocListing) {
+        blocListing.classList.add('ready');
+        console.log('✓ Added ready class to bloc-projects-listing on works page');
+      }
       
       // Dispatch event to trigger hover re-initialization
       setTimeout(() => {
@@ -723,8 +744,14 @@
     console.log('Rendering about page content...');
     const aboutBox = document.querySelector('.box--about');
     const aboutButton = document.querySelector('.player-link');
-    const aboutImagesList = document.querySelector('.list--about-images');
+    let aboutImagesList = document.querySelector('.list--about-images');
     const videoElement = document.querySelector('.js-popin-video video');
+
+    console.log('About elements found:', {
+      aboutBox: !!aboutBox,
+      aboutButton: !!aboutButton,
+      aboutImagesList: !!aboutImagesList
+    });
 
     let contentHTML = '';
     
@@ -747,6 +774,12 @@
       aboutButton.innerHTML = `<svg width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M7.25 4.56699C7.58333 4.75944 7.58333 5.24056 7.25 5.43301L1.25 8.89711C0.916667 9.08956 0.500001 8.849 0.500001 8.4641L0.500001 1.5359C0.500001 1.151 0.916668 0.910436 1.25 1.10289L7.25 4.56699Z" stroke="currentColor"/>
 </svg> ${pageData.content.video_button.text}`;
+      
+      // Ensure button has the btn-reel class for styling
+      if (!aboutButton.classList.contains('btn-reel')) {
+        aboutButton.classList.add('btn-reel');
+        console.log('✓ Added btn-reel class to button');
+      }
     }
 
     // Update video URL in popup if available
@@ -768,12 +801,74 @@
       aboutImagesList.innerHTML = imagesHTML;
       console.log(`✓ Rendered ${pageData.images.length} about images`);
     }
+    
+    // CRITICAL: Force layout refresh by ensuring wrapper structure is correct
+    // This fixes the layout mismatch when navigating from other pages
+    const aboutInnerWrapper = document.querySelector('.about-inner-wrapper');
+    let imagesButtonWrapper = document.querySelector('.images-button-wrapper');
+    
+    console.log('🔍 Layout check:', {
+      aboutInnerWrapper: !!aboutInnerWrapper,
+      imagesButtonWrapper: !!imagesButtonWrapper,
+      aboutImagesList: !!aboutImagesList,
+      aboutButton: !!aboutButton
+    });
+    
+    if (!imagesButtonWrapper && aboutInnerWrapper) {
+      // Re-query elements in case they were just created
+      aboutImagesList = document.querySelector('.list--about-images');
+      const aboutButton = document.querySelector('.player-link');
+      
+      if (aboutImagesList && aboutButton) {
+        // Create wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'images-button-wrapper';
+        
+        // Insert wrapper before images list
+        aboutImagesList.parentNode.insertBefore(wrapper, aboutImagesList);
+        
+        // Move images list and button into wrapper
+        wrapper.appendChild(aboutImagesList);
+        wrapper.appendChild(aboutButton);
+        
+        console.log('✓ Created images-button-wrapper for proper layout');
+      } else {
+        console.warn('⚠ Could not create wrapper - missing elements:', {
+          aboutImagesList: !!aboutImagesList,
+          aboutButton: !!aboutButton
+        });
+      }
+    } else if (imagesButtonWrapper) {
+      console.log('✓ images-button-wrapper already exists');
+      
+      // CRITICAL FIX: Force layout recalculation by toggling display
+      // This ensures CSS grid properties are properly applied after navigation
+      const originalDisplay = imagesButtonWrapper.style.display;
+      imagesButtonWrapper.style.display = 'none';
+      
+      // Force reflow
+      void imagesButtonWrapper.offsetHeight;
+      
+      // Restore display (let CSS handle it)
+      imagesButtonWrapper.style.display = originalDisplay || '';
+      
+      console.log('✓ Forced layout recalculation for images-button-wrapper');
+    }
   }
 
   function renderContactContent(pageData) {
     console.log('Rendering contact page content...');
+    console.log('Contact page data:', pageData);
+    
     const staffList = document.querySelector('.list--staff');
     const addressBox = document.querySelector('.box--address');
+
+    console.log('Contact elements found:', {
+      staffList: !!staffList,
+      addressBox: !!addressBox,
+      hasStaffData: !!(pageData && pageData.staff),
+      hasAddressData: !!(pageData && pageData.address)
+    });
 
     if (staffList && pageData.staff) {
       staffList.innerHTML = '';
@@ -797,6 +892,13 @@
     </li>
   `;
         staffList.innerHTML += departmentHTML;
+      });
+      
+      console.log('✓ Staff list rendered with', pageData.staff.length, 'departments');
+    } else {
+      console.warn('⚠ Could not render staff list:', {
+        staffList: !!staffList,
+        hasStaffData: !!(pageData && pageData.staff)
       });
     }
 
@@ -822,7 +924,15 @@
       }
       
       addressBox.innerHTML = addressHTML;
+      console.log('✓ Address box rendered');
+    } else {
+      console.warn('⚠ Could not render address box:', {
+        addressBox: !!addressBox,
+        hasAddressData: !!(pageData && pageData.address)
+      });
     }
+    
+    console.log('✓ Contact content rendering complete');
   }
 
   function renderProjectDetail(project) {
@@ -860,19 +970,19 @@
   async function initializePage() {
     const pathname = window.location.pathname;
     
-    try {
-      if (pathname === '/' || pathname.includes('index')) {
-        await loadIndexPage();
-      } else if (pathname.includes('about')) {
-        await loadAboutPage();
-      } else if (pathname.includes('contact')) {
-        await loadContactPage();
-      } else if (pathname.includes('project-detail')) {
-        await loadProjectDetailPage();
-      }
-    } catch (error) {
-      console.error('Error initializing page:', error);
-    }
+    // try {
+    //   if (pathname === '/' || pathname.includes('index')) {
+    //     await loadIndexPage();
+    //   } else if (pathname.includes('about')) {
+    //     await loadAboutPage();
+    //   } else if (pathname.includes('contact')) {
+    //     await loadContactPage();
+    //   } else if (pathname.includes('project-detail')) {
+    //     await loadProjectDetailPage();
+    //   }
+    // } catch (error) {
+    //   console.error('Error initializing page:', error);
+    // }
   }
 
   async function loadIndexPage() {

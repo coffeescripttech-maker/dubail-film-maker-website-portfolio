@@ -192,22 +192,147 @@ class IntroTextAnimation {
     return indices;
   }
   
-  applyAnimationDelays(initialIndices) {
-    const letters = this.$intro.querySelectorAll('.letter');
-    const holdDuration = this.config.holdDuration;
-    
-    letters.forEach((letter, index) => {
-      if (initialIndices.includes(index)) {
-        // Initial letters: visible from start, animate at holdDuration
-        letter.style.animationDelay = `${holdDuration}ms`;
-      } else {
-        // Other letters: calculate staggered delay
-        const revealDelay = this.calculateRevealDelay(index, initialIndices);
-        letter.style.animationDelay = `${revealDelay}ms`;
-      }
-    });
+applyAnimationDelays(initialIndices) {
+  // Check if GSAP is loaded
+  if (typeof gsap === 'undefined') {
+    console.error('❌ GSAP not loaded! Falling back to CSS animation');
+    return;
   }
   
+  const letters = this.$intro.querySelectorAll('.letter');
+  
+  // POSTERCO-STYLE: DM together in center, then expand outward
+  // DUBAIFILMMAKER = D U B A I F I L M M A K E R
+  //                  0 1 2 3 4 5 6 7 8 9 10 11 12 13
+  const letterD = letters[0];  // D (Dubai)
+  const letterM = letters[9];  // M (Maker) - first M in FILMMAKER
+  const leftGroup = Array.from(letters).slice(1, 5);   // UBAI
+  const middleGroup = Array.from(letters).slice(5, 9); // FILM
+  const rightGroup = Array.from(letters).slice(10);    // AKER
+  
+  // Set initial states
+  // D and M start VERY CLOSE together in center
+  // We calculate the distance they need to move to reach their natural positions
+  
+  // Get natural positions first
+  const containerRect = this.$intro.querySelector('.intro-text-animation').getBoundingClientRect();
+  const dRect = letterD.getBoundingClientRect();
+  const mRect = letterM.getBoundingClientRect();
+  
+  // Calculate how far apart they naturally are
+  const naturalDistance = mRect.left - dRect.left;
+  
+  // Calculate the midpoint between D and M's natural positions
+  const naturalMidpoint = (dRect.left + mRect.left) / 2;
+  
+  // Calculate viewport center
+  const viewportCenter = window.innerWidth / 2;
+  
+  // Calculate offset needed to center the DM pair
+  const centerOffset = viewportCenter - naturalMidpoint;
+  
+  // Start them close together (move them toward center)
+  // D moves right, M moves left to meet in middle
+  // Make spacing responsive - scale with font size
+  const fontSize = parseFloat(window.getComputedStyle(this.$intro.querySelector('.intro-text-animation')).fontSize);
+  const closeDistance = fontSize * 0.6; // 60% of font size (responsive spacing)
+  gsap.set(letterD, { 
+    opacity: 1, 
+    x: (naturalDistance / 2) - (closeDistance / 2) + centerOffset, // Move D right toward center + center the pair
+    y: 0 
+  });
+  gsap.set(letterM, { 
+    opacity: 1, 
+    x: -(naturalDistance / 2) + (closeDistance / 2) + centerOffset, // Move M left toward center + center the pair
+    y: 0 
+  });
+  
+  console.log('📏 Initial DM spacing:', {
+    fontSize: fontSize.toFixed(1) + 'px',
+    closeDistance: closeDistance.toFixed(1) + 'px (60% of font size - responsive)',
+    naturalDistance: naturalDistance.toFixed(1) + 'px',
+    viewportCenter: viewportCenter.toFixed(1) + 'px',
+    naturalMidpoint: naturalMidpoint.toFixed(1) + 'px',
+    centerOffset: centerOffset.toFixed(1) + 'px (to center DM pair)',
+    dMovement: ((naturalDistance / 2) - (closeDistance / 2) + centerOffset).toFixed(1) + 'px',
+    mMovement: (-(naturalDistance / 2) + (closeDistance / 2) + centerOffset).toFixed(1) + 'px'
+  });
+  
+  // All other letters invisible and scaled down (Posterco style)
+  gsap.set([...leftGroup, ...middleGroup, ...rightGroup], { 
+    opacity: 0, 
+    y: 0,
+    scale: 0.76 // Start at 76% like Posterco
+  });
+  
+  // Create GSAP timeline
+  const tl = gsap.timeline({
+    onComplete: () => {
+      console.log('✓ GSAP letter animation complete - Posterco-style DM expansion!');
+    }
+  });
+
+  // PHASE 1: Hold DM together (0.5s)
+  tl.to({}, { 
+    duration: 0.5,
+    onStart: () => console.log('→ DM together (Dubai + Maker)')
+  });
+
+  // PHASE 2: D moves left, M moves right (split apart) - 0.6s duration
+  tl.to(letterD, {
+    x: 0,  // D moves to its final position (left)
+    duration: 0.6,
+    ease: 'power2.out',
+    onStart: () => console.log('→ D (Dubai) moving left')
+  }, 0.5);
+  
+  tl.to(letterM, {
+    x: 0,  // M moves to its final position (right)
+    duration: 0.6,
+    ease: 'power2.out',
+    onStart: () => console.log('→ M (Maker) moving right')
+  }, 0.5);
+
+  // PHASE 3: Fill in the middle letters as D and M separate
+  // Posterco-style: opacity 0→1, scale 76%→100%, cubic-bezier easing
+  // UBAI appears (left side - after D)
+  tl.to(leftGroup, {
+    opacity: 1,
+    scale: 1,
+    stagger: 0.06,
+    duration: 0.5,
+    ease: 'cubic-bezier(0, 1, 0.8, 0)', // Posterco easing
+    onStart: () => console.log('→ UBAI filling in (Dubai) - Posterco style')
+  }, 0.7);
+  
+  // FILM appears (middle)
+  tl.to(middleGroup, {
+    opacity: 1,
+    scale: 1,
+    stagger: 0.06,
+    duration: 0.5,
+    ease: 'cubic-bezier(0, 1, 0.8, 0)', // Posterco easing
+    onStart: () => console.log('→ FILM filling in - Posterco style')
+  }, 0.9);
+  
+  // AKER appears (right side - after M)
+  tl.to(rightGroup, {
+    opacity: 1,
+    scale: 1,
+    stagger: 0.06,
+    duration: 0.5,
+    ease: 'cubic-bezier(0, 1, 0.8, 0)', // Posterco easing
+    onStart: () => console.log('→ AKER filling in (Maker) - Posterco style')
+  }, 1.1);
+  
+  // Store timeline for external control
+  this.animationTimeline = tl;
+  
+  console.log('✓ GSAP animation timeline created - Posterco-style center-stable expansion');
+  
+  return tl;
+}
+
   calculateRevealDelay(index, initialIndices) {
     // Custom delays if provided
     if (this.config.letterDelays && this.config.letterDelays[index]) {
@@ -397,10 +522,11 @@ class IntroTextAnimation {
     // Start the CSS animation (already defined in CSS with delays)
     this.$intro.classList.add('animating');
 
-    // Total duration: 3000ms initial hold + 2000ms animation = 5000ms
+    // Total duration: 1.6s (0.5s hold + 0.6s split + 0.5s fill)
+    // Add buffer for safety
     setTimeout(() => {
       this.onAnimationEnded();
-    }, 5000);
+    }, 2000);
   }
 
   onAnimationEnded() {

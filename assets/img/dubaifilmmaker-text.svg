@@ -1,0 +1,20 @@
+<svg width="1400" height="140" viewBox="0 0 1400 140" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @font-face {
+      font-family: 'Monument Extended Bold';
+      src: url('../fonts/monument-extended-bold.woff2') format('woff2'),
+           url('../fonts/monument-extended-bold.woff') format('woff'),
+           url('../fonts/monument-extended-bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+    .text {
+      font-family: 'Monument Extended Bold', sans-serif;
+      font-weight: 700;
+      font-size: 100px;
+      fill: #ffffff;
+      letter-spacing: 2px;
+    }
+  </style>
+  <text x="700" y="100" text-anchor="middle" class="text">DUBAIFILMMAKER</text>
+</svg>

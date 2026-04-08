@@ -11,9 +11,9 @@
         "alt": "DubaiFilmMaker"
       },
       "introAnimation": {
-        "type": "svg",
+        "type": "text",
         "text": "DUBAIFILMMAKER",
-        "initialPattern": "DUBAIFILMMAKER",
+        "initialPattern": "DM",
         "holdDuration": 3000,
         "revealStartTime": 3480
       },
@@ -55,10 +55,11 @@
         "alt": "DubaiFilmMaker"
       },
       "introAnimation": {
-        "type": "svg",
-        "logoSrc": "assets/img/logo/dubaifilmmaker-light.svg",
-        "holdDuration": 2000,
-        "fadeInDuration": 1000
+        "type": "text",
+        "text": "DUBAIFILMMAKER",
+        "initialPattern": "DMAKER",
+        "holdDuration": 3000,
+        "revealStartTime": 3480
       },
       "mobile": {
         "headerNav": {

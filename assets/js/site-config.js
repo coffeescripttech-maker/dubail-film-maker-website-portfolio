@@ -15,6 +15,80 @@
   let introHasEnded = document.body?.classList?.contains('intro-ended') || false;
 
   const DEBUG_LOGS = false;
+  
+  // Track loaded stylesheets to avoid duplicates
+  const loadedStylesheets = new Set();
+  
+  /**
+   * Dynamically load a CSS file
+   * @param {string} href - Path to CSS file
+   * @param {string} id - Unique ID for the link element
+   */
+  function loadStylesheet(href, id) {
+    // Check if already loaded
+    if (loadedStylesheets.has(id)) {
+      console.log(`✓ Stylesheet already loaded: ${id}`);
+      return Promise.resolve();
+    }
+    
+    // Check if link element already exists
+    if (document.getElementById(id)) {
+      loadedStylesheets.add(id);
+      console.log(`✓ Stylesheet link already exists: ${id}`);
+      return Promise.resolve();
+    }
+    
+    return new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.id = id;
+      link.rel = 'stylesheet';
+      link.href = href;
+      
+      link.onload = () => {
+        loadedStylesheets.add(id);
+        console.log(`✓ Loaded stylesheet: ${href}`);
+        resolve();
+      };
+      
+      link.onerror = () => {
+        console.error(`❌ Failed to load stylesheet: ${href}`);
+        reject(new Error(`Failed to load ${href}`));
+      };
+      
+      document.head.appendChild(link);
+    });
+  }
+  
+  /**
+   * Load page-specific CSS based on slug
+   * @param {string} slug - Page slug (about, contact, works, etc.)
+   */
+  async function loadPageCSS(slug) {
+    const cssMap = {
+      'about': ['assets/css/templates/about.css'],
+      'contact': ['assets/css/templates/contact.css'],
+      'works': ['assets/css/templates/works.css'],
+      'homepage': [
+        'assets/css/view-other-films-cta.css',
+        'assets/css/homepage-pagination-desktop.css',
+        'assets/css/slider-vertical-arrows.css'
+      ]
+    };
+    
+    if (cssMap[slug]) {
+      const cssFiles = Array.isArray(cssMap[slug]) ? cssMap[slug] : [cssMap[slug]];
+      
+      for (const cssFile of cssFiles) {
+        try {
+          await loadStylesheet(cssFile, `${slug}-${cssFile.split('/').pop().replace('.css', '')}`);
+        } catch (error) {
+          console.warn(`⚠ Could not load CSS ${cssFile}:`, error);
+        }
+      }
+      
+      console.log(`✓ Page CSS loaded for: ${slug}`);
+    }
+  }
 
   // Load header configuration
   async function loadHeaderConfig() {
@@ -77,9 +151,9 @@
       }
       config = await response.json();
       console.log('✓ Site config loaded:', config);
-      await loadHeaderConfig();
+      // await loadHeaderConfig();
       await loadProjectsData();
-      applyConfig();
+      // applyConfig();
     } catch (error) {
       console.warn('⚠ Could not load config.json, using defaults:', error);
       // Use default config if file not found
@@ -338,6 +412,23 @@
         
         // Add 'loaded' class to make logo visible with smooth transition
         logo.classList.add('loaded');
+        
+        // Log the actual rendered size after a short delay to ensure CSS is applied
+        setTimeout(() => {
+          const rect = logo.getBoundingClientRect();
+          const computedStyle = window.getComputedStyle(logo);
+          const screenWidth = window.innerWidth;
+          const isMobile = screenWidth <= 767;
+          
+          console.log('📏 HEADER LOGO SIZE:');
+          console.log('   Screen: ' + screenWidth + 'px (' + (isMobile ? 'MOBILE' : 'DESKTOP') + ')');
+          console.log('   Rendered Width: ' + rect.width.toFixed(2) + 'px');
+          console.log('   Rendered Height: ' + rect.height.toFixed(2) + 'px');
+          console.log('   CSS max-height: ' + computedStyle.maxHeight);
+          console.log('   CSS max-width: ' + computedStyle.maxWidth);
+          console.log('   CSS width: ' + computedStyle.width);
+          console.log('   Position: top=' + rect.top.toFixed(2) + 'px, left=' + rect.left.toFixed(2) + 'px');
+        }, 100);
       });
       
       const logoVariant = isLightBackground ? 'dark' : 'light';
@@ -346,6 +437,29 @@
 
     // Inject dynamic CSS for header styles
     injectHeaderCSS(presetConfig);
+    
+    // Add resize listener to log header logo size changes
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const logo = document.querySelector('.header__logo');
+        if (logo) {
+          const rect = logo.getBoundingClientRect();
+          const computedStyle = window.getComputedStyle(logo);
+          const screenWidth = window.innerWidth;
+          const isMobile = screenWidth <= 767;
+          
+          console.log('📏 HEADER LOGO SIZE (after resize):');
+          console.log('   Screen: ' + screenWidth + 'px (' + (isMobile ? 'MOBILE' : 'DESKTOP') + ')');
+          console.log('   Rendered Width: ' + rect.width.toFixed(2) + 'px');
+          console.log('   Rendered Height: ' + rect.height.toFixed(2) + 'px');
+          console.log('   CSS max-height: ' + computedStyle.maxHeight);
+          console.log('   CSS max-width: ' + computedStyle.maxWidth);
+          console.log('   CSS width: ' + computedStyle.width);
+        }
+      }, 250);
+    });
   }
 
   // Inject comprehensive navigation styles only (for when critical CSS exists)
@@ -1028,6 +1142,10 @@
   window.loadContactContent = async function() {
     try {
       console.log('Loading contact page content...');
+      
+      // Load page-specific CSS first
+      await loadPageCSS('contact');
+      
       const data = await window.fetchContact();
       window.PageRenderer.renderContactContent(data.page);
     } catch (error) {
@@ -1038,6 +1156,10 @@
   window.loadAboutContent = async function() {
     try {
       console.log('Loading about page content...');
+      
+      // Load page-specific CSS first
+      await loadPageCSS('about');
+      
       const data = await window.fetchAbout();
       window.PageRenderer.renderAboutContent(data.page);
     } catch (error) {
@@ -1048,6 +1170,10 @@
   window.loadProjects = async function() {
     try {
       console.log('Loading projects for works page...');
+      
+      // Load page-specific CSS first
+      await loadPageCSS('works');
+      
       const projects = await window.fetchProjects();
       window.PageRenderer.renderWorksProjects(projects);
     } catch (error) {
@@ -1055,9 +1181,44 @@
     }
   }
 
-  window.loadIndexProjects = async function() {
+  window.loadIndexProjects = async function(fromNavigation = false) {
     try {
-      console.log('Loading projects for index page...');
+      console.log('Loading projects for index page...', fromNavigation ? '(from navigation)' : '');
+      
+      // If navigating from another page, load homepage CSS and inject HTML structure
+      if (fromNavigation) {
+        // Load homepage-specific CSS first
+        await loadPageCSS('homepage');
+        
+        if (!document.querySelector('.homepage-inner-wrapper')) {
+          console.log('🏗 Injecting homepage HTML structure...');
+          
+          const pageInnerContent = document.querySelector('.page-inner-content');
+          if (pageInnerContent) {
+            try {
+              const response = await fetch('/index.html');
+              const htmlText = await response.text();
+              
+              // Parse and extract homepage content
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(htmlText, 'text/html');
+              const homepageContent = doc.querySelector('.page-inner-content');
+              
+              if (homepageContent) {
+                pageInnerContent.innerHTML = homepageContent.innerHTML;
+                console.log('✓ Homepage HTML structure injected');
+                
+                // Wait a moment for DOM to settle
+                await new Promise(resolve => setTimeout(resolve, 100));
+              }
+            } catch (error) {
+              console.error('Error loading homepage HTML:', error);
+            }
+          }
+        }
+      }
+      
+      // Load and render projects
       const projects = await window.fetchProjects();
       window.PageRenderer.renderIndexProjects(projects);
       window.PageRenderer.renderHomepageSlider(projects);
@@ -1197,20 +1358,22 @@
           contentChangeDetected = false;
           console.log('✅ Target page set:', targetSlug);
           
-          // IMMEDIATE FIX: If clicking homepage link and intro has ended, show logo immediately
-          if (slug === 'homepage' && (introHasEnded || localStorage.getItem('introHasEnded') === 'true')) {
-            console.log('🏠 Homepage link clicked - forcing logo visible immediately');
+          // If navigating to homepage, ensure intro-ended is set (skip intro animation)
+          if (slug === 'homepage') {
+            console.log('🏠 Homepage link clicked - ensuring intro-ended state');
+            document.body.classList.add('intro-ended');
+            document.documentElement.classList.add('intro-ended');
+            localStorage.setItem('introHasEnded', 'true');
+            introHasEnded = true;
+            
+            // Force logo visible immediately
             const headerLogo = document.querySelector('.header__logo');
             if (headerLogo) {
               headerLogo.style.setProperty('opacity', '1', 'important');
               headerLogo.style.setProperty('visibility', 'visible', 'important');
               headerLogo.style.setProperty('display', 'block', 'important');
-              console.log('✓ Logo forced visible on homepage click');
+              console.log('✓ Logo forced visible on homepage navigation');
             }
-            // Ensure intro-ended class and localStorage are set
-            document.body.classList.add('intro-ended');
-            localStorage.setItem('introHasEnded', 'true');
-            introHasEnded = true;
           }
         } else {
           console.warn('⚠ Link has no data-slug attribute');
@@ -1296,13 +1459,22 @@
             if (typeof window.loadProjects === 'function') {
               console.log('✅ Calling loadProjects()');
               window.loadProjects();
+              
+              // Add retry mechanism to ensure projects load
+              setTimeout(() => {
+                const worksContainer = document.getElementById('works-list-project');
+                if (worksContainer && worksContainer.children.length === 0) {
+                  console.log('🔄 Retrying loadProjects() - container was empty');
+                  window.loadProjects();
+                }
+              }, 500);
             } else {
               console.warn('⚠ loadProjects not defined yet');
             }
           } else if (targetSlug === 'homepage') {
             if (typeof window.loadIndexProjects === 'function') {
-              console.log('✅ Calling loadIndexProjects()');
-              window.loadIndexProjects();
+              console.log('✅ Calling loadIndexProjects() with navigation flag');
+              window.loadIndexProjects(true); // Pass true to indicate navigation
             } else {
               console.warn('⚠ loadIndexProjects not defined yet');
             }
@@ -1345,13 +1517,29 @@
     
     if (initialSlug) {
       console.log('✓ Initial page detected from body class:', initialSlug);
-      // Body class is already correct, just apply header styles
+      
+      // CRITICAL: Skip homepage initialization - it has its own inline script
+      if (initialSlug === 'homepage') {
+        console.log('⏸ Skipping homepage initialization - inline script handles it');
+        console.log('✓ site-config.js will only handle navigation clicks from homepage');
+        
+        // Just apply header styles, don't load content
+        if (headerConfig) {
+          console.log('🎨 Applying header styles for homepage...');
+          applyHeaderStyles();
+        }
+        
+        console.log('✓ SPA navigation setup complete - ready for clicks');
+        return; // Exit early, don't load homepage content
+      }
+      
+      // For other pages (about, contact, works), load content normally
       if (headerConfig) {
         console.log('🎨 Applying header styles for initial page...');
         applyHeaderStyles();
       }
       
-      // Load content for initial page
+      // Load content for initial page (NOT homepage)
       console.log('📦 Loading initial page content for:', initialSlug);
       
       setTimeout(() => {
@@ -1359,11 +1547,6 @@
           if (typeof window.loadProjects === 'function') {
             console.log('✅ Calling loadProjects() for initial page load');
             window.loadProjects();
-          }
-        } else if (initialSlug === 'homepage') {
-          if (typeof window.loadIndexProjects === 'function') {
-            console.log('✅ Calling loadIndexProjects() for initial page load');
-            window.loadIndexProjects();
           }
         } else if (initialSlug === 'about') {
           if (typeof window.loadAboutContent === 'function') {
@@ -1401,6 +1584,7 @@
     }
   }
 
+
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
@@ -1414,4 +1598,7 @@
 
   // Expose reload function for debugging
   window.reloadSiteConfig = loadConfig;
+
+    window.setupRouteChangeListenerFunc = setupRouteChangeListener;
+
 })();

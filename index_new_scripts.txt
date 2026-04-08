@@ -1,0 +1,143 @@
+    
+    <!-- Generate slider HTML with MULTIPLE video elements (one per project) -->
+    <script>
+      (async function() {
+        console.log('Fetching API data...');
+        
+        try {
+          const projects = await window.fetchProjects();
+          
+          if (projects.length > 0) {
+            const sliderProjects = projects.slice(0, 6);
+            window.__sliderProjects = sliderProjects;
+            
+            console.log(`Loaded ${sliderProjects.length} projects for slider`);
+            
+            // Generate list items
+            generateListItems(sliderProjects);
+            
+            // Generate MULTIPLE video elements (key fix!)
+            generateVideoElements(sliderProjects);
+            
+            // Update counter and initial links
+            updateInitialState(sliderProjects);
+            
+            console.log('Slider ready - build.min.js will handle navigation');
+          }
+        } catch (err) {
+          console.error('API failed:', err);
+        }
+        
+        function generateListItems(projects) {
+          const listContainer = document.querySelector('.list--home');
+          if (!listContainer) return;
+          
+          // Clear existing items
+          const existingItems = listContainer.querySelectorAll('li');
+          existingItems.forEach(item => item.remove());
+          
+          // Generate new items with .js-change-video class
+          projects.forEach((project, index) => {
+            const li = document.createElement('li');
+            if (index === 0) li.classList.add('is-active');
+            
+            const link = project.link || `works/project-detail.html#id=${project.id}`;
+            const displayClient = project.client_short || project.client;
+            
+            li.innerHTML = `
+              <a href="${link}" class="js-change-video">
+                <h2>${project.title}</h2>
+                <p>${displayClient}</p>
+                <p>${project.classification}</p>
+              </a>
+            `;
+            
+            listContainer.appendChild(li);
+          });
+          
+          console.log('Generated', projects.length, 'list items with .js-change-video');
+        }
+        
+        function generateVideoElements(projects) {
+          const videoWrapper = document.querySelector('.box--home__wrapper');
+          if (!videoWrapper) return;
+          
+          // Clear existing videos
+          videoWrapper.innerHTML = '';
+          
+          // Generate ONE video element per project
+          projects.forEach((project, index) => {
+            const video = document.createElement('video');
+            video.className = 'js-main-video';
+            
+            // First video is visible and loaded
+            if (index === 0) {
+              video.classList.add('visible', 'loaded');
+            }
+            
+            video.src = project.video_url || 'assets/video/video1.mp4';
+            video.muted = true;
+            video.playsinline = true;
+            video.setAttribute('muted', '');
+            video.setAttribute('playsinline', '');
+            
+            videoWrapper.appendChild(video);
+          });
+          
+          console.log('Generated', projects.length, 'video elements');
+          
+          // Load first video immediately
+          const firstVideo = videoWrapper.querySelector('video.js-main-video.visible');
+          if (firstVideo) {
+            firstVideo.load();
+            
+            // Auto-play when ready
+            firstVideo.addEventListener('canplay', function() {
+              if (this.paused) {
+                this.play().catch(err => console.log('Autoplay blocked:', err.message));
+                console.log('First video playing');
+              }
+            }, { once: true });
+          }
+          
+          // Load other videos with delay to prioritize first video
+          const otherVideos = videoWrapper.querySelectorAll('video.js-main-video:not(.visible)');
+          otherVideos.forEach((video, index) => {
+            setTimeout(() => video.load(), (index + 1) * 100);
+          });
+        }
+        
+        function updateInitialState(projects) {
+          // Update counter
+          const counter = document.querySelector('.box--home__info__counter');
+          if (counter) {
+            counter.innerHTML = `<span>1</span>/${projects.length}`;
+          }
+          
+          // Update initial links
+          const firstProject = projects[0];
+          if (!firstProject) return;
+          
+          const mainLink = document.querySelector('.box--home__link');
+          if (mainLink) {
+            mainLink.href = firstProject.link || `works/project-detail.html#id=${firstProject.id}`;
+          }
+          
+          const mobileLink = document.querySelector('.mobile-link');
+          if (mobileLink) {
+            mobileLink.href = firstProject.link || `works/project-detail.html#id=${firstProject.id}`;
+          }
+          
+          const cursorText = document.querySelector('.cursor-main-text');
+          if (cursorText) {
+            cursorText.textContent = `open ${firstProject.title}`;
+          }
+          
+          console.log('Initial state updated');
+        }
+      })();
+    </script>
+    
+    <script src="assets/js/intro-logo-size-sync.js"></script>
+  </body>
+</html>

@@ -1,0 +1,244 @@
+<!-- Hybrid Slider Script: Inline generation + Preload detection -->
+<script>
+  (async function() {
+    console.log('Fetching API data...');
+    
+    try {
+      // Wait for projects (may already be loaded by video-preloader.js)
+      const projects = window.__projectsPreloadPromise 
+        ? await window.__projectsPreloadPromise 
+        : await window.fetchProjects();
+      
+      if (projects.length > 0) {
+        const sliderProjects = projects.slice(0, 6);
+        window.__sliderProjects = sliderProjects;
+        
+        console.log(`Loaded ${sliderProjects.length} projects for slider`);
+        
+        // Generate list items with cursor player
+        generateListItems(sliderProjects);
+        
+        // Generate videos (with preload detection!)
+        generateVideoElements(sliderProjects);
+        
+        // Update counter and links
+        updateInitialState(sliderProjects);
+        
+        // Enable links
+        enableLinks(sliderProjects[0]);
+        
+        console.log('Slider ready - build.min.js will handle navigation');
+      }
+    } catch (err) {
+      console.error('API failed:', err);
+    }
+    
+    function generateListItems(projects) {
+      const listContainer = document.querySelector('.list--home');
+      if (!listContainer) return;
+      
+      // Generate cursor player wrapper with videos
+      let cursorPlayerHTML = `
+        <div class="cursor-player-animated js-cursor-player-animated">
+          <div class="mooving-elements players-wrapper is-player" data-friction="7">
+      `;
+      
+      projects.forEach(project => {
+        cursorPlayerHTML += `
+            <video
+              class="js-video player-animated-player"
+              data-src="${project.video_url}"
+              playsinline
+              loop
+              muted
+            ></video>
+        `;
+      });
+      
+      cursorPlayerHTML += `
+          </div>
+        </div>
+      `;
+      
+      // Generate list items
+      let listItemsHTML = '';
+      projects.forEach((project, index) => {
+        const link = project.link || `works/project-detail#id=${project.id}`;
+        const displayClient = project.client_short || project.client;
+        
+        listItemsHTML += `
+          <li class="${index === 0 ? 'is-active' : ''}" data-project-index="${index}">
+            <a href="${link}" class="js-change-video">
+              <h2>${project.title}</h2>
+              <p>${displayClient}</p>
+              <p>${project.classification}</p>
+            </a>
+          </li>
+        `;
+      });
+      
+      // Insert cursor player + list items
+      listContainer.innerHTML = cursorPlayerHTML + listItemsHTML;
+      
+      // Load cursor player videos
+      setTimeout(() => {
+        const cursorVideos = listContainer.querySelectorAll('.player-animated-player[data-src]');
+        cursorVideos.forEach((video, index) => {
+          if (video.dataset.src && !video.src) {
+            video.src = video.dataset.src;
+            setTimeout(() => video.load(), index * 50);
+          }
+        });
+        console.log('Loaded', cursorVideos.length, 'cursor player videos');
+        
+        // Dispatch event for cursor player re-initialization
+        setTimeout(() => {
+          const event = new Event('slider-rendered');
+          window.dispatchEvent(event);
+          console.log('✓ Dispatched slider-rendered event');
+        }, 200);
+      }, 100);
+      
+      console.log('Generated', projects.length, 'list items with .js-change-video');
+    }
+    
+    function generateVideoElements(projects) {
+      const videoWrapper = document.querySelector('.box--home__wrapper');
+      if (!videoWrapper) return;
+      
+      // ✅ PRELOAD DETECTION: Check if first video is already preloaded
+      const preloadVideo = window.__preloadVideo || videoWrapper.querySelector('#preload-video');
+      const firstVideoUrl = projects[0].video_url;
+      
+      if (preloadVideo && preloadVideo.src && preloadVideo.src.includes(firstVideoUrl.split('/').pop())) {
+        console.log('✅ VIDEO PRELOAD: Keeping existing preloaded video');
+        console.log('📊 VIDEO PRELOAD: readyState:', preloadVideo.readyState);
+        
+        // Ensure it has the right classes
+        if (!preloadVideo.classList.contains('js-main-video')) {
+          preloadVideo.classList.add('js-main-video');
+        }
+        if (!preloadVideo.classList.contains('visible')) {
+          preloadVideo.classList.add('visible');
+        }
+        if (!preloadVideo.classList.contains('loaded')) {
+          preloadVideo.classList.add('loaded');
+        }
+        
+        // Remove id to avoid conflicts
+        if (preloadVideo.id === 'preload-video') {
+          preloadVideo.removeAttribute('id');
+        }
+        
+        // Generate remaining 5 videos (skip first one)
+        projects.slice(1).forEach((project) => {
+          const video = document.createElement('video');
+          video.className = 'js-main-video';
+          video.src = project.video_url;
+          video.muted = true;
+          video.playsinline = true;
+          video.setAttribute('muted', '');
+          video.setAttribute('playsinline', '');
+          
+          videoWrapper.appendChild(video);
+        });
+        
+        console.log('Generated', projects.length - 1, 'additional videos (kept preloaded first video)');
+        
+        // Preloaded video should already be playing or ready to play
+        if (preloadVideo.paused && preloadVideo.readyState >= 3) {
+          preloadVideo.play().catch(err => console.log('Autoplay blocked:', err.message));
+        }
+      } else {
+        console.log('⚠️ No preloaded video found, creating all videos');
+        
+        // Clear and create all 6 videos
+        videoWrapper.innerHTML = '';
+        
+        projects.forEach((project, index) => {
+          const video = document.createElement('video');
+          video.className = 'js-main-video';
+          
+          if (index === 0) {
+            video.classList.add('visible', 'loaded');
+          }
+          
+          video.src = project.video_url;
+          video.muted = true;
+          video.playsinline = true;
+          video.setAttribute('muted', '');
+          video.setAttribute('playsinline', '');
+          
+          videoWrapper.appendChild(video);
+        });
+        
+        console.log('Generated', projects.length, 'video elements');
+        
+        // Load first video
+        const firstVideo = videoWrapper.querySelector('video.js-main-video.visible');
+        if (firstVideo) {
+          firstVideo.load();
+          firstVideo.addEventListener('canplay', function() {
+            if (this.paused) {
+              this.play().catch(err => console.log('Autoplay blocked:', err.message));
+              console.log('First video playing');
+            }
+          }, { once: true });
+        }
+      }
+      
+      // Load other videos with delay
+      const otherVideos = videoWrapper.querySelectorAll('video.js-main-video:not(.visible)');
+      otherVideos.forEach((video, index) => {
+        setTimeout(() => video.load(), (index + 1) * 100);
+      });
+    }
+    
+    function updateInitialState(projects) {
+      // Update counter
+      const counter = document.querySelector('.box--home__info__counter');
+      if (counter) {
+        counter.innerHTML = `<span>1</span>/<span id="slider-total">${projects.length}</span>`;
+      }
+      
+      // Update initial links
+      const firstProject = projects[0];
+      if (!firstProject) return;
+      
+      const mainLink = document.querySelector('.box--home__link');
+      if (mainLink) {
+        mainLink.href = firstProject.link || `works/project-detail#id=${firstProject.id}`;
+      }
+      
+      const mobileLink = document.querySelector('.mobile-link');
+      if (mobileLink) {
+        mobileLink.href = firstProject.link || `works/project-detail#id=${firstProject.id}`;
+      }
+      
+      const cursorText = document.querySelector('.cursor-main-text');
+      if (cursorText) {
+        cursorText.textContent = `open ${firstProject.title}`;
+      }
+      
+      console.log('Initial state updated');
+    }
+    
+    function enableLinks(firstProject) {
+      // Enable main link
+      const mainLink = document.getElementById('homepage-main-link');
+      if (mainLink) {
+        mainLink.style.pointerEvents = 'auto';
+        mainLink.style.opacity = '1';
+        console.log('✓ Main link enabled');
+      }
+      
+      // Enable mobile link
+      const mobileLink = document.getElementById('homepage-mobile-link');
+      if (mobileLink) {
+        mobileLink.style.pointerEvents = 'auto';
+        mobileLink.style.opacity = '1';
+        console.log('✓ Mobile link enabled');
+      }
+    }
+  })();
+</script>

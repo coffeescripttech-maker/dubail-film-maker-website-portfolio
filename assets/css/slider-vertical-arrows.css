@@ -19,9 +19,17 @@
 }
 
 .slider-nav-arrow svg {
-  width: 24px;
-  height: 36px;
+  width: 20px; /* Reduced from 24px */
+  height: 32px; /* Reduced from 36px */
   transition: all 0.3s ease;
+}
+
+/* Make SVG strokes thinner */
+.slider-nav-arrow svg path,
+.slider-nav-arrow svg polyline,
+.slider-nav-arrow svg line {
+  stroke-width: 1px; /* Thin stroke */
+  vector-effect: non-scaling-stroke; /* Keep stroke width consistent */
 }
 
 .slider-nav-arrow:hover {
@@ -43,6 +51,17 @@
 
 .slider-nav-arrow.arrow-next {
   right: -3rem;
+}
+
+/* Also style the mobile arrows (← →) to be thinner */
+.arrows button {
+  font-weight: 200; /* Thinner font weight */
+  font-size: 24px;
+}
+
+.arrows .arrow-prev,
+.arrows .arrow-next {
+  font-weight: 200; /* Thinner arrows */
 }
 
 

@@ -15,17 +15,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@700&amp;display=swap" rel="stylesheet">
 
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png%20favicon-32x32.html">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png%20favicon-16x16.html">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
   <link rel="manifest" href="assets/favicons/site.webmanifest">
   <link rel="mask-icon" href="assets/favicons/safari-pinned-tab.svg" color="#000000">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <link rel="stylesheet" href="../cdn.plyr.io/3.7.8/plyr.css" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/favicons/final_logo_black.ico">
+  <link rel="icon" type="image/x-icon" href="assets/favicons/final_logo_black.ico">
+  <link rel="stylesheet" href="3.7.8/plyr.css" />
 
   <link href="assets/dist/build.min.css" rel="stylesheet">
-  <link href="assets/css/intro-text-animation.css" rel="stylesheet">
   <link href="assets/css/header-spacing-adjustment.css" rel="stylesheet">
 
   <link rel="canonical" href="works.html" />
@@ -42,7 +42,7 @@
   <meta property="og:description"
     content="Post-Production company based in the heart of Paris, dedicated to audiovisual production, advertisement, digital content, music video feature films & documentaries" />
 
-  <title>Works</title>
+ <title> DubaiFilmMaker - Works</title>
 
   <style>
     /* Fix video thumbnail aspect ratio - prevent squishing */
@@ -157,9 +157,7 @@
           var config = JSON.parse(xhr.responseText);
           
           // Check if projectsNav.alwaysVisible is true
-          if (config.features && 
-              config.features.projectsNav && 
-              config.features.projectsNav.alwaysVisible === true) {
+          if (true) {
             // Add class to body to enable always-visible CSS rules
             document.documentElement.classList.add('projects-nav-always-visible');
             console.log('✓ Projects navigation set to always visible');
@@ -173,162 +171,6 @@
     })();
   </script>
   
-  <!-- Critical header CSS - loads synchronously to prevent FOUC -->
-  <script>
-    (function() {
-      // Synchronous XHR to load config before page renders
-      try {
-        var xhr = new XMLHttpRequest();
-        var config = null;
-        var activePresetFromCMS = null;
-        
-        // Try to get active preset from CMS API first
-        try {
-          // Add timestamp to prevent caching
-          xhr.open('GET', 'https://dubail-film-maker-website-portfolio.vercel.app/api/public/header?t=' + Date.now(), false);
-          xhr.send();
-          if (xhr.status === 200) {
-            var cmsData = JSON.parse(xhr.responseText);
-            console.log('📡 Full CMS API response:', cmsData);
-            activePresetFromCMS = cmsData.activePreset;
-            console.log('✓ Active preset from CMS:', activePresetFromCMS);
-          }
-        } catch (e) {
-          console.warn('⚠️ CMS API not available, using local config:', e);
-        }
-        
-        // Load header.json for preset configurations
-        xhr.open('GET', '/data/header.json', false);
-        xhr.send();
-        
-        if (xhr.status === 200) {
-          config = JSON.parse(xhr.responseText);
-          
-          // Use preset from CMS if available, otherwise use local activePreset
-          var preset = activePresetFromCMS || config.activePreset || 'default';
-          console.log('Using preset:', preset);
-          
-          var presetConfig = config.presets[preset];
-          
-          if (presetConfig) {
-            // Store for later use by site-config.js
-            window.__headerConfig = config;
-            window.__headerPreset = presetConfig;
-            window.__headerPresetName = preset;
-            
-            // Inject critical CSS immediately
-            var style = document.createElement('style');
-            style.id = 'header-critical-css';
-            style.textContent = generateHeaderCSS(presetConfig);
-            document.head.appendChild(style);
-            
-            // Update logo when DOM is ready
-            if (presetConfig.logo && presetConfig.logo.src) {
-              document.addEventListener('DOMContentLoaded', function() {
-                var logos = document.querySelectorAll('.header__logo');
-                logos.forEach(function(logo) {
-                  logo.src = presetConfig.logo.src;
-                  if (presetConfig.logo.alt) {
-                    logo.alt = presetConfig.logo.alt;
-                  }
-                  // Show logo after src is updated
-                  logo.classList.add('loaded');
-                });
-              });
-            }
-            
-            console.log('✓ Critical header CSS loaded synchronously:', preset);
-            console.log('Generated CSS (full):', style.textContent); // Log full CSS
-          }
-        }
-      } catch (e) {
-        console.warn('Could not load header config synchronously:', e);
-      }
-      
-      function generateHeaderCSS(preset) {
-        var css = '';
-        
-        // Mobile styles
-        if (preset.mobile) {
-          css += '@media (max-width: 767px) {';
-          css += 'html body.template-projects .app-container .header .header__nav, html body.template-homepage .app-container .header .header__nav, html body.template-about .app-container .header .header__nav, html body.template-contact .app-container .header .header__nav {';
-          css += 'display: flex !important;';
-          css += 'align-items: ' + preset.mobile.headerNav.alignItems + ' !important;';
-          css += 'padding: ' + preset.mobile.headerNav.padding + ' !important;';
-          css += 'min-height: ' + preset.mobile.headerNav.minHeight + ' !important;';
-          if (preset.mobile.headerNav.flexDirection) css += 'flex-direction: ' + preset.mobile.headerNav.flexDirection + ' !important;';
-          if (preset.mobile.headerNav.justifyContent) css += 'justify-content: ' + preset.mobile.headerNav.justifyContent + ' !important;';
-          if (preset.mobile.headerNav.gap) css += 'gap: ' + preset.mobile.headerNav.gap + ' !important;';
-          if (preset.mobile.headerNav.width) css += 'width: ' + preset.mobile.headerNav.width + ' !important;';
-          css += '}';
-          
-          css += 'html body.template-projects .app-container .header .header__nav .logo-link, html body.template-homepage .app-container .header .header__nav .logo-link, html body.template-about .app-container .header .header__nav .logo-link, html body.template-contact .app-container .header .header__nav .logo-link {';
-          css += 'display: flex !important; align-items: center !important;';
-          if (preset.mobile.logoLink.maxWidth) css += 'max-width: ' + preset.mobile.logoLink.maxWidth + ' !important;';
-          if (preset.mobile.logoLink.flex) css += 'flex: ' + preset.mobile.logoLink.flex + ' !important;';
-          if (preset.mobile.logoLink.flexShrink) css += 'flex-shrink: ' + preset.mobile.logoLink.flexShrink + ' !important;';
-          if (preset.mobile.logoLink.paddingRight) css += 'padding-right: ' + preset.mobile.logoLink.paddingRight + ' !important;';
-          if (preset.mobile.logoLink.width) css += 'width: ' + preset.mobile.logoLink.width + ' !important;';
-          if (preset.mobile.logoLink.margin) css += 'margin: ' + preset.mobile.logoLink.margin + ' !important;';
-          css += '}';
-          
-          css += 'html body.template-projects .app-container .header .header__nav .logo-link .header__logo, html body.template-homepage .app-container .header .header__nav .logo-link .header__logo, html body.template-about .app-container .header .header__nav .logo-link .header__logo, html body.template-contact .app-container .header .header__nav .logo-link .header__logo {';
-          css += 'display: block !important;';
-          css += 'max-height: ' + preset.mobile.logo.maxHeight + ' !important;';
-          css += 'max-width: ' + preset.mobile.logo.maxWidth + ' !important;';
-          css += 'width: ' + preset.mobile.logo.width + ' !important;';
-          css += preset.mobile.logo.margin ? 'margin: ' + preset.mobile.logo.margin + ' !important;' : 'margin: 0 !important;';
-          css += '}';
-          
-          css += 'html body.template-projects .app-container .header .header__nav .btn--menu, html body.template-homepage .app-container .header .header__nav .btn--menu, html body.template-about .app-container .header .header__nav .btn--menu, html body.template-contact .app-container .header .header__nav .btn--menu { flex-shrink: 0 !important; margin: 0 !important; }';
-          css += '}';
-        }
-        
-        // Desktop styles
-        if (preset.desktop) {
-          css += '@media (min-width: 768px) {';
-          if (preset.desktop.headerNav) {
-            css += 'html body.template-projects .app-container .header .header__nav, html body.template-homepage .app-container .header .header__nav, html body.template-about .app-container .header .header__nav, html body.template-contact .app-container .header .header__nav {';
-            css += 'display: flex !important;';
-            if (preset.desktop.headerNav.flexDirection) css += 'flex-direction: ' + preset.desktop.headerNav.flexDirection + ' !important;';
-            if (preset.desktop.headerNav.justifyContent) css += 'justify-content: ' + preset.desktop.headerNav.justifyContent + ' !important;';
-            if (preset.desktop.headerNav.gap) css += 'gap: ' + preset.desktop.headerNav.gap + ' !important;';
-            if (preset.desktop.headerNav.alignItems) css += 'align-items: ' + preset.desktop.headerNav.alignItems + ' !important;';
-            if (preset.desktop.headerNav.width) css += 'width: ' + preset.desktop.headerNav.width + ' !important;';
-            if (preset.desktop.headerNav.minHeight) css += 'min-height: ' + preset.desktop.headerNav.minHeight + ' !important;';
-            css += '}';
-          }
-          
-          if (preset.desktop.logoLink) {
-            css += 'html body.template-projects .app-container .header .header__nav .logo-link, html body.template-homepage .app-container .header .header__nav .logo-link, html body.template-about .app-container .header .header__nav .logo-link, html body.template-contact .app-container .header .header__nav .logo-link {';
-            if (preset.desktop.logoLink.width) css += 'width: ' + preset.desktop.logoLink.width + ' !important;';
-            if (preset.desktop.logoLink.flexShrink) css += 'flex-shrink: ' + preset.desktop.logoLink.flexShrink + ' !important;';
-            if (preset.desktop.logoLink.margin) css += 'margin: ' + preset.desktop.logoLink.margin + ' !important;';
-            css += '}';
-          }
-          
-          css += 'html body.template-projects .app-container .header .header__nav .logo-link .header__logo, html body.template-homepage .app-container .header .header__nav .logo-link .header__logo, html body.template-about .app-container .header .header__nav .logo-link .header__logo, html body.template-contact .app-container .header .header__nav .logo-link .header__logo {';
-          css += 'display: block !important;';
-          css += 'max-height: ' + preset.desktop.logo.maxHeight + ' !important;';
-          css += 'width: ' + preset.desktop.logo.width + ' !important;';
-          if (preset.desktop.logo.margin) css += 'margin: ' + preset.desktop.logo.margin + ' !important;';
-          css += '}';
-          css += '}';
-        }
-        
-        // Extra large styles
-        if (preset.extraLarge) {
-          css += '@media (min-width: 1200px) {';
-          css += 'html body.template-projects .app-container .header .header__nav .logo-link .header__logo, html body.template-homepage .app-container .header .header__nav .logo-link .header__logo, html body.template-about .app-container .header .header__nav .logo-link .header__logo, html body.template-contact .app-container .header .header__nav .logo-link .header__logo {';
-          css += 'max-height: ' + preset.extraLarge.logo.maxHeight + ' !important;';
-          css += '}';
-          css += '}';
-        }
-        
-        return css;
-      }
-    })();
-  </script>
 
 </head>
 
@@ -339,8 +181,8 @@
       <div class="app-container-inner">
         <header class="header">
           <div class="header__nav">
-            <a href="index.html" data-navigo class="logo-link">
-              <img class="header__logo" src="assets/img/logo/dubaifilmmaker-light.svg" alt="Dubai Film Maker" />
+            <a href="index" data-navigo data-slug="homepage" class="logo-link">
+              <img class="header__logo" src="assets/img/final_logo.svg" alt="Dubai Film Maker" />
             </a>
             <a href="#main_menu" class="btn btn--menu">
               <span>menu.</span>
@@ -415,13 +257,14 @@
   </main>
 
   <!--  -->
-
-  <script src="assets/dist/build.min.js"></script>
+       <script src="assets/js/intro-logo-size-sync.js"></script>
   <script src="assets/js/data-loader.js"></script>
   <script src="assets/js/page-renderer.js"></script>
+  <script src="assets/js/spa-router.js"></script>
+  <script src="assets/dist/build.min.js"></script>
   <script src="assets/js/app-init.js"></script>
   <script src="assets/js/site-config.js"></script>
-  <script src="assets/js/text-logo-handler.js"></script>
+
   <script>
     // Re-initialize build.min.js hover effects after dynamic content loads
     window.addEventListener('projects-rendered', function() {

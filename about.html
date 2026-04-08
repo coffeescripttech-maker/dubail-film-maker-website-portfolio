@@ -28,13 +28,13 @@
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="assets/favicons/favicon-32x32.png%20favicon-32x32.html"
+      href="assets/favicons/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="assets/favicons/favicon-16x16.png%20favicon-16x16.html"
+      href="assets/favicons/favicon-16x16.png"
     />
     <link rel="manifest" href="assets/favicons/site.webmanifest" />
     <link
@@ -44,14 +44,14 @@
     />
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="theme-color" content="#ffffff" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" href="../cdn.plyr.io/3.7.8/plyr.css" />
-<link rel="stylesheet" href="3.7.8/plyr.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicons/final_logo_black.ico" />
+    <link rel="icon" type="image/x-icon" href="assets/favicons/final_logo_black.ico" />
+    <link rel="stylesheet" href="3.7.8/plyr.css" />
     <link href="assets/dist/build.min.css" rel="stylesheet" />
-    <link href="assets/css/intro-text-animation.css" rel="stylesheet" />
     <link href="assets/css/header-spacing-adjustment.css" rel="stylesheet" />
     <link href="assets/css/templates/about.css" rel="stylesheet" />
     <link rel="canonical" href="about.html" />
+        <link href="assets/css/templates/about.css" rel="stylesheet" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content=" About" />
@@ -69,158 +69,18 @@
       content="Post-Production company based in the heart of Paris, dedicated to audiovisual production, advertisement, digital content, music video feature films & documentaries."
     />
 
-    <title> About</title>
+<title> DubaiFilmMaker - About</title>
 
     <style>
       /* Contact label letter spacing */
       .contact-label {
         letter-spacing: 0.15em;
       }
-      
-      /* Header styles loaded from data/header.json - prevent FOUC */
-      .header__logo {
-        object-fit: contain !important;
-        height: auto !important;
-        opacity: 0;
-        transition: opacity 0.15s ease-in;
-      }
-      
-      .header__logo.loaded {
-        opacity: 1;
-      }
-      
-      /* Add background color behind logo on light pages */
-      .header__logo {
-        background-color: #e7e7e7 !important;
-        padding: 8px 12px;
-        border-radius: 4px;
-      }
+
     </style>
     
     <!-- Critical header CSS - loads synchronously to prevent FOUC -->
-    <script>
-      (function() {
-        try {
-          var xhr = new XMLHttpRequest();
-          var config = null;
-          var activePresetFromCMS = null;
-          
-          // Auto-detect CMS URL based on environment
-          var cmsBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-            ? 'http://localhost:3000/api/public'
-            : 'https://dubail-film-maker-website-portfolio.vercel.app/api/public';
-          
-          // Try to get active preset from CMS API first
-          try {
-            // Add timestamp to prevent caching
-            xhr.open('GET', cmsBaseUrl + '/header?t=' + Date.now(), false);
-            xhr.send();
-            if (xhr.status === 200) {
-              var cmsData = JSON.parse(xhr.responseText);
-              console.log('📡 Full CMS API response:', cmsData);
-              activePresetFromCMS = cmsData.activePreset;
-              console.log('✓ Active preset from CMS:', activePresetFromCMS);
-            }
-          } catch (e) {
-            console.warn('⚠️ CMS API not available, using local config:', e);
-          }
-          
-          // Load header.json for preset configurations
-          xhr.open('GET', '/data/header.json', false);
-          xhr.send();
-          
-          if (xhr.status === 200) {
-            config = JSON.parse(xhr.responseText);
-            
-            // Use preset from CMS if available, otherwise use local activePreset
-            var preset = activePresetFromCMS || config.activePreset || 'default';
-            console.log('Using preset:', preset);
-            
-            var presetConfig = config.presets[preset];
-            
-            if (presetConfig) {
-              window.__headerConfig = config;
-              window.__headerPreset = presetConfig;
-              window.__headerPresetName = preset;
-              
-              var style = document.createElement('style');
-              style.id = 'header-critical-css';
-              style.textContent = generateHeaderCSS(presetConfig);
-              document.head.appendChild(style);
-              
-              if (presetConfig.logo && presetConfig.logo.src) {
-                document.addEventListener('DOMContentLoaded', function() {
-                  var logos = document.querySelectorAll('.header__logo');
-                  logos.forEach(function(logo) {
-                    // Use dark logo for light background pages (about, contact)
-                   
-                   console.log({jha: presetConfig.logo.srcDark});
-                   
-                    logo.src = presetConfig.logo.srcDark || presetConfig.logo.src;
-                    if (presetConfig.logo.alt) logo.alt = presetConfig.logo.alt;
-                    logo.classList.add('loaded');
-                  });
-                });
-              }
-              
-              console.log('✓ Critical header CSS loaded synchronously:', preset);
-            }
-          }
-        } catch (e) {
-          console.warn('Could not load header config synchronously:', e);
-        }
-        
-        function generateHeaderCSS(preset) {
-          var css = '';
-          if (preset.mobile) {
-            css += '@media (max-width: 767px) {';
-            css += 'html body.template-projects .app-container .header .header__nav, html body.template-homepage .app-container .header .header__nav, html body.template-about .app-container .header .header__nav, html body.template-contact .app-container .header .header__nav {display: flex !important;align-items: ' + preset.mobile.headerNav.alignItems + ' !important;padding: ' + preset.mobile.headerNav.padding + ' !important;min-height: ' + preset.mobile.headerNav.minHeight + ' !important;';
-            if (preset.mobile.headerNav.flexDirection) css += 'flex-direction: ' + preset.mobile.headerNav.flexDirection + ' !important;';
-            if (preset.mobile.headerNav.justifyContent) css += 'justify-content: ' + preset.mobile.headerNav.justifyContent + ' !important;';
-            if (preset.mobile.headerNav.gap) css += 'gap: ' + preset.mobile.headerNav.gap + ' !important;';
-            if (preset.mobile.headerNav.width) css += 'width: ' + preset.mobile.headerNav.width + ' !important;';
-            css += '}';
-            css += 'html body.template-projects .app-container .header .header__nav .logo-link, html body.template-homepage .app-container .header .header__nav .logo-link, html body.template-about .app-container .header .header__nav .logo-link, html body.template-contact .app-container .header .header__nav .logo-link {display: flex !important;align-items: center !important;';
-            if (preset.mobile.logoLink.maxWidth) css += 'max-width: ' + preset.mobile.logoLink.maxWidth + ' !important;';
-            if (preset.mobile.logoLink.flex) css += 'flex: ' + preset.mobile.logoLink.flex + ' !important;';
-            if (preset.mobile.logoLink.flexShrink) css += 'flex-shrink: ' + preset.mobile.logoLink.flexShrink + ' !important;';
-            if (preset.mobile.logoLink.paddingRight) css += 'padding-right: ' + preset.mobile.logoLink.paddingRight + ' !important;';
-            if (preset.mobile.logoLink.width) css += 'width: ' + preset.mobile.logoLink.width + ' !important;';
-            if (preset.mobile.logoLink.margin) css += 'margin: ' + preset.mobile.logoLink.margin + ' !important;';
-            css += '}';
-            css += 'html body.template-projects .app-container .header .header__nav .logo-link .header__logo, html body.template-homepage .app-container .header .header__nav .logo-link .header__logo, html body.template-about .app-container .header .header__nav .logo-link .header__logo, html body.template-contact .app-container .header .header__nav .logo-link .header__logo {display: block !important;max-height: ' + preset.mobile.logo.maxHeight + ' !important;max-width: ' + preset.mobile.logo.maxWidth + ' !important;width: ' + preset.mobile.logo.width + ' !important;' + (preset.mobile.logo.margin ? 'margin: ' + preset.mobile.logo.margin + ' !important;' : 'margin: 0 !important;') + '}';
-            css += 'html body.template-projects .app-container .header .header__nav .btn--menu, html body.template-homepage .app-container .header .header__nav .btn--menu, html body.template-about .app-container .header .header__nav .btn--menu, html body.template-contact .app-container .header .header__nav .btn--menu {flex-shrink: 0 !important;margin: 0 !important;}';
-            css += '}';
-          }
-          if (preset.desktop) {
-            css += '@media (min-width: 768px) {';
-            if (preset.desktop.headerNav) {
-              css += 'html body.template-projects .app-container .header .header__nav, html body.template-homepage .app-container .header .header__nav, html body.template-about .app-container .header .header__nav, html body.template-contact .app-container .header .header__nav {display: flex !important;';
-              if (preset.desktop.headerNav.flexDirection) css += 'flex-direction: ' + preset.desktop.headerNav.flexDirection + ' !important;';
-              if (preset.desktop.headerNav.justifyContent) css += 'justify-content: ' + preset.desktop.headerNav.justifyContent + ' !important;';
-              if (preset.desktop.headerNav.gap) css += 'gap: ' + preset.desktop.headerNav.gap + ' !important;';
-              if (preset.desktop.headerNav.alignItems) css += 'align-items: ' + preset.desktop.headerNav.alignItems + ' !important;';
-              if (preset.desktop.headerNav.width) css += 'width: ' + preset.desktop.headerNav.width + ' !important;';
-              if (preset.desktop.headerNav.minHeight) css += 'min-height: ' + preset.desktop.headerNav.minHeight + ' !important;';
-              css += '}';
-            }
-            if (preset.desktop.logoLink) {
-              css += 'html body.template-projects .app-container .header .header__nav .logo-link, html body.template-homepage .app-container .header .header__nav .logo-link, html body.template-about .app-container .header .header__nav .logo-link, html body.template-contact .app-container .header .header__nav .logo-link {';
-              if (preset.desktop.logoLink.width) css += 'width: ' + preset.desktop.logoLink.width + ' !important;';
-              if (preset.desktop.logoLink.flexShrink) css += 'flex-shrink: ' + preset.desktop.logoLink.flexShrink + ' !important;';
-              if (preset.desktop.logoLink.margin) css += 'margin: ' + preset.desktop.logoLink.margin + ' !important;';
-              css += '}';
-            }
-            css += 'html body.template-projects .app-container .header .header__nav .logo-link .header__logo, html body.template-homepage .app-container .header .header__nav .logo-link .header__logo, html body.template-about .app-container .header .header__nav .logo-link .header__logo, html body.template-contact .app-container .header .header__nav .logo-link .header__logo {display: block !important;max-height: ' + preset.desktop.logo.maxHeight + ' !important;width: ' + preset.desktop.logo.width + ' !important;' + (preset.desktop.logo.margin ? 'margin: ' + preset.desktop.logo.margin + ' !important;' : '') + '}';
-            css += '}';
-          }
-          if (preset.extraLarge) {
-            css += '@media (min-width: 1200px) {html body.template-projects .app-container .header .header__nav .logo-link .header__logo, html body.template-homepage .app-container .header .header__nav .logo-link .header__logo, html body.template-about .app-container .header .header__nav .logo-link .header__logo, html body.template-contact .app-container .header .header__nav .logo-link .header__logo {max-height: ' + preset.extraLarge.logo.maxHeight + ' !important;}}';
-          }
-          return css;
-        }
-      })();
-    </script>
+ 
   </head>
   <body class="template-about">
     <main class="main">
@@ -228,8 +88,8 @@
         <div class="app-container-inner">
           <header class="header">
             <div class="header__nav">
-              <a href="index" data-navigo class="logo-link">
-                <img class="header__logo" src="assets/img/logo/dubaifilmmaker-dark.svg" alt="Dubai Film Maker" />
+              <a href="index" data-navigo data-slug="homepage" class="logo-link">
+                <img class="header__logo" src="assets/img/final_logo_black.svg" alt="Dubai Film Maker" />
               </a>
               <a href="#main_menu" class="btn btn--menu">
                 <span>menu.</span>
@@ -273,7 +133,14 @@
                   <!-- Content will be loaded from JSON -->
                   Loading about content...
                 </div>
-                <button class="player-link js-open-popin-video">
+              </div>
+
+              <div class="images-button-wrapper">
+                <div class="list list--about-images">
+                  <!-- Images will be loaded dynamically from about.json -->
+                </div>
+                
+                <button class="player-link js-open-popin-video btn-reel">
                   <svg
                     width="8"
                     height="10"
@@ -288,12 +155,6 @@
                   </svg>
                   Loading...
                 </button>
-              </div>
-
-
-              <div style="margin-top: 30px;"></div>
-              <div class="list list--about-images">
-                <!-- Images will be loaded dynamically from about.json -->
               </div>
             </div>
 
@@ -324,12 +185,14 @@
 
     <!--  -->
 
-    <script src="assets/dist/build.min.js"></script>
+       <script src="assets/js/intro-logo-size-sync.js"></script>
     <script src="assets/js/data-loader.js"></script>
     <script src="assets/js/page-renderer.js"></script>
+    <script src="assets/js/spa-router.js"></script>
+    <script src="assets/dist/build.min.js"></script>
+    <script src="assets/js/dynamic-content-reinit.js"></script>
     <script src="assets/js/app-init.js"></script>
-    <script src="assets/js/site-config.js"></script>
-
+    <script src="assets/js/site-config.js"></script
     
     <!-- Cloudflare Web Analytics -->
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "624e41bf9bf046a88fa109aebee0d778"}'></script>
