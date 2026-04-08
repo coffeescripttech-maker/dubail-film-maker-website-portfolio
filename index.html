@@ -1054,6 +1054,15 @@
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Storytelling animation complete - DUBAIFILMMAKER revealed!');
+          
+          // Dispatch custom event that other scripts can listen to
+          const event = new CustomEvent('gsap-text-animation-complete', {
+            detail: { duration: tl.duration() }
+          });
+          window.dispatchEvent(event);
+          
+          // Store completion flag globally
+          window.__gsapTextAnimationComplete = true;
         }
       });
 
@@ -1126,6 +1135,59 @@
       setTimeout(() => {
         animateLetters();
       }, 500);
+    });
+    
+    // Example: Listen for animation completion
+    window.addEventListener('gsap-text-animation-complete', (e) => {
+      console.log('🎉 GSAP text animation finished!');
+      console.log('   Animation duration:', e.detail.duration.toFixed(2) + 's');
+      console.log('   Triggering upward movement to header...');
+      
+      // Trigger the same flow that build.min.js expects from Lottie
+      // CRITICAL: Add lottie-ended to .bloc-intro (parent), not .intro-anim-wrapper
+      const blocIntro = document.querySelector('.bloc-intro');
+      const introWrapper = document.querySelector('.intro-anim-wrapper');
+      
+      if (blocIntro && introWrapper) {
+        // Add lottie-ended class to .bloc-intro to trigger CSS upward movement
+        // CSS rule: .bloc-intro.lottie-ended .intro-anim-surwrapper { transform: translateY(...) }
+        blocIntro.classList.add('lottie-ended');
+        console.log('✓ Added lottie-ended class to .bloc-intro - CSS upward movement started');
+        
+        // Wait for CSS upward movement to complete (800ms transition)
+        setTimeout(() => {
+          // Show header logo (it's already positioned correctly)
+          const headerLogo = document.querySelector('.header__logo');
+          if (headerLogo) {
+            headerLogo.style.opacity = '1';
+            headerLogo.classList.add('loaded');
+            console.log('✓ Header logo visible');
+          }
+          
+          // Fade out preloader text
+          const preloaderText = document.querySelector('.intro-text-animation');
+          if (preloaderText) {
+            preloaderText.style.transition = 'opacity 0.3s ease';
+            preloaderText.style.opacity = '0';
+            console.log('✓ Preloader text fading out');
+          }
+        }, 800);
+        
+        // Add intro-ended class after full transition (upward movement + fade)
+        setTimeout(() => {
+          document.body.classList.add('intro-ended');
+          if (document.scrollingElement) {
+            document.scrollingElement.classList.add('intro-ended');
+          }
+          console.log('✓ Added intro-ended class - intro complete');
+          
+          // Hide intro wrapper completely
+          setTimeout(() => {
+            introWrapper.style.display = 'none';
+            console.log('✅ Intro wrapper hidden - transition complete!');
+          }, 300);
+        }, 1200);
+      }
     });
   </script>
 
