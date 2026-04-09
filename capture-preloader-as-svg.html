@@ -131,6 +131,18 @@
     <div style="margin-bottom: 20px">
       <div style="margin-bottom: 10px">
         <label
+          >Custom Text:
+          <input
+            type="text"
+            id="customText"
+            value="DUBAIFILMMAKER"
+            style="padding: 8px; font-size: 14px; width: 300px; background: #2a2a2a; color: #fff; border: 1px solid #555;"
+            placeholder="Enter your text"
+            oninput="updatePreview()"
+        /></label>
+      </div>
+      <div style="margin-bottom: 10px">
+        <label
           >Target Width (px):
           <input
             type="number"
@@ -219,31 +231,26 @@
           parseInt(document.getElementById('targetWidth').value) || 1920;
         const textColor =
           document.getElementById('textColor').value || '#ffffff';
+        const customText =
+          document.getElementById('customText').value || 'DUBAIFILMMAKER';
         const fontSize = targetWidth * 0.055; // 5.5vw
+
+        // Generate letter spans from custom text
+        const letterSpans = customText
+          .split('')
+          .map(char => `<span class="letter">${char}</span>`)
+          .join('');
 
         // Update preview
         const preview = document.getElementById('preview');
         preview.innerHTML = `
         <div class="intro-text-animation" id="preloaderText" style="font-size: ${fontSize}px; color: ${textColor};">
-          <span class="letter">D</span>
-          <span class="letter">U</span>
-          <span class="letter">B</span>
-          <span class="letter">A</span>
-          <span class="letter">I</span>
-          <span class="letter">F</span>
-          <span class="letter">I</span>
-          <span class="letter">L</span>
-          <span class="letter">M</span>
-          <span class="letter">M</span>
-          <span class="letter">A</span>
-          <span class="letter">K</span>
-          <span class="letter">E</span>
-          <span class="letter">R</span>
+          ${letterSpans}
         </div>
       `;
 
         document.getElementById('sizeInfo').textContent =
-          `Font size: ${fontSize.toFixed(1)}px (5.5vw of ${targetWidth}px) | Color: ${textColor}`;
+          `Text: "${customText}" | Font size: ${fontSize.toFixed(1)}px (5.5vw of ${targetWidth}px) | Color: ${textColor}`;
 
         setTimeout(generateSVG, 500);
       }
@@ -288,17 +295,21 @@
           return;
         }
 
+        const customText =
+          document.getElementById('customText').value || 'DUBAIFILMMAKER';
+        const filename = `${customText.toLowerCase().replace(/\s+/g, '-')}-preloader.svg`;
+
         const blob = new Blob([svgCode], { type: 'image/svg+xml' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'dubaifilmmaker-preloader.svg';
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        alert('SVG downloaded as dubaifilmmaker-preloader.svg');
+        alert(`SVG downloaded as ${filename}`);
       }
 
       function copySVG() {
