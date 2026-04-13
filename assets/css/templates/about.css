@@ -49,12 +49,15 @@
   .about-inner-wrapper {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 3rem !important;
+    gap: 0 !important;
     align-items: start !important;
+    padding: 0 !important;
   }
   
   .content-wrapper {
     grid-column: 1 !important;
+    padding: 0 30px !important;
+    box-sizing: border-box !important;
   }
   
   /* Right column wrapper for images + button */
@@ -63,10 +66,18 @@
     display: flex !important;
     flex-direction: column !important;
     gap: 2rem !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    max-width: none !important;
+    padding: 0 30px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   
   .list--about-images {
     margin-top: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
   }
   
   /* Button below images on desktop */
@@ -89,15 +100,17 @@
   padding: 0 !important;
   list-style: none !important;
   grid-auto-flow: dense !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
-/* Mobile: 2 columns */
+/* Mobile: 1 column for better image display */
 @media (max-width: 767px) {
   .list--about-images {
-    grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: 180px !important;
+    grid-template-columns: 1fr !important; /* Single column on mobile */
+    grid-auto-rows: auto !important; /* Auto height based on image */
     margin-top: 2rem !important;
-    gap: 0 !important;
+    gap: 0.5rem !important; /* Small gap between images */
   }
 }
 
@@ -105,9 +118,9 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   .list--about-images {
     grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: 200px !important;
+    grid-auto-rows: auto !important; /* Auto height based on image */
     margin-top: 2rem !important;
-    gap: 0 !important;
+    gap: 0.5rem !important; /* Small gap between images */
   }
 }
 
@@ -115,8 +128,8 @@
 @media (min-width: 1024px) {
   .list--about-images {
     grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: 220px !important;
-    gap: 0 !important;
+    grid-auto-rows: auto !important; /* Auto height based on image */
+    gap: 0.5rem !important; /* Small gap between images */
   }
 }
 
@@ -124,33 +137,48 @@
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background: #000 !important;
+  background: transparent !important; /* Changed from #000 to transparent */
 }
 
 .list--about-images .about-image-item {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background: #000 !important;
+  background: transparent !important; /* Changed from #000 to transparent */
+  display: block !important;
 }
 
 .list--about-images .pic {
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important; /* Changed to auto to maintain aspect ratio */
   display: block !important;
-  object-fit: cover !important;
-  transition: opacity 0.3s ease !important;
+  object-fit: cover !important; /* Back to cover for seamless look */
+  object-position: center !important;
+  transition: opacity 0.3s ease, transform 0.3s ease !important;
 }
 
 .list--about-images li:hover .pic {
   opacity: 0.85 !important;
+  transform: scale(1.02) !important; /* Subtle zoom on hover */
 }
 
-/* Masonry pattern - varied sizes */
+/* Masonry pattern - varied sizes (only applies when there are many images) */
 .list--about-images .about-image-item:nth-child(5n+1) {
-  grid-row: span 2 !important;
+  grid-row: span 1 !important; /* Disabled spanning for cleaner look with few images */
 }
 
 .list--about-images .about-image-item:nth-child(5n+4) {
-  grid-column: span 2 !important;
+  grid-column: span 1 !important; /* Disabled spanning for cleaner look with few images */
+}
+
+/* Special layout for exactly 3 images */
+@media (min-width: 768px) {
+  .list--about-images:has(.about-image-item:nth-child(3):last-child) {
+    /* If there are exactly 3 images, make first image span 2 columns */
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .list--about-images:has(.about-image-item:nth-child(3):last-child) .about-image-item:first-child {
+    grid-column: span 2 !important; /* First image spans full width */
+  }
 }
