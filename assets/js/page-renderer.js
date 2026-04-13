@@ -946,8 +946,11 @@
     document.getElementById('project-client').textContent = displayClient;
 
     const videoElement = document.getElementById('project-video');
-    const highQualityVideo = project.video_url;
-    videoElement.src = highQualityVideo;
+    // Use full video for project detail page (complete experience)
+    // Falls back to video_url if video_url_full doesn't exist (backward compatibility)
+    const fullVideo = project.video_url_full || project.video_url;
+    videoElement.src = fullVideo;
+    console.log('✓ Project detail video:', fullVideo);
 
     if (project.credits && project.credits.length > 0) {
       const creditsList = document.getElementById('credits-list');
