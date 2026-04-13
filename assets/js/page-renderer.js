@@ -168,8 +168,7 @@
       
       const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
-        <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
-        onclick="window.location.replace('${project.link}'); return false;">
+        <a href="${project.link}" class="box--work__link js-has-cursor-text">
           <div class="box--work__info">
              <p>${displayClient}</p>
             <h2>${project.title}</h2>
@@ -212,8 +211,7 @@
         
         const projectHTML = `
       <li class="box box--work" data-cat="${project.classification}">
-        <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
-        onclick="window.location.replace('${project.link}'); return false;">
+        <a href="${project.link}" class="box--work__link js-has-cursor-text">
           <div class="box--work__info">
                 <p>${displayClient}</p>
             <h2>${project.title}</h2>

@@ -843,8 +843,7 @@
           
           const projectHTML = `
             <li class="box box--work" data-cat="${project.classification}">
-              <a href="javascript:void(0)" class="box--work__link js-has-cursor-text" 
-                 onclick="window.location.replace('${project.link}'); return false;">
+              <a href="${project.link}" class="box--work__link js-has-cursor-text">
                 <div class="box--work__info">
                   <p>${displayClient}</p>
                   <h2>${project.title}</h2>
@@ -979,6 +978,57 @@
   <!-- Inline Animation Script -->
   <script>
     console.log('🎬 GSAP Animation Test Starting - STORYTELLING STYLE (DM splits)...');
+    
+    // Check sessionStorage for skipIntro flag (set by project detail close button)
+    const skipIntroFlag = sessionStorage.getItem('skipIntroAnimation') === 'true';
+    const skipIntroTimestamp = sessionStorage.getItem('skipIntroTimestamp');
+    
+    // Check if flag is recent (within last 5 seconds) to avoid stale flags
+    const isRecentFlag = skipIntroTimestamp && (Date.now() - parseInt(skipIntroTimestamp)) < 5000;
+    
+    console.log('🔍 Intro Skip Detection:', {
+      'skipIntroAnimation flag': skipIntroFlag,
+      'timestamp': skipIntroTimestamp,
+      'is recent (< 5s)': isRecentFlag
+    });
+    
+    // Clear the flag after checking (one-time use)
+    if (skipIntroFlag) {
+      sessionStorage.removeItem('skipIntroAnimation');
+      sessionStorage.removeItem('skipIntroTimestamp');
+      console.log('✓ Cleared skipIntroAnimation flag');
+    }
+    
+    // Skip intro if flag is set and recent
+    const shouldSkipIntro = skipIntroFlag && isRecentFlag;
+    
+    if (shouldSkipIntro) {
+      console.log('⏭️ Skipping intro animation - coming back from project');
+      
+      // Skip animation completely
+      const introWrapper = document.querySelector('.intro-anim-wrapper');
+      const blocIntro = document.querySelector('.bloc-intro');
+      
+      if (introWrapper && blocIntro) {
+        blocIntro.classList.add('lottie-started');
+        blocIntro.classList.add('lottie-ended');
+        document.body.classList.add('intro-ended');
+        if (document.scrollingElement) {
+          document.scrollingElement.classList.add('intro-ended');
+        }
+        introWrapper.style.display = 'none';
+        
+        const headerLogo = document.querySelector('.header__logo');
+        if (headerLogo) {
+          headerLogo.style.opacity = '1';
+          headerLogo.classList.add('loaded');
+        }
+        
+        console.log('✓ Intro skipped - content visible immediately');
+      }
+    } else {
+      // Run full animation
+      console.log('✓ Running full intro animation');
     
     // Get all letters
     const letters = document.querySelectorAll('.letter');
@@ -1190,6 +1240,7 @@
         }, 1200);
       }
     });
+    } // End of else block - animation only runs when not skipping
   </script>
 
 

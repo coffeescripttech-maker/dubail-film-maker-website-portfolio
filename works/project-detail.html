@@ -154,12 +154,23 @@
         if (backButton) {
           backButton.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '../index.html';
-            // if (window.history.length > 1) {
-            //   window.history.back();
-            // } else {
-            //   window.location.href = '../index.html';
-            // }
+            
+            console.log('🔙 Close button clicked');
+            
+            // Set flag in sessionStorage that we're navigating back from project
+            // This persists across page reloads
+            sessionStorage.setItem('skipIntroAnimation', 'true');
+            sessionStorage.setItem('skipIntroTimestamp', Date.now().toString());
+            console.log('✓ Set skipIntroAnimation flag in sessionStorage');
+            
+            // Use history.back() to go to previous page
+            if (window.history.length > 1) {
+              console.log('✅ Using history.back()');
+              window.history.back();
+            } else {
+              console.log('⚠️  No history - navigating to homepage');
+              window.location.href = '../index.html';
+            }
           });
         }
       });
