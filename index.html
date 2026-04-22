@@ -569,7 +569,7 @@
                   </div>
 
                   <!-- View Other Films CTA -->
-                  <a href="works.html" class="view-other-films-cta" data-navigo>
+                  <a href="#works" class="view-other-films-cta js-scroll-to-works">
                     <span class="cta-text">view other films</span>
                     <svg class="cta-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1767,3 +1767,33 @@
   </script>
   </body>
 </html>
+
+  <!-- Scroll to Works Section Handler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const viewOtherFilmsBtn = document.querySelector('.js-scroll-to-works');
+      
+      if (viewOtherFilmsBtn) {
+        viewOtherFilmsBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const worksSection = document.getElementById('works');
+          const blocProjectsListing = document.querySelector('.bloc-projects-listing');
+          
+          if (worksSection && blocProjectsListing) {
+            // Scroll to works section
+            worksSection.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Add ready class to show projects
+            setTimeout(() => {
+              blocProjectsListing.classList.add('ready');
+              console.log('✓ Scrolled to works section and made it active');
+            }, 500);
+          }
+        });
+      }
+    });
+  </script>
