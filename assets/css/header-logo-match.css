@@ -1,0 +1,36 @@
+/* Header Logo - Ensure it fits within container boundaries */
+
+.header__logo {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Ensure logo link container respects boundaries */
+.header__nav .logo-link {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Mobile: Account for menu button space */
+@media (max-width: 767px) {
+  .header__nav .logo-link {
+    width: calc(100% - 100px);
+    max-width: calc(100% - 100px);
+  }
+}
+
+/* Desktop: Full width available */
+@media (min-width: 768px) {
+  .header__nav .logo-link {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .header__logo {
+    max-width: calc(100vw - 60px);
+  }
+}
