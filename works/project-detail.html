@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
     <link href="../assets/dist/build.min.css" rel="stylesheet" />
+    <link href="../assets/css/language-toggle.css" rel="stylesheet" />
 
     <title id="page-title">DubaiFilmMaker – Project</title>
     <meta name="description" content="" id="page-description" />
@@ -55,10 +56,16 @@
           <div class="page-inner-content">
             <div class="box box--video">
               <div class="box box--video__info">
-                  <p id="project-client"></p>
+                <p id="project-client"></p>
 
                 <h1 id="project-title">Loading...</h1>
               
+                <!-- Language Toggle -->
+                <p class="language-toggle" id="language-toggle" style="display: none;">
+                  <button class="btn-language" data-lang="ar">Arabic</button>
+                  <button class="btn-language active" data-lang="en">English</button>
+                </p>
+
                 <a
                   href="#credits"
                   class="lnk lnk--credits js-toggle-credits"

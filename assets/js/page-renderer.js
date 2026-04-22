@@ -944,6 +944,23 @@
     document.getElementById('project-client').textContent = displayClient;
 
     const videoElement = document.getElementById('project-video');
+    
+    // Check if Arabic version exists
+    const hasArabicVersion = !!(project.video_url_full_arabic);
+    console.log('Arabic version available:', hasArabicVersion);
+    
+    // Show/hide language toggle
+    const languageToggle = document.getElementById('language-toggle');
+    if (languageToggle) {
+      if (hasArabicVersion) {
+        languageToggle.style.display = 'flex';
+        setupLanguageToggle(project, videoElement);
+        console.log('✓ Language toggle enabled');
+      } else {
+        languageToggle.style.display = 'none';
+      }
+    }
+    
     // Use full video for project detail page (complete experience)
     // Falls back to video_url if video_url_full doesn't exist (backward compatibility)
     const fullVideo = project.video_url_full || project.video_url;
@@ -966,6 +983,74 @@
       const creditsLink = document.querySelector('.lnk--credits');
       if (creditsLink) creditsLink.style.display = 'none';
     }
+  }
+
+  function setupLanguageToggle(project, videoElement) {
+    let currentLanguage = 'en';
+    
+    const buttons = document.querySelectorAll('.btn-language');
+    
+    buttons.forEach(btn => {
+      // Remove any existing listeners by cloning
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      
+      newBtn.addEventListener('click', function() {
+        const lang = this.dataset.lang;
+        
+        if (lang === currentLanguage) {
+          console.log('Already on', lang, 'version');
+          return;
+        }
+        
+        console.log('Switching language from', currentLanguage, 'to', lang);
+        
+        // Save current playback state
+        const currentTime = videoElement.currentTime;
+        const wasPaused = videoElement.paused;
+        
+        // Update button states
+        document.querySelectorAll('.btn-language').forEach(b => {
+          b.classList.toggle('active', b.dataset.lang === lang);
+        });
+        
+        // Switch video source
+        let newVideoUrl;
+        if (lang === 'ar') {
+          newVideoUrl = project.video_url_full_arabic;
+        } else {
+          newVideoUrl = project.video_url_full || project.video_url;
+        }
+        
+        console.log('Loading video:', newVideoUrl);
+        
+        // Update video source
+        videoElement.src = newVideoUrl;
+        
+        // Restore playback state when video is ready
+        videoElement.addEventListener('loadedmetadata', function onLoaded() {
+          // Try to restore time position (if within new video duration)
+          if (currentTime > 0 && currentTime < videoElement.duration) {
+            videoElement.currentTime = currentTime;
+            console.log('Restored playback position:', currentTime.toFixed(2) + 's');
+          }
+          
+          // Resume playback if it was playing
+          if (!wasPaused) {
+            videoElement.play().catch(err => {
+              console.log('Autoplay prevented after language switch:', err.message);
+            });
+          }
+          
+          videoElement.removeEventListener('loadedmetadata', onLoaded);
+        });
+        
+        currentLanguage = lang;
+        console.log('✓ Language switched to', lang);
+      });
+    });
+    
+    console.log('✓ Language toggle listeners attached');
   }
 
   async function initializePage() {
