@@ -47,6 +47,7 @@
 /* About page two-column layout on desktop */
 @media (min-width: 1024px) {
   .about-inner-wrapper {
+    margin-top: 60px;
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     gap: 0 !important;
