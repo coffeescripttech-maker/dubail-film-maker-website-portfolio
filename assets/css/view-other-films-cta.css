@@ -23,6 +23,7 @@
 }
 
 /* SVG Frame Container - Open frame effect with rounded corners */
+/* Updated open frame with shorter bottom border */
 .view-other-films-cta::before {
   content: '';
   position: absolute;
@@ -30,19 +31,30 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border: 3px solid var(--light-color, #ffffff);
+
+  /* Top + right borders only */
+  border-top: 3px solid var(--light-color, #ffffff);
+  border-right: 3px solid var(--light-color, #ffffff);
+  border-left: none;
+  border-bottom: none;
+
+  /* Shorter bottom border */
+  background:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      transparent 35%, /* empty part */
+      var(--light-color, #ffffff) 35%,
+      var(--light-color, #ffffff) 100%
+    ) bottom / 100% 3px no-repeat;
+
   border-radius: 0 8px 8px 0;
-  /* Create "open frame" effect - no left border initially */
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    20% 100%
-  );
-  transition: clip-path 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
+
+  transition:
+    border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
+
   z-index: 0;
 }
-
 /* Background fill layer */
 .view-other-films-cta::after {
   content: '';

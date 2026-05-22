@@ -285,7 +285,7 @@
   justify-self: center !important;
 }
 
-/* SVG Frame Container - Open frame effect with rounded corners */
+/* SVG Frame Container - Open frame effect with straight left edge */
 .btn-reel::before {
   content: '' !important;
   position: absolute !important;
@@ -293,16 +293,50 @@
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  border: 3px solid var(--dark-color, #000000) !important;
-  border-radius: 0 8px 8px 0 !important;
-  /* Create "open frame" effect - no left border initially */
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    20% 100%
-  ) !important;
-  transition: clip-path 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+  border-top: 3px solid var(--dark-color, #000000) !important;
+  border-right: 3px solid var(--dark-color, #000000) !important;
+  border-bottom: 3px solid var(--dark-color, #000000) !important;
+  border-left: none !important;
+  border-radius: 0 !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+  transition: border-left 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+  z-index: 0 !important;
+}
+
+/* Background fill layer */
+/* SVG Frame Container - Open frame effect with shorter bottom border */
+.btn-reel::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+
+  /* Keep top and right borders */
+  border-top: 3px solid var(--dark-color, #000000) !important;
+  border-right: 3px solid var(--dark-color, #000000) !important;
+  border-left: none !important;
+  border-bottom: none !important;
+
+  /* Shorter bottom border */
+  background:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      transparent 20%, /* empty area */
+      var(--dark-color, #000000) 20%,
+      var(--dark-color, #000000) 100%
+    ) bottom / 100% 3px no-repeat !important;
+
+  border-radius: 0 !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+
+  transition: border-left 0.5s cubic-bezier(0.2, 0, 0.8, 1),
+              border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+
   z-index: 0 !important;
 }
 
@@ -314,18 +348,25 @@
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+
   background: var(--dark-color, #000000) !important;
-  border-radius: 0 8px 8px 0 !important;
+
+  border-radius: 0 !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+
   transform: scaleX(0) !important;
   transform-origin: left !important;
-  transition: transform 0.4s cubic-bezier(0.2, 0, 0.8, 1) 0.3s, border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0.8, 1) 0.3s,
+              border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+
   z-index: 0 !important;
 }
-
 /* Hover State: Close the frame */
 @media (hover: hover) {
   .btn-reel:hover::before {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+    border-left: 3px solid var(--dark-color, #000000) !important;
     border-radius: 8px !important;
   }
   
@@ -345,7 +386,8 @@
 
 /* Active state */
 .btn-reel:active::before {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+  border-left: 3px solid var(--dark-color, #000000) !important;
+  border-radius: 8px !important;
 }
 
 .btn-reel:active::after {
