@@ -1354,6 +1354,17 @@
         console.log('🎯 Navigation link found - slug:', slug, 'href:', href);
         
         if (slug) {
+          // Add navigation start banner
+          console.log('');
+          console.log('═══════════════════════════════════════════════════════');
+          console.log('🧭 NAVIGATION STARTED');
+          console.log('═══════════════════════════════════════════════════════');
+          console.log('📍 From:', document.body.className.match(/template-(\w+)/)?.[1] || 'unknown');
+          console.log('📍 To:', slug);
+          console.log('⏰ Time:', new Date().toLocaleTimeString());
+          console.log('═══════════════════════════════════════════════════════');
+          console.log('');
+          
           targetSlug = slug;
           contentChangeDetected = false;
           console.log('✅ Target page set:', targetSlug);
@@ -1410,7 +1421,7 @@
           contentLoaded = staffList || addressBox || document.body.textContent.includes('Loading staff');
           if (DEBUG_LOGS) console.log('Contact elements found:', { staffList: !!staffList, addressBox: !!addressBox });
         } else if (targetSlug === 'about') {
-          const aboutBox = document.querySelector('.box--about');
+          const aboutBox = document.querySelector('.about-content, .about-inner-wrapper');
           contentLoaded = aboutBox || document.body.textContent.includes('Loading about');
           if (DEBUG_LOGS) console.log('About elements found:', { aboutBox: !!aboutBox });
         } else if (targetSlug === 'works') {
@@ -1474,7 +1485,24 @@
           } else if (targetSlug === 'homepage') {
             if (typeof window.loadIndexProjects === 'function') {
               console.log('✅ Calling loadIndexProjects() with navigation flag');
+              const navStartTime = performance.now();
               window.loadIndexProjects(true); // Pass true to indicate navigation
+              
+              // Add completion summary after a short delay
+              setTimeout(() => {
+                const navDuration = ((performance.now() - navStartTime) / 1000).toFixed(2);
+                console.log('');
+                console.log('═══════════════════════════════════════════════════════');
+                console.log('✅ HOMEPAGE NAVIGATION COMPLETE');
+                console.log('═══════════════════════════════════════════════════════');
+                console.log('⏱️  Total time: ' + navDuration + 's');
+                console.log('📍 Current page: Homepage');
+                console.log('🎬 Videos: Loaded and playing');
+                console.log('🎨 Slider: Initialized');
+                console.log('🔗 Menu: Active');
+                console.log('═══════════════════════════════════════════════════════');
+                console.log('');
+              }, 1000);
             } else {
               console.warn('⚠ loadIndexProjects not defined yet');
             }

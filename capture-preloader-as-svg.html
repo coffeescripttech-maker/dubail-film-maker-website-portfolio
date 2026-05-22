@@ -266,22 +266,55 @@
             logging: false
           });
 
-          // Get dimensions
-          const width = canvas.width;
-          const height = canvas.height;
+          // Get canvas context to find bounding box
+          const ctx = canvas.getContext('2d');
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const pixels = imageData.data;
 
-          // Convert canvas to data URL
-          const dataUrl = canvas.toDataURL('image/png');
+          // Find bounding box (non-transparent pixels) - only for X axis
+          let minX = canvas.width;
+          let maxX = 0;
 
-          // Create SVG with embedded image
-          svgCode = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-  <image href="${dataUrl}" width="${width}" height="${height}" />
+          for (let y = 0; y < canvas.height; y++) {
+            for (let x = 0; x < canvas.width; x++) {
+              const alpha = pixels[(y * canvas.width + x) * 4 + 3];
+              if (alpha > 0) {
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+              }
+            }
+          }
+
+          // Calculate cropped dimensions (only crop left/right, keep full height)
+          const croppedWidth = maxX - minX + 1;
+          const croppedHeight = canvas.height; // Keep original height
+
+          // Create a new canvas with cropped dimensions
+          const croppedCanvas = document.createElement('canvas');
+          croppedCanvas.width = croppedWidth;
+          croppedCanvas.height = croppedHeight;
+          const croppedCtx = croppedCanvas.getContext('2d');
+
+          // Draw the cropped portion (crop left/right only, keep full height)
+          croppedCtx.drawImage(
+            canvas,
+            minX, 0, croppedWidth, croppedHeight,
+            0, 0, croppedWidth, croppedHeight
+          );
+
+          // Convert cropped canvas to data URL
+          const dataUrl = croppedCanvas.toDataURL('image/png');
+
+          // Create SVG with embedded image (horizontally cropped only)
+          svgCode = `<svg width="${croppedWidth}" height="${croppedHeight}" viewBox="0 0 ${croppedWidth} ${croppedHeight}" xmlns="http://www.w3.org/2000/svg">
+  <image href="${dataUrl}" width="${croppedWidth}" height="${croppedHeight}" />
 </svg>`;
 
           document.getElementById('output').innerHTML =
-            `<h3>Generated SVG:</h3><p>SVG created with embedded PNG (${width}x${height}px)</p><pre>${escapeHtml(svgCode.substring(0, 300))}... [data truncated]</pre>`;
+            `<h3>Generated SVG:</h3><p>SVG created with embedded PNG (${croppedWidth}x${croppedHeight}px) - Cropped left/right margins only</p><pre>${escapeHtml(svgCode.substring(0, 300))}... [data truncated]</pre>`;
 
-          console.log('SVG generated successfully');
+          console.log('SVG generated successfully (horizontally cropped)');
+          console.log(`Original: ${canvas.width}x${canvas.height}, Cropped: ${croppedWidth}x${croppedHeight}`);
         } catch (error) {
           console.error('Error generating SVG:', error);
           document.getElementById('output').innerHTML =

@@ -1,0 +1,64 @@
+/* Contact Page - Right-side block with left-aligned indented text */
+
+.contact-inner-wrapper {
+  position: relative !important;
+}
+
+.box--address {
+  text-align: left !important;
+  font-family: 'Azeret Mono', monospace !important;
+  margin-left: auto !important; /* Push entire block to right side */
+  margin-right: 0 !important; /* Stay within wrapper padding */
+  width: fit-content !important; /* Only take up needed width */
+  max-width: 100% !important; /* Don't overflow wrapper */
+}
+
+.contact-city {
+  /* font-size: 1rem !important;
+  line-height: 1.6 !important; */
+  /* margin-bottom: 1.5rem !important;
+  font-weight: 400 !important; */
+  padding-left: 0 !important;
+}
+
+.contact-info {
+  /* font-size: 1rem !important;
+  line-height: 1.8 !important; */
+  /* margin-bottom: 1.5rem !important; */
+  padding-left: 2.5rem !important; /* T: and E: - less indent */
+}
+
+.contact-social {
+  /* font-size: 1rem !important; */
+  /* line-height: 1.8 !important;
+  margin-bottom: 1.5rem !important; */
+  padding-left: 5rem !important; /* Vimeo: and Instagram: - more indent */
+}
+
+.contact-line {
+  display: inline-block !important;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+}
+
+/* Remove link styling - display as plain text */
+.box--address a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* Keep no underline on hover */
+.box--address a:hover {
+  text-decoration: none !important;
+}
+
+/* Mobile responsive - keep on right, reduce indentation */
+@media (max-width: 767px) {
+  .contact-city,
+  .contact-info,
+  .contact-social {
+
+  }
+  
+
+}

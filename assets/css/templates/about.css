@@ -7,7 +7,7 @@
 }
 
 /* Override build.min.css default horizontal scroll behavior */
-.about-inner-wrapper .list--about-images {
+/* .about-inner-wrapper .list--about-images {
   overflow-x: visible !important;
   overflow-y: visible !important;
   white-space: normal !important;
@@ -24,72 +24,227 @@
   display: block !important;
   height: auto !important;
   width: auto !important;
-}
+} */
 
 /* Mobile: Button styling and positioning */
 @media (max-width: 1023px) {
+  .about-content {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .about-inner-wrapper {
+
+  }
+  
+  /* Make about-content a flex container to control all children order */
+  .about-content {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Set order for all elements */
+  .about-header {
+    order: 0 !important;
+  }
+  
+  .col-intro {
+    order: 1 !important;
+  }
+  
+  .col-biography {
+    order: 2 !important;
+  }
+  
+  .col-achievements {
+    order: 3 !important;
+  }
+  
+  .col-large-image {
+    order: 4 !important;
+  }
+  
+  .col-remaining-bio {
+    order: 5 !important;
+  }
+  
+  .col-remaining-company {
+    order: 8 !important;
+  }
+  
+  .col-company {
+    order: 7 !important;
+  }
+  
+  /* Match padding with content-wrapper */
+  .images-button-wrapper {
+    padding: 0 !important;
+    order: 10 !important;
+  }
+  
+  /* ROW 1: Header - Mobile */
+
+  
+  /* ROW 2: Stack columns vertically on mobile */
+  .about-row-2 {
+    display: contents !important;
+  }
+  
+  .col-intro,
+  .col-biography,
+  .col-achievements,
+  .col-company {
+    margin-bottom: 2.5rem !important;
+  }
+  
+  /* ROW 3: Stack vertically on mobile */
+  .about-row-3 {
+    display: contents !important;
+  }
+  
+  .col-large-image {
+    margin-bottom: 2rem !important;
+  }
+  
+  .col-large-image img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+  
+  .col-remaining-content {
+    display: contents !important;
+  }
+  
+  .col-remaining-bio,
+  .col-remaining-company {
+    margin-bottom: 2.5rem !important;
+  }
+  
+  /* ROW 4: Stack images and button vertically */
   .images-button-wrapper {
     display: flex !important;
     flex-direction: column !important;
     gap: 1.5rem !important;
-    
   }
   
   .images-button-wrapper .btn-reel {
-    /* width: 100% !important; */
     max-width: 400px !important;
     margin: 0 auto 3rem auto !important;
     padding: 0.75rem 1.5rem !important;
     text-align: center !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+  }
+  
+  .list--about-images {
+    grid-column: unset !important;
+    grid-row: unset !important;
   }
 }
 
-/* About page two-column layout on desktop */
+/* About page magazine layout */
 @media (min-width: 1024px) {
   .about-inner-wrapper {
-    margin-top: 60px;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0 !important;
-    align-items: start !important;
-    padding: 0 !important;
+    margin-top: 30px !important;
+    padding: 0 30px !important;
   }
   
   .content-wrapper {
-    grid-column: 1 !important;
-    padding: 0 30px !important;
+    width: 100% !important;
+    padding: 0 !important;
     box-sizing: border-box !important;
   }
   
-  /* Right column wrapper for images + button */
-  .images-button-wrapper {
+  /* ROW 1: Header */
+
+
+  
+  /* ROW 2: 4-column grid */
+  .about-row-2 {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 30px !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .about-row-2 h4 {
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 1rem !important;
+    opacity: 0.6 !important;
+  }
+  
+  .about-row-2 p {
+    line-height: 1.6 !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* ROW 3: Large image + Content (2 columns: image left, 2-column content right) */
+  .about-row-3 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 40px !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  .col-large-image {
+    grid-column: 1 !important;
+  }
+  
+  .col-large-image img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+  
+  .col-remaining-content {
     grid-column: 2 !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 30px !important;
+  }
+  
+  .col-remaining-bio,
+  .col-remaining-company {
     display: flex !important;
     flex-direction: column !important;
-    gap: 2rem !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    max-width: none !important;
-    padding: 0 30px !important;
+    gap: 30px !important;
+  }
+  
+  .col-remaining-bio p,
+  .col-remaining-company p {
+    margin-bottom: 0 !important;
+    break-inside: avoid !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* ROW 4: Thumbnails + Button */
+  .images-button-wrapper {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+    align-items: center !important;
+    padding: 0 !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
   
   .list--about-images {
-    margin-top: 0 !important;
-    width: 100% !important;
+    grid-column: 1 / 4 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+    margin: 0 !important;
     padding: 0 !important;
   }
   
-  /* Button below images on desktop */
-  .images-button-wrapper .btn-reel {
-    /* width: 100% !important; */
-    text-align: center !important;
-  }
-  
-  /* Remove the spacing div on desktop */
-  .about-inner-wrapper > div[style*="margin-top: 30px"] {
-    display: none !important;
+  .btn-reel {
+    grid-column: 4 !important;
+    grid-row: 1 !important;
   }
 }
 
@@ -105,23 +260,197 @@
   box-sizing: border-box !important;
 }
 
+/* About page "View Reel" button - matching homepage CTA design */
+.btn-reel {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 11px 20px !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--dark-color, #000000) !important;
+  font-family: 'Azeret Mono', sans-serif, system-ui !important;
+  font-optical-sizing: auto !important;
+  font-style: normal !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: color 0.4s cubic-bezier(0.2, 0, 0.8, 1) !important;
+  width: fit-content !important;
+  justify-self: center !important;
+}
+
+/* SVG Frame Container - Open frame effect with rounded corners */
+.btn-reel::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  border: 3px solid var(--dark-color, #000000) !important;
+  border-radius: 0 8px 8px 0 !important;
+  /* Create "open frame" effect - no left border initially */
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    20% 100%
+  ) !important;
+  transition: clip-path 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+  z-index: 0 !important;
+}
+
+/* Background fill layer */
+.btn-reel::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: var(--dark-color, #000000) !important;
+  border-radius: 0 8px 8px 0 !important;
+  transform: scaleX(0) !important;
+  transform-origin: left !important;
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0.8, 1) 0.3s, border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1) !important;
+  z-index: 0 !important;
+}
+
+/* Hover State: Close the frame */
+@media (hover: hover) {
+  .btn-reel:hover::before {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+    border-radius: 8px !important;
+  }
+  
+  .btn-reel:hover::after {
+    transform: scaleX(1) !important;
+    border-radius: 8px !important;
+  }
+  
+  .btn-reel:hover {
+    color: var(--light-color, #ffffff) !important;
+  }
+  
+  .btn-reel:hover svg {
+    transform: translateX(4px) !important;
+  }
+}
+
+/* Active state */
+.btn-reel:active::before {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+}
+
+.btn-reel:active::after {
+  transform: scaleX(1) !important;
+  transition-delay: 0s !important;
+}
+
+.btn-reel:active {
+  color: var(--light-color, #ffffff) !important;
+}
+
+/* SVG icon styling */
+.btn-reel svg {
+  position: relative !important;
+  z-index: 2 !important;
+  width: 20px !important;
+  height: 20px !important;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.8, 1) !important;
+}
+
+/* Text content layer */
+.btn-reel .cta-text {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
 /* Mobile: 1 column for better image display */
 @media (max-width: 767px) {
   .list--about-images {
-    grid-template-columns: 1fr !important; /* Single column on mobile */
-    grid-auto-rows: auto !important; /* Auto height based on image */
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
     margin-top: 2rem !important;
-    gap: 0.5rem !important; /* Small gap between images */
+    gap: 0.5rem !important;
   }
 }
 
 /* Tablet: 2 columns */
 @media (min-width: 768px) and (max-width: 1023px) {
+  .about-inner-wrapper {
+    margin-top: 25px !important;
+    padding: 0 25px !important;
+  }
+  
+  /* ROW 1: Header - Tablet */
+
+  /* ROW 2: 2-column grid on tablet */
+  .about-row-2 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 25px !important;
+    margin-bottom: 2.5rem !important;
+  }
+  
+  .about-row-2 p {
+    line-height: 1.6 !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* ROW 3: Stack vertically on tablet */
+  .about-row-3 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2.5rem !important;
+    margin-bottom: 2.5rem !important;
+  }
+  
+  .col-large-image img {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
+  
+  .col-remaining-content {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 25px !important;
+  }
+  
+  .col-remaining-content p {
+    margin-bottom: 0 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* ROW 4: Images in 2 columns, button below */
+  .images-button-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    padding: 0 25px !important;
+  }
+  
+  .images-button-wrapper .btn-reel {
+    margin: 0 auto !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+  }
+  
   .list--about-images {
     grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: auto !important; /* Auto height based on image */
-    margin-top: 2rem !important;
-    gap: 0.5rem !important; /* Small gap between images */
+    grid-auto-rows: auto !important;
+    margin-top: 0 !important;
+    gap: 0.5rem !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
   }
 }
 
@@ -129,8 +458,8 @@
 @media (min-width: 1024px) {
   .list--about-images {
     grid-template-columns: repeat(2, 1fr) !important;
-    grid-auto-rows: auto !important; /* Auto height based on image */
-    gap: 0.5rem !important; /* Small gap between images */
+    grid-auto-rows: auto !important;
+    gap: 0.5rem !important;
   }
 }
 
@@ -138,48 +467,55 @@
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background: transparent !important; /* Changed from #000 to transparent */
+  background: transparent !important;
 }
 
 .list--about-images .about-image-item {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  background: transparent !important; /* Changed from #000 to transparent */
+  background: transparent !important;
   display: block !important;
 }
 
 .list--about-images .pic {
   width: 100% !important;
-  height: auto !important; /* Changed to auto to maintain aspect ratio */
+  height: auto !important;
   display: block !important;
-  object-fit: cover !important; /* Back to cover for seamless look */
+  object-fit: cover !important;
   object-position: center !important;
   transition: opacity 0.3s ease, transform 0.3s ease !important;
 }
 
 .list--about-images li:hover .pic {
   opacity: 0.85 !important;
-  transform: scale(1.02) !important; /* Subtle zoom on hover */
+  transform: scale(1.02) !important;
 }
 
-/* Masonry pattern - varied sizes (only applies when there are many images) */
+/* Masonry pattern - varied sizes */
 .list--about-images .about-image-item:nth-child(5n+1) {
-  grid-row: span 1 !important; /* Disabled spanning for cleaner look with few images */
+  grid-row: span 1 !important;
 }
 
 .list--about-images .about-image-item:nth-child(5n+4) {
-  grid-column: span 1 !important; /* Disabled spanning for cleaner look with few images */
+  grid-column: span 1 !important;
 }
 
 /* Special layout for exactly 3 images */
 @media (min-width: 768px) {
   .list--about-images:has(.about-image-item:nth-child(3):last-child) {
-    /* If there are exactly 3 images, make first image span 2 columns */
     grid-template-columns: repeat(2, 1fr) !important;
   }
   
   .list--about-images:has(.about-image-item:nth-child(3):last-child) .about-image-item:first-child {
-    grid-column: span 2 !important; /* First image spans full width */
+    grid-column: span 2 !important;
   }
+}
+
+
+/* Clean about-content container (no conflicting styles) */
+.about-content {
+  width: 100% !important;
+  columns: auto !important;
+  column-count: 1 !important;
 }

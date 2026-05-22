@@ -1,14 +1,13 @@
-/* View Other Films CTA Styling - Matching Mobile Link Style */
+/* View Other Films CTA - Open Frame Design (Logo-Inspired) */
 
 .view-other-films-cta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   margin-top: 20px;
-  padding: 11px 14px;
+  padding: 11px 20px;
   background: transparent;
-  border: 1px solid var(--light-color, #ffffff);
-  border-radius: 20px; /* Rounded pill style like mobile link */
+  border: none;
   color: var(--light-color, #ffffff);
   font-family: 'Azeret Mono', sans-serif, system-ui;
   font-optical-sizing: auto;
@@ -17,16 +16,70 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-decoration: none;
-  transition: background 0.3s var(--main-bezier, cubic-bezier(0.2, 0, 0.8, 1)), 
-              color 0.3s var(--main-bezier, cubic-bezier(0.2, 0, 0.8, 1));
   cursor: pointer;
   position: relative;
+  overflow: hidden;
+  transition: color 0.4s cubic-bezier(0.2, 0, 0.8, 1);
 }
 
-/* Hover effect - fill background */
+/* SVG Frame Container */
+.view-other-films-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 3px solid var(--light-color, #ffffff);
+  border-radius: 0 8px 8px 0;
+  /* Create "open frame" effect - no left border initially */
+  clip-path: polygon(
+    0 0,           /* Top-left corner */
+    100% 0,        /* Top-right corner */
+    100% 100%,     /* Bottom-right corner */
+    20% 100%       /* Bottom edge stops at 20% from left, creating gap */
+  );
+  transition: clip-path 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
+  z-index: 0;
+}
+
+/* Background fill layer */
+.view-other-films-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--light-color, #ffffff);
+  border-radius: 0 8px 8px 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.2, 0, 0.8, 1) 0.3s, border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
+  z-index: -1;
+}
+
+/* Hover State: Close the frame */
 @media (hover: hover) {
+  .view-other-films-cta:hover::before {
+    /* Complete the rectangle - close the open section */
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
+    border-radius: 8px;
+  }
+  
+  /* Fill with color after frame closes */
+  .view-other-films-cta:hover::after {
+    transform: scaleX(1);
+    border-radius: 8px;
+  }
+  
+  /* Switch text and arrow to contrast color */
   .view-other-films-cta:hover {
-    background: var(--light-color, #ffffff);
     color: var(--dark-color, #000000);
   }
   
@@ -36,11 +89,20 @@
 }
 
 /* Active state */
+.view-other-films-cta:active::before {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.view-other-films-cta:active::after {
+  transform: scaleX(1);
+  transition-delay: 0s;
+}
+
 .view-other-films-cta:active {
-  background: var(--light-color, #ffffff);
   color: var(--dark-color, #000000);
 }
 
+/* Content layers */
 .view-other-films-cta .cta-text {
   position: relative;
   z-index: 1;
@@ -51,14 +113,14 @@
   z-index: 1;
   width: 20px;
   height: 20px;
-  transition: transform 0.3s var(--main-bezier, cubic-bezier(0.2, 0, 0.8, 1));
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.8, 1);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .view-other-films-cta {
     font-size: 12px;
-    padding: 10px 14px;
+    padding: 10px 16px;
     margin-top: 16px;
   }
 
@@ -71,7 +133,7 @@
 @media (max-width: 480px) {
   .view-other-films-cta {
     font-size: 11px;
-    padding: 9px 12px;
+    padding: 9px 14px;
     margin-top: 12px;
     gap: 6px;
   }

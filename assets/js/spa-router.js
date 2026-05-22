@@ -33,30 +33,55 @@
 
   // Navigate to a route
   async function navigateTo(path, pushState = true) {
-    console.log('🧭 Navigating to:', path);
+    const startTime = performance.now();
+    console.log('');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('🧭 NAVIGATION STARTED');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('📍 Target Path:', path);
+    console.log('📍 Current Route:', Router.currentRoute || 'none');
+    console.log('⏰ Time:', new Date().toLocaleTimeString());
     
     const routeName = getRouteName(path);
     if (!routeName) {
-      console.warn('Unknown route:', path);
+      console.warn('❌ Unknown route:', path);
       return;
     }
+    
+    console.log('✅ Route Name:', routeName);
 
     // Update browser history
     if (pushState) {
       window.history.pushState({ route: routeName }, '', path);
+      console.log('📝 Browser history updated');
     }
 
     // Update current route
     Router.currentRoute = routeName;
 
     // Load content for route
+    console.log('');
+    console.log('📦 Loading route content...');
     await loadRouteContent(routeName);
 
     // Update active nav links
+    console.log('');
+    console.log('🔗 Updating navigation links...');
     updateActiveNavLinks(routeName);
 
     // Scroll to top
     window.scrollTo(0, 0);
+    console.log('⬆️  Scrolled to top');
+    
+    const endTime = performance.now();
+    const duration = ((endTime - startTime) / 1000).toFixed(2);
+    console.log('');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('✅ NAVIGATION COMPLETE');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('⏱️  Total Duration:', duration + 's');
+    console.log('📍 Final Route:', Router.currentRoute);
+    console.log('');
   }
 
   // Load content for a specific route
@@ -121,44 +146,175 @@
 
   // Load homepage content
   async function loadHomepage(container) {
-    console.log('Loading homepage...');
+    const stepStartTime = performance.now();
+    console.log('');
+    console.log('┌─────────────────────────────────────────────────────┐');
+    console.log('│ 🏠 LOADING HOMEPAGE                                 │');
+    console.log('└─────────────────────────────────────────────────────┘');
     
-    // Check if homepage content already exists
-    if (container.querySelector('.homepage-inner-wrapper')) {
-      console.log('✓ Homepage content already loaded');
-      
-      // Just reload the data
-      const projects = await window.fetchProjects();
-      window.PageRenderer.renderIndexProjects(projects);
-      window.PageRenderer.renderHomepageSlider(projects);
-      return;
-    }
-
-    // Load homepage HTML structure
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'page-loading-indicator';
+    loadingIndicator.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; z-index: 10000;';
+    loadingIndicator.textContent = 'Loading...';
+    document.body.appendChild(loadingIndicator);
+    console.log('⏳ Loading indicator shown');
+    
     try {
+      // Step 1: Fetch HTML
+      console.log('');
+      console.log('📄 STEP 1: Fetching HTML structure');
+      console.log('   Source: index.html');
+      const fetchStart = performance.now();
+      
       const homepageHTML = await fetch('index.html');
       if (!homepageHTML.ok) {
         throw new Error(`Failed to fetch index.html: ${homepageHTML.status}`);
       }
       const htmlText = await homepageHTML.text();
       
-      // Parse HTML and extract page-inner-content
+      const fetchDuration = ((performance.now() - fetchStart) / 1000).toFixed(2);
+      console.log('   ✅ HTML fetched (' + fetchDuration + 's, ' + (htmlText.length / 1024).toFixed(1) + 'KB)');
+      
+      // Step 2: Parse and inject HTML
+      console.log('');
+      console.log('🔨 STEP 2: Parsing and injecting HTML');
+      const parseStart = performance.now();
+      
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlText, 'text/html');
       const homepageContent = doc.querySelector('.page-inner-content');
       
       if (homepageContent) {
         container.innerHTML = homepageContent.innerHTML;
+        const parseDuration = ((performance.now() - parseStart) / 1000).toFixed(2);
+        console.log('   ✅ HTML injected (' + parseDuration + 's)');
         
-        // Load projects data
-        const projects = await window.fetchProjects();
+        // Wait for DOM to settle
+        await new Promise(resolve => setTimeout(resolve, 100));
+        console.log('   ⏸️  DOM settled (100ms wait)');
+        
+        // Step 3: Verify elements
+        console.log('');
+        console.log('🔍 STEP 3: Verifying critical elements');
+        const videoWrapper = document.getElementById('homepage-main-video-wrapper');
+        const worksContainer = document.getElementById('works');
+        const sliderContainer = document.getElementById('homepage-slider');
+        
+        console.log('   Video Wrapper:', videoWrapper ? '✅ Found' : '❌ Missing');
+        console.log('   Works Container:', worksContainer ? '✅ Found' : '❌ Missing');
+        console.log('   Slider Container:', sliderContainer ? '✅ Found' : '❌ Missing');
+        
+        if (!videoWrapper || !worksContainer || !sliderContainer) {
+          throw new Error('Critical homepage elements missing after injection');
+        }
+        
+        // Step 4: Fetch projects data
+        console.log('');
+        console.log('📊 STEP 4: Fetching projects data');
+        let projects = null;
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        while (!projects && retryCount < maxRetries) {
+          try {
+            const apiStart = performance.now();
+            console.log('   Attempt ' + (retryCount + 1) + '/' + maxRetries + '...');
+            
+            projects = await window.fetchProjects();
+            
+            const apiDuration = ((performance.now() - apiStart) / 1000).toFixed(2);
+            
+            if (!projects || projects.length === 0) {
+              throw new Error('No projects returned from API');
+            }
+            
+            console.log('   ✅ Projects loaded (' + apiDuration + 's)');
+            console.log('   📦 Count: ' + projects.length + ' projects');
+          } catch (error) {
+            retryCount++;
+            console.warn('   ⚠️  Attempt ' + retryCount + ' failed:', error.message);
+            if (retryCount < maxRetries) {
+              const waitTime = 500 * retryCount;
+              console.log('   ⏳ Waiting ' + waitTime + 'ms before retry...');
+              await new Promise(resolve => setTimeout(resolve, waitTime));
+            } else {
+              throw error;
+            }
+          }
+        }
+        
+        // Step 5: Render content
+        console.log('');
+        console.log('🎨 STEP 5: Rendering homepage content');
+        const renderStart = performance.now();
+        
+        console.log('   Rendering projects list...');
         window.PageRenderer.renderIndexProjects(projects);
-        window.PageRenderer.renderHomepageSlider(projects);
+        console.log('   ✅ Projects list rendered');
         
-        console.log('✓ Homepage loaded');
+        console.log('   Rendering homepage slider...');
+        window.PageRenderer.renderHomepageSlider(projects);
+        console.log('   ✅ Slider rendered');
+        
+        const renderDuration = ((performance.now() - renderStart) / 1000).toFixed(2);
+        console.log('   ⏱️  Render time: ' + renderDuration + 's');
+        
+        // Wait for rendering to complete
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Step 6: Verify videos
+        console.log('');
+        console.log('📹 STEP 6: Verifying video elements');
+        const videos = videoWrapper.querySelectorAll('video');
+        console.log('   Found ' + videos.length + ' video elements');
+        
+        if (videos.length > 0) {
+          const firstVideo = videos[0];
+          firstVideo.classList.add('visible', 'loaded');
+          if (firstVideo.readyState < 2) {
+            firstVideo.load();
+          }
+          console.log('   ✅ First video initialized');
+          console.log('   📊 Ready state: ' + firstVideo.readyState);
+          console.log('   📊 Network state: ' + firstVideo.networkState);
+        } else {
+          console.warn('   ⚠️  No videos found!');
+        }
+        
+        const totalDuration = ((performance.now() - stepStartTime) / 1000).toFixed(2);
+        console.log('');
+        console.log('┌─────────────────────────────────────────────────────┐');
+        console.log('│ ✅ HOMEPAGE LOADED SUCCESSFULLY                     │');
+        console.log('└─────────────────────────────────────────────────────┘');
+        console.log('⏱️  Total time: ' + totalDuration + 's');
+      } else {
+        throw new Error('Could not find .page-inner-content in index.html');
       }
     } catch (error) {
-      console.error('Error loading homepage:', error);
+      console.log('');
+      console.log('┌─────────────────────────────────────────────────────┐');
+      console.log('│ ❌ HOMEPAGE LOADING FAILED                          │');
+      console.log('└─────────────────────────────────────────────────────┘');
+      console.error('Error:', error.message);
+      console.error('Stack:', error.stack);
+      
+      // Show error message to user
+      container.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; color: white; text-align: center; flex-direction: column; gap: 20px;">
+          <p style="font-size: 18px;">Failed to load homepage</p>
+          <p style="font-size: 14px; opacity: 0.7;">${error.message}</p>
+          <button onclick="window.location.reload()" style="padding: 10px 20px; background: white; color: black; border: none; cursor: pointer; border-radius: 4px;">
+            Reload Page
+          </button>
+        </div>
+      `;
+    } finally {
+      // Remove loading indicator
+      if (loadingIndicator && loadingIndicator.parentNode) {
+        loadingIndicator.parentNode.removeChild(loadingIndicator);
+        console.log('⏳ Loading indicator removed');
+      }
     }
   }
 
@@ -205,20 +361,10 @@
 
   // Load about page content
   async function loadAboutPage(container) {
-    console.log('Loading about page...');
+    console.log('🔵 loadAboutPage called');
+    console.log('Container:', container);
     
-    // Check if about content already exists
-    if (container.querySelector('.about-inner-wrapper')) {
-      console.log('✓ About content already loaded, refreshing data...');
-      
-      // Just reload the data
-      const data = await window.fetchAbout();
-      console.log('About data fetched:', data);
-      window.PageRenderer.renderAboutContent(data.page);
-      return;
-    }
-
-    // Load about HTML structure
+    // Always reload the HTML structure to ensure clean state
     console.log('Fetching about.html structure...');
     try {
       const aboutHTML = await fetch('about.html');
@@ -226,6 +372,7 @@
         throw new Error(`Failed to fetch about.html: ${aboutHTML.status}`);
       }
       const htmlText = await aboutHTML.text();
+      console.log('✓ about.html fetched, length:', htmlText.length);
       
       // Parse HTML and extract page-inner-content
       const parser = new DOMParser();
@@ -233,8 +380,9 @@
       const aboutContent = doc.querySelector('.page-inner-content');
       
       if (aboutContent) {
-        console.log('Injecting about HTML structure...');
+        console.log('✓ Found .page-inner-content, injecting...');
         container.innerHTML = aboutContent.innerHTML;
+        console.log('✓ HTML injected, container children:', container.children.length);
         
         // Wait a moment for DOM to settle
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -242,18 +390,18 @@
         // Load about data
         console.log('Fetching about data from API...');
         const data = await window.fetchAbout();
-        console.log('About data received:', data);
+        console.log('✓ About data received:', data);
         
         // Render the data
-        console.log('Rendering about content...');
+        console.log('Calling renderAboutContent...');
         window.PageRenderer.renderAboutContent(data.page);
         
-        console.log('✓ About page loaded and rendered');
+        console.log('✅ About page loaded and rendered');
       } else {
-        console.error('Could not find .page-inner-content in about.html');
+        console.error('❌ Could not find .page-inner-content in about.html');
       }
     } catch (error) {
-      console.error('Error loading about page:', error);
+      console.error('❌ Error loading about page:', error);
     }
   }
 
@@ -318,6 +466,20 @@
   // Update active navigation links
   function updateActiveNavLinks(routeName) {
     const navLinks = document.querySelectorAll('.header__subnav a[data-slug]');
+    
+    console.log(`🔗 Updating nav links for route: ${routeName}, found ${navLinks.length} links`);
+    
+    if (navLinks.length === 0) {
+      console.warn('⚠️ No navigation links found - menu may not be initialized');
+      // Try to find and log what's in the header
+      const header = document.querySelector('.header');
+      const subnav = document.querySelector('.header__subnav');
+      console.log('Header debug:', {
+        header: !!header,
+        subnav: !!subnav,
+        subnavHTML: subnav ? subnav.innerHTML.substring(0, 200) : 'N/A'
+      });
+    }
     
     navLinks.forEach(link => {
       const linkSlug = link.getAttribute('data-slug');

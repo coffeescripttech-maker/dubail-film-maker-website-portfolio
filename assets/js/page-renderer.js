@@ -739,57 +739,127 @@
   }
 
   function renderAboutContent(pageData) {
-    console.log('Rendering about page content...');
-    const aboutBox = document.querySelector('.box--about');
-    const aboutButton = document.querySelector('.player-link');
+    console.log('Rendering about page content (magazine layout)...');
+    const aboutBox = document.querySelector('.about-content');
+    const aboutButton = document.querySelector('.btn-reel, .player-link');
     let aboutImagesList = document.querySelector('.list--about-images');
     const videoElement = document.querySelector('.js-popin-video video');
 
-    console.log('About elements found:', {
-      aboutBox: !!aboutBox,
-      aboutButton: !!aboutButton,
-      aboutImagesList: !!aboutImagesList
-    });
+    if (!aboutBox) {
+      console.error('About content container not found');
+      return;
+    }
 
     let contentHTML = '';
     
+    // ROW 1: Header (Full width)
     if (pageData.founder) {
-      contentHTML += `<h2>${pageData.founder.name}</h2>`;
-      contentHTML += `<h3>${pageData.founder.title}</h3><br />`;
-      contentHTML += pageData.founder.bio;
-      contentHTML += '<br /><br />';
-    }
-    
-    if (pageData.content) {
-      contentHTML += pageData.content.main_text;
+      contentHTML += `
+        <div class="about-header">
+          <h2>${pageData.founder.name}</h2>
+          <h3>${pageData.founder.title}</h3>
+        </div>
+      `;
+      
+      // ROW 2: 4-column grid
+      if (pageData.founder.bio) {
+        const bioParagraphs = pageData.founder.bio.split('<br /><br />').filter(p => p.trim());
+        const companyParagraphs = pageData.content ? pageData.content.main_text.split('<br /><br />').filter(p => p.trim()) : [];
+        
+        contentHTML += `<div class="about-row-2">`;
+        
+        // Column 1: Intro
+        contentHTML += `
+          <div class="col-intro">
+
+            <p>${bioParagraphs[0] || ''}</p>
+          </div>
+        `;
+        
+        // Column 2: Biography
+        contentHTML += `
+          <div class="col-biography">
+        
+            <p>${bioParagraphs[1] || ''}</p>
+          </div>
+        `;
+        
+        // Column 3: Achievements
+        contentHTML += `
+          <div class="col-achievements">
+          
+            <p>${bioParagraphs[2] || ''}</p>
+          </div>
+        `;
+        
+        // Column 4: Company Info
+        contentHTML += `
+          <div class="col-company">
+       
+            <p>${companyParagraphs[0] || ''}</p>
+          </div>
+        `;
+        
+        contentHTML += `</div>`; // Close row-2
+        
+        // ROW 3: Image + Remaining content (2 columns)
+        contentHTML += `<div class="about-row-3">`;
+        
+        // Large image (left column)
+        contentHTML += `<div class="col-large-image" id="about-large-image"></div>`;
+        
+        // Right column wrapper with 2 sub-columns
+        contentHTML += `<div class="col-remaining-content">`;
+        
+        // Remaining bio paragraphs (3, 4, 5...) - right column, left sub-column
+        contentHTML += `<div class="col-remaining-bio">`;
+        bioParagraphs.slice(3).forEach(para => {
+          contentHTML += `<p>${para}</p>`;
+        });
+        contentHTML += `</div>`; // Close col-remaining-bio
+        
+        // Remaining company paragraphs (1, 2, 3...) - right column, right sub-column
+        contentHTML += `<div class="col-remaining-company">`;
+        companyParagraphs.slice(1).forEach(para => {
+          contentHTML += `<p>${para}</p>`;
+        });
+        contentHTML += `</div>`; // Close col-remaining-company
+        
+        contentHTML += `</div>`; // Close col-remaining-content
+        
+        contentHTML += `</div>`; // Close row-3
+      }
     }
 
     if (aboutBox) {
       aboutBox.innerHTML = contentHTML;
-    }
-
-    if (aboutButton && pageData.content && pageData.content.video_button) {
-      aboutButton.innerHTML = `<svg width="8" height="10" viewBox="0 0 8 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7.25 4.56699C7.58333 4.75944 7.58333 5.24056 7.25 5.43301L1.25 8.89711C0.916667 9.08956 0.500001 8.849 0.500001 8.4641L0.500001 1.5359C0.500001 1.151 0.916668 0.910436 1.25 1.10289L7.25 4.56699Z" stroke="currentColor"/>
-</svg> ${pageData.content.video_button.text}`;
       
-      // Ensure button has the btn-reel class for styling
-      if (!aboutButton.classList.contains('btn-reel')) {
-        aboutButton.classList.add('btn-reel');
-        console.log('✓ Added btn-reel class to button');
+      // Add large image after rendering
+      if (pageData.images && pageData.images.length > 0) {
+        const largeImageContainer = document.getElementById('about-large-image');
+        if (largeImageContainer) {
+          largeImageContainer.innerHTML = `<img src="${pageData.images[0].url}" alt="${pageData.images[0].alt || 'Featured'}" />`;
+        }
       }
     }
 
-    // Update video URL in popup if available
-    if (videoElement && pageData.content && pageData.content.video_button && pageData.content.video_button.video_url) {
-      videoElement.src = pageData.content.video_button.video_url;
-      console.log('✓ Video URL updated:', pageData.content.video_button.video_url);
+    if (aboutButton && pageData.content && pageData.content.video_button) {
+      aboutButton.innerHTML = `<span class="cta-text">view DubaiFilmMaker reel 2026</span><svg class="cta-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>`;
+      
+      if (!aboutButton.classList.contains('btn-reel')) {
+        aboutButton.classList.add('btn-reel');
+      }
     }
 
-    // Render about images dynamically
-    if (aboutImagesList && pageData.images && pageData.images.length > 0) {
+    if (videoElement && pageData.content && pageData.content.video_button && pageData.content.video_button.video_url) {
+      videoElement.src = pageData.content.video_button.video_url;
+    }
+
+    // ROW 4: Render thumbnails (remaining images)
+    if (aboutImagesList && pageData.images && pageData.images.length > 1) {
       let imagesHTML = '';
-      pageData.images.forEach(image => {
+      // Skip first image (used as large image), show remaining as thumbnails
+      pageData.images.slice(1).forEach(image => {
         imagesHTML += `
           <div class="about-image-item">
             <img class="pic" src="${image.url}" alt="${image.alt || ''}" />
@@ -797,60 +867,23 @@
         `;
       });
       aboutImagesList.innerHTML = imagesHTML;
-      console.log(`✓ Rendered ${pageData.images.length} about images`);
     }
     
-    // CRITICAL: Force layout refresh by ensuring wrapper structure is correct
-    // This fixes the layout mismatch when navigating from other pages
+    // Ensure wrapper structure
     const aboutInnerWrapper = document.querySelector('.about-inner-wrapper');
     let imagesButtonWrapper = document.querySelector('.images-button-wrapper');
     
-    console.log('🔍 Layout check:', {
-      aboutInnerWrapper: !!aboutInnerWrapper,
-      imagesButtonWrapper: !!imagesButtonWrapper,
-      aboutImagesList: !!aboutImagesList,
-      aboutButton: !!aboutButton
-    });
-    
     if (!imagesButtonWrapper && aboutInnerWrapper) {
-      // Re-query elements in case they were just created
       aboutImagesList = document.querySelector('.list--about-images');
       const aboutButton = document.querySelector('.player-link');
       
       if (aboutImagesList && aboutButton) {
-        // Create wrapper
         const wrapper = document.createElement('div');
         wrapper.className = 'images-button-wrapper';
-        
-        // Insert wrapper before images list
         aboutImagesList.parentNode.insertBefore(wrapper, aboutImagesList);
-        
-        // Move images list and button into wrapper
         wrapper.appendChild(aboutImagesList);
         wrapper.appendChild(aboutButton);
-        
-        console.log('✓ Created images-button-wrapper for proper layout');
-      } else {
-        console.warn('⚠ Could not create wrapper - missing elements:', {
-          aboutImagesList: !!aboutImagesList,
-          aboutButton: !!aboutButton
-        });
       }
-    } else if (imagesButtonWrapper) {
-      console.log('✓ images-button-wrapper already exists');
-      
-      // CRITICAL FIX: Force layout recalculation by toggling display
-      // This ensures CSS grid properties are properly applied after navigation
-      const originalDisplay = imagesButtonWrapper.style.display;
-      imagesButtonWrapper.style.display = 'none';
-      
-      // Force reflow
-      void imagesButtonWrapper.offsetHeight;
-      
-      // Restore display (let CSS handle it)
-      imagesButtonWrapper.style.display = originalDisplay || '';
-      
-      console.log('✓ Forced layout recalculation for images-button-wrapper');
     }
   }
 
@@ -902,21 +935,20 @@
 
     if (addressBox && pageData.address) {
       let addressHTML = `
-  <p>${pageData.address.street ? pageData.address.street + '<br />' : ''}
-  ${pageData.address.city}</p>
-  <p>
-    <span style="white-space: nowrap;"><span class="contact-label">T:</span><a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
-    <span style="white-space: nowrap;"><span class="contact-label">E:</span><a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email}</a></span>
+  <p class="contact-city">${pageData.address.city}</p>
+  <p class="contact-info">
+    <span class="contact-line">T:<a class="lnk lnk--through" href="tel:${pageData.address.phone}">${pageData.address.phone}</a></span><br/>
+    <span class="contact-line">E:<a class="lnk lnk--through" href="mailto:${pageData.address.email}">${pageData.address.email.toUpperCase()}</a></span>
   </p>
 `;
       
       if (pageData.social) {
-        addressHTML += '<p>';
+        addressHTML += '<p class="contact-social">';
         if (pageData.social.vimeo) {
-          addressHTML += `<span class="contact-label">Vimeo:</span><a class="lnk lnk--through" href="${pageData.social.vimeo}" target="_blank" rel="noopener">dubaifilmmaker</a><br/>`;
+          addressHTML += `<span class="contact-line">Vimeo:<a class="lnk lnk--through" href="${pageData.social.vimeo}" target="_blank" rel="noopener">DUBAIFILMMAKER</a></span><br/>`;
         }
         if (pageData.social.instagram) {
-          addressHTML += `<span class="contact-label">Instagram:</span><a class="lnk lnk--through" href="${pageData.social.instagram}" target="_blank" rel="noopener">@dubaifilmmaker</a>`;
+          addressHTML += `<span class="contact-line">Instagram:<a class="lnk lnk--through" href="${pageData.social.instagram}" target="_blank" rel="noopener">@DUBAIFILMMAKER</a></span>`;
         }
         addressHTML += '</p>';
       }

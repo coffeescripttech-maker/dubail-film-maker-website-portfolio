@@ -5,20 +5,46 @@
     "founder": {
       "name": "Ahmed Al Mutawa",
       "title": "FILM DIRECTOR / EXECUTIVE PRODUCER",
-      "bio": "Emirati award-winning filmmaker and former adjunct professor of film at the American University of Sharjah.<br /><br />With a proven track record of creating internationally acclaimed corporate films, TV shows, documentaries, and commercials, Ahmed holds an MFA in Filmmaking from AAU in California. He is recognized as one of the Top 10 Admired Leaders by Industry Era, New York.<br /><br />As the Founder of DXP, an international film production house based in Dubai, and the Creative Executive Director behind B2C and B2B film campaigns, content, activations, and brand strategy, Ahmed has led major projects for clients including the Abu Dhabi Executive Council, Dubai Economy & Tourism, Sharjah Investment Authority, MOHAP, UAE Armed Forces, Mubadala, Chevrolet, and AD Media.<br /><br />Experienced in recruiting and leading creative teams across major global hubs including Los Angeles, San Francisco, New York, London, Paris, Berlin, Madrid, Lisbon, Singapore, and more.<br /><br />Ahmed has garnered over 25 awards at Cannes, the New York NYX Awards, and the US International Awards in Los Angeles. DXP has also been honored with accolades such as Best Visual Storytelling Media Company at the Global 100 Awards and the M&A Today Global Awards."
+      "featured_image": "media/pages/about/6f8ea45b91-1724948873/adv-architecture-et-agencement-advstudio-1.jpg"
     },
     "content": {
-      "main_text": "Emirati award-winning filmmaker and former adjunct professor of film at the American University of Sharjah.<br /><br />With a proven track record of creating internationally acclaimed corporate films, TV shows, documentaries, and commercials, Ahmed holds an MFA in Filmmaking from AAU in California. He is recognized as one of the Top 10 Admired Leaders by Industry Era, New York.<br /><br />As the Founder of DXP, an international film production house based in Dubai, and the Creative Executive Director behind B2C and B2B film campaigns, content, activations, and brand strategy, Ahmed has led major projects for clients including the Abu Dhabi Executive Council, Dubai Economy & Tourism, Sharjah Investment Authority, MOHAP, UAE Armed Forces, Mubadala, Chevrolet, and AD Media.<br /><br />Experienced in recruiting and leading creative teams across major global hubs including Los Angeles, San Francisco, New York, London, Paris, Berlin, Madrid, Lisbon, Singapore, and more.<br /><br />Ahmed has garnered over 25 awards at Cannes, the New York NYX Awards, and the US International Awards in Los Angeles. DXP has also been honored with accolades such as Best Visual Storytelling Media Company at the Global 100 Awards and the M&A Today Global Awards.",
+      "pillars": [
+        {
+          "id": 1,
+          "heading": "Background & Education",
+          "text": "Emirati award-winning filmmaker and former adjunct professor of film at the American University of Sharjah. With a proven track record of creating internationally acclaimed corporate films, TV shows, documentaries, and commercials, Ahmed holds an MFA in Filmmaking from AAU in California."
+        },
+        {
+          "id": 2,
+          "heading": "Leadership & Vision",
+          "text": "As the Founder of DXP, an international film production house based in Dubai, and the Creative Executive Director behind B2C and B2B film campaigns, content, activations, and brand strategy, Ahmed has led major projects for clients including the Abu Dhabi Executive Council, Dubai Economy & Tourism, Sharjah Investment Authority, MOHAP, UAE Armed Forces, Mubadala, Chevrolet, and AD Media."
+        },
+        {
+          "id": 3,
+          "heading": "Global Experience & Recognition",
+          "text": "Experienced in recruiting and leading creative teams across major global hubs including Los Angeles, San Francisco, New York, London, Paris, Berlin, Madrid, Lisbon, Singapore, and more. DXP has been honored with accolades such as Best Visual Storytelling Media Company at the Global 100 Awards and the M&A Today Global Awards."
+        }
+      ],
+      "stats": [
+        {
+          "value": "Top 10",
+          "label": "Admired Leaders by Industry Era, New York"
+        },
+        {
+          "value": "25+",
+          "label": "Awards at Cannes, NYX, and US International Awards"
+        },
+        {
+          "value": "10+",
+          "label": "Global hubs: LA, NYC, London, Paris, Berlin, Singapore"
+        }
+      ],
       "video_button": {
-        "text": "view DubaiFilmMaker reel 2025",
+        "text": "view DubaiFilmMaker reel 2026",
         "video_url": "https://video.wixstatic.com/video/8c2c22_981846f43f714f73845393b8c1d66a5f/720p/mp4/file.mp4"
       }
     },
-    "images": [
-      {
-        "url": "media/pages/about/6f8ea45b91-1724948873/adv-architecture-et-agencement-advstudio-1.jpg",
-        "alt": "DXP Studio Image 1"
-      },
+    "gallery_images": [
       {
         "url": "media/pages/about/9a13aa90ff-1724948879/adv-architecture-et-agencement-advstudio-2.jpg",
         "alt": "DXP Studio Image 2"
