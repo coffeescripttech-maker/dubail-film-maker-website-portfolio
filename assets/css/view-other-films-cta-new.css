@@ -18,33 +18,42 @@
   text-decoration: none;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   transition: color 0.4s cubic-bezier(0.2, 0, 0.8, 1);
 }
 
-/* SVG Frame Container - Open frame effect with rounded corners */
+/* Top border */
 .view-other-films-cta::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
+  left: -1px;
+  right: 0;
+  height: 3px;
+  background: var(--light-color, #ffffff);
+  border-top-right-radius: 8px;
+  z-index: 0;
+  transition: left 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-top-left-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
+}
+
+/* Right and Bottom borders */
+.view-other-films-cta::after {
+  content: '';
+  position: absolute;
+  top: -3px; /* Extend upward to create proper corner radius */
   right: 0;
   bottom: 0;
-  border: 3px solid var(--light-color, #ffffff);
-  border-radius: 0 8px 8px 0;
-  /* Create "open frame" effect - no left border initially */
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    20% 100%
-  );
-  transition: clip-path 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
+  left: 20%; /* Bottom border starts at 20% from left - shorter than top */
+  border-right: 3px solid var(--light-color, #ffffff);
+  border-bottom: 3px solid var(--light-color, #ffffff);
+  border-top-right-radius: 8px; /* Add top-right radius to match */
+  border-bottom-right-radius: 8px;
   z-index: 0;
+  transition: left 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-left 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-bottom-left-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1), border-top-left-radius 0.5s cubic-bezier(0.2, 0, 0.8, 1);
 }
 
 /* Background fill layer */
-.view-other-films-cta::after {
+.view-other-films-cta .cta-text::before {
   content: '';
   position: absolute;
   top: 0;
@@ -62,15 +71,24 @@
 /* Hover State: Close the frame */
 @media (hover: hover) {
   .view-other-films-cta:hover::before {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    border-radius: 8px;
+    left: 0; /* Top border extends to left edge */
+    border-top-left-radius: 8px;
   }
   
   .view-other-films-cta:hover::after {
+    left: 0; /* Bottom border extends to left edge - closes the frame */
+    border-left: 3px solid var(--light-color, #ffffff);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  /* Fill with color after frame closes */
+  .view-other-films-cta:hover .cta-text::before {
     transform: scaleX(1);
     border-radius: 8px;
   }
   
+  /* Switch text and arrow to contrast color */
   .view-other-films-cta:hover {
     color: var(--dark-color, #000000);
   }
@@ -82,10 +100,15 @@
 
 /* Active state */
 .view-other-films-cta:active::before {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  left: 0;
 }
 
 .view-other-films-cta:active::after {
+  left: 0;
+  border-left: 3px solid var(--light-color, #ffffff);
+}
+
+.view-other-films-cta:active .cta-text::before {
   transform: scaleX(1);
   transition-delay: 0s;
 }

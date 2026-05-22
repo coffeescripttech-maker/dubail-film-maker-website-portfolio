@@ -997,7 +997,23 @@
     // Falls back to video_url if video_url_full doesn't exist (backward compatibility)
     const fullVideo = project.video_url_full || project.video_url;
     videoElement.src = fullVideo;
+    
+    // Ensure autoplay attributes are set (belt and suspenders approach)
+    videoElement.setAttribute('autoplay', '');
+    videoElement.setAttribute('muted', '');
+    videoElement.setAttribute('loop', '');
+    videoElement.setAttribute('playsinline', '');
+    videoElement.muted = true; // Ensure muted for autoplay policy compliance
+    
+    // Attempt to play (in case autoplay doesn't trigger)
+    videoElement.load();
+    videoElement.play().catch(err => {
+      console.log('Autoplay prevented by browser:', err.message);
+      console.log('User interaction may be required to start playback');
+    });
+    
     console.log('✓ Project detail video:', fullVideo);
+    console.log('✓ Autoplay enabled (muted, loop, playsinline)');
 
     if (project.credits && project.credits.length > 0) {
       const creditsList = document.getElementById('credits-list');
