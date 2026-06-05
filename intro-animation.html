@@ -326,9 +326,62 @@
         font-size: 40px;
       }
       
-      .info-panel,
-      .animation-selector {
+      .info-panel {
         display: none;
+      }
+
+      .animation-selector {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 380px;
+        max-height: 60vh;
+        border-radius: 20px 20px 0 0;
+        border: none;
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+        transform: translateY(330px); /* Collapsed showing 50px header */
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        background: rgba(10, 10, 10, 0.95);
+        z-index: 200;
+        padding: 15px;
+        margin: 0;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .animation-selector h3 {
+        margin: -15px -15px 15px -15px;
+        padding: 15px;
+        border-radius: 20px 20px 0 0;
+        cursor: pointer;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        position: relative;
+      }
+
+      /* Handle bar for sliding drawer */
+      .animation-selector h3::before {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 2px;
+      }
+
+      .animation-selector.open {
+        transform: translateY(0);
+      }
+
+      .controls {
+        top: 20px;
+        bottom: auto;
+        z-index: 150;
       }
     }
     
@@ -384,344 +437,344 @@
     <h3>Choose Animation (85 total):</h3>
     <div class="scroll-hint">↓ Scroll to see all options ↓</div>
     <div class="animation-option">
-      <input type="radio" id="anim1" name="animation" value="1" checked>
-      <label for="anim1">1. Fade In Simple</label>
+      <input type="radio" id="anim1" name="animation" value="81" checked>
+      <label for="anim1">1. 🎬 Cinematic Bloom &amp; Glow</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim2" name="animation" value="2">
-      <label for="anim2">2. Scale Up</label>
+      <input type="radio" id="anim2" name="animation" value="54">
+      <label for="anim2">2. 💥 Shockwave Burst</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim3" name="animation" value="3">
-      <label for="anim3">3. DM Split (Current)</label>
+      <input type="radio" id="anim3" name="animation" value="37">
+      <label for="anim3">3. 💥 Impact Burst</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim4" name="animation" value="4">
-      <label for="anim4">4. Slide From Sides</label>
+      <input type="radio" id="anim4" name="animation" value="84">
+      <label for="anim4">4. 🏎️ Kinetic Velocity Stretch</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim5" name="animation" value="5">
-      <label for="anim5">5. Letter Pop In</label>
+      <input type="radio" id="anim5" name="animation" value="42">
+      <label for="anim5">5. 🎬 Cinematic Wipe</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim6" name="animation" value="6">
-      <label for="anim6">6. Zoom Blur In</label>
+      <input type="radio" id="anim6" name="animation" value="47">
+      <label for="anim6">6. 🌀 Quantum Shift</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim7" name="animation" value="7">
-      <label for="anim7">7. Rotate & Fade</label>
+      <input type="radio" id="anim7" name="animation" value="45">
+      <label for="anim7">7. ⚡ Neon Scan Line</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim8" name="animation" value="8">
-      <label for="anim8">8. Letter Shuffle</label>
+      <input type="radio" id="anim8" name="animation" value="40">
+      <label for="anim8">8. 🎲 Random Chaos</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim9" name="animation" value="9">
-      <label for="anim9">9. 🌊 Wave Letter Reveal</label>
+      <input type="radio" id="anim9" name="animation" value="85">
+      <label for="anim9">9. 🌌 Cosmic Orbit Assembly</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim10" name="animation" value="10">
-      <label for="anim10">10. 💫 3D Flip Transition</label>
+      <input type="radio" id="anim10" name="animation" value="1">
+      <label for="anim10">10. Fade In Simple</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim11" name="animation" value="11">
-      <label for="anim11">11. ⚡ Electric Glitch</label>
+      <input type="radio" id="anim11" name="animation" value="2">
+      <label for="anim11">11. Scale Up</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim12" name="animation" value="12">
-      <label for="anim12">12. 🎭 Elastic Bounce</label>
+      <input type="radio" id="anim12" name="animation" value="3">
+      <label for="anim12">12. DM Split (Current)</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim13" name="animation" value="13">
-      <label for="anim13">13. 🔮 Typewriter Effect</label>
+      <input type="radio" id="anim13" name="animation" value="4">
+      <label for="anim13">13. Slide From Sides</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim14" name="animation" value="14">
-      <label for="anim14">14. 🎪 Split & Merge</label>
+      <input type="radio" id="anim14" name="animation" value="5">
+      <label for="anim14">14. Letter Pop In</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim15" name="animation" value="15">
-      <label for="anim15">15. 🌟 Particle Explosion</label>
+      <input type="radio" id="anim15" name="animation" value="6">
+      <label for="anim15">15. Zoom Blur In</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim16" name="animation" value="16">
-      <label for="anim16">16. 📍 Pin Drop</label>
+      <input type="radio" id="anim16" name="animation" value="7">
+      <label for="anim16">16. Rotate &amp; Fade</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim17" name="animation" value="17">
-      <label for="anim17">17. 🔄 Spiral In</label>
+      <input type="radio" id="anim17" name="animation" value="8">
+      <label for="anim17">17. Letter Shuffle</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim18" name="animation" value="18">
-      <label for="anim18">18. 💨 Wind Blow</label>
+      <input type="radio" id="anim18" name="animation" value="9">
+      <label for="anim18">18. 🌊 Wave Letter Reveal</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim19" name="animation" value="19">
-      <label for="anim19">19. 🎯 Target Focus</label>
+      <input type="radio" id="anim19" name="animation" value="10">
+      <label for="anim19">19. 💫 3D Flip Transition</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim20" name="animation" value="20">
-      <label for="anim20">20. 📐 Perspective Tilt</label>
+      <input type="radio" id="anim20" name="animation" value="11">
+      <label for="anim20">20. ⚡ Electric Glitch</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim21" name="animation" value="21">
-      <label for="anim21">21. ⚙️ Mechanical Assemble</label>
+      <input type="radio" id="anim21" name="animation" value="12">
+      <label for="anim21">21. 🎭 Elastic Bounce</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim22" name="animation" value="22">
-      <label for="anim22">22. 🎬 Film Roll</label>
+      <input type="radio" id="anim22" name="animation" value="13">
+      <label for="anim22">22. 🔮 Typewriter Effect</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim23" name="animation" value="23">
-      <label for="anim23">23. 🌀 Vortex Spin</label>
+      <input type="radio" id="anim23" name="animation" value="14">
+      <label for="anim23">23. 🎪 Split &amp; Merge</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim24" name="animation" value="24">
-      <label for="anim24">24. 💎 Crystal Reveal</label>
+      <input type="radio" id="anim24" name="animation" value="15">
+      <label for="anim24">24. 🌟 Particle Explosion</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim25" name="animation" value="25">
-      <label for="anim25">25. 🚀 Launch Sequence</label>
+      <input type="radio" id="anim25" name="animation" value="16">
+      <label for="anim25">25. 📍 Pin Drop</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim26" name="animation" value="26">
-      <label for="anim26">26. 🎪 Curtain Reveal</label>
+      <input type="radio" id="anim26" name="animation" value="17">
+      <label for="anim26">26. 🔄 Spiral In</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim27" name="animation" value="27">
-      <label for="anim27">27. 🌊 Ripple Effect</label>
+      <input type="radio" id="anim27" name="animation" value="18">
+      <label for="anim27">27. 💨 Wind Blow</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim28" name="animation" value="28">
-      <label for="anim28">28. ⚗️ Liquid Fill</label>
+      <input type="radio" id="anim28" name="animation" value="19">
+      <label for="anim28">28. 🎯 Target Focus</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim29" name="animation" value="29">
-      <label for="anim29">29. 🎲 Dice Roll</label>
+      <input type="radio" id="anim29" name="animation" value="20">
+      <label for="anim29">29. 📐 Perspective Tilt</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim30" name="animation" value="30">
-      <label for="anim30">30. 🔌 Power On</label>
+      <input type="radio" id="anim30" name="animation" value="21">
+      <label for="anim30">30. ⚙️ Mechanical Assemble</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim31" name="animation" value="31">
-      <label for="anim31">31. 🎯 Sniper Scope</label>
+      <input type="radio" id="anim31" name="animation" value="22">
+      <label for="anim31">31. 🎬 Film Roll</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim32" name="animation" value="32">
-      <label for="anim32">32. 🪃 Boomerang</label>
+      <input type="radio" id="anim32" name="animation" value="23">
+      <label for="anim32">32. 🌀 Vortex Spin</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim33" name="animation" value="33">
-      <label for="anim33">33. 🎪 Accordion Fold</label>
+      <input type="radio" id="anim33" name="animation" value="24">
+      <label for="anim33">33. 💎 Crystal Reveal</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim34" name="animation" value="34">
-      <label for="anim34">34. 🌪️ Tornado Spin</label>
+      <input type="radio" id="anim34" name="animation" value="25">
+      <label for="anim34">34. 🚀 Launch Sequence</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim35" name="animation" value="35">
-      <label for="anim35">35. 🎸 String Vibrate</label>
+      <input type="radio" id="anim35" name="animation" value="26">
+      <label for="anim35">35. 🎪 Curtain Reveal</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim36" name="animation" value="36">
-      <label for="anim36">36. 🏗️ Build Up</label>
+      <input type="radio" id="anim36" name="animation" value="27">
+      <label for="anim36">36. 🌊 Ripple Effect</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim37" name="animation" value="37">
-      <label for="anim37">37. 💥 Impact Burst</label>
+      <input type="radio" id="anim37" name="animation" value="28">
+      <label for="anim37">37. ⚗️ Liquid Fill</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim38" name="animation" value="38">
-      <label for="anim38">38. 🎭 Mask Reveal</label>
+      <input type="radio" id="anim38" name="animation" value="29">
+      <label for="anim38">38. 🎲 Dice Roll</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim39" name="animation" value="39">
-      <label for="anim39">39. ⏩ Fast Forward</label>
+      <input type="radio" id="anim39" name="animation" value="30">
+      <label for="anim39">39. 🔌 Power On</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim40" name="animation" value="40">
-      <label for="anim40">40. 🎲 Random Chaos</label>
+      <input type="radio" id="anim40" name="animation" value="31">
+      <label for="anim40">40. 🎯 Sniper Scope</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim41" name="animation" value="41">
-      <label for="anim41">41. 🌈 Neon Glow Pulse</label>
+      <input type="radio" id="anim41" name="animation" value="32">
+      <label for="anim41">41. 🪃 Boomerang</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim42" name="animation" value="42">
-      <label for="anim42">42. 🎬 Cinematic Wipe</label>
+      <input type="radio" id="anim42" name="animation" value="33">
+      <label for="anim42">42. 🎪 Accordion Fold</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim43" name="animation" value="43">
-      <label for="anim43">43. 🔥 Fire Ignite</label>
+      <input type="radio" id="anim43" name="animation" value="34">
+      <label for="anim43">43. 🌪️ Tornado Spin</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim44" name="animation" value="44">
-      <label for="anim44">44. 🌊 Liquid Morph</label>
+      <input type="radio" id="anim44" name="animation" value="35">
+      <label for="anim44">44. 🎸 String Vibrate</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim45" name="animation" value="45">
-      <label for="anim45">45. ⚡ Neon Scan Line</label>
+      <input type="radio" id="anim45" name="animation" value="36">
+      <label for="anim45">45. 🏗️ Build Up</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim46" name="animation" value="46">
-      <label for="anim46">46. 🎯 Crosshair Lock</label>
+      <input type="radio" id="anim46" name="animation" value="38">
+      <label for="anim46">46. 🎭 Mask Reveal</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim47" name="animation" value="47">
-      <label for="anim47">47. 🌀 Quantum Shift</label>
+      <input type="radio" id="anim47" name="animation" value="39">
+      <label for="anim47">47. ⏩ Fast Forward</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim48" name="animation" value="48">
-      <label for="anim48">48. 💫 Stardust Trail</label>
+      <input type="radio" id="anim48" name="animation" value="41">
+      <label for="anim48">48. 🌈 Neon Glow Pulse</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim49" name="animation" value="49">
-      <label for="anim49">49. 🎪 Origami Unfold</label>
+      <input type="radio" id="anim49" name="animation" value="43">
+      <label for="anim49">49. 🔥 Fire Ignite</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim50" name="animation" value="50">
-      <label for="anim50">50. 🔮 Hologram Materialize</label>
+      <input type="radio" id="anim50" name="animation" value="44">
+      <label for="anim50">50. 🌊 Liquid Morph</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim51" name="animation" value="51">
-      <label for="anim51">51. ⚙️ Gear Assembly</label>
+      <input type="radio" id="anim51" name="animation" value="46">
+      <label for="anim51">51. 🎯 Crosshair Lock</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim52" name="animation" value="52">
-      <label for="anim52">52. 🌟 Shimmer Wave</label>
+      <input type="radio" id="anim52" name="animation" value="48">
+      <label for="anim52">52. 💫 Stardust Trail</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim53" name="animation" value="53">
-      <label for="anim53">53. 🎬 Slat Flip Board</label>
+      <input type="radio" id="anim53" name="animation" value="49">
+      <label for="anim53">53. 🎪 Origami Unfold</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim54" name="animation" value="54">
-      <label for="anim54">54. 💥 Shockwave Burst</label>
+      <input type="radio" id="anim54" name="animation" value="50">
+      <label for="anim54">54. 🔮 Hologram Materialize</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim55" name="animation" value="55">
-      <label for="anim55">55. 🌌 Galaxy Zoom</label>
+      <input type="radio" id="anim55" name="animation" value="51">
+      <label for="anim55">55. ⚙️ Gear Assembly</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim56" name="animation" value="56">
-      <label for="anim56">56. 🎭 Double Exposure</label>
+      <input type="radio" id="anim56" name="animation" value="52">
+      <label for="anim56">56. 🌟 Shimmer Wave</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim57" name="animation" value="57">
-      <label for="anim57">57. ⚡ Lightning Strike</label>
+      <input type="radio" id="anim57" name="animation" value="53">
+      <label for="anim57">57. 🎬 Slat Flip Board</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim58" name="animation" value="58">
-      <label for="anim58">58. 🌀 Magnetic Pull</label>
+      <input type="radio" id="anim58" name="animation" value="55">
+      <label for="anim58">58. 🌌 Galaxy Zoom</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim59" name="animation" value="59">
-      <label for="anim59">59. 🎨 Ink Splash</label>
+      <input type="radio" id="anim59" name="animation" value="56">
+      <label for="anim59">59. 🎭 Double Exposure</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim60" name="animation" value="60">
-      <label for="anim60">60. 🚀 Warp Speed</label>
+      <input type="radio" id="anim60" name="animation" value="57">
+      <label for="anim60">60. ⚡ Lightning Strike</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim61" name="animation" value="61">
-      <label for="anim61">61. 🎯 Laser Trace</label>
+      <input type="radio" id="anim61" name="animation" value="58">
+      <label for="anim61">61. 🌀 Magnetic Pull</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim62" name="animation" value="62">
-      <label for="anim62">62. 💎 Prism Refraction</label>
+      <input type="radio" id="anim62" name="animation" value="59">
+      <label for="anim62">62. 🎨 Ink Splash</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim63" name="animation" value="63">
-      <label for="anim63">63. 🌐 Matrix Digital Rain</label>
+      <input type="radio" id="anim63" name="animation" value="60">
+      <label for="anim63">63. 🚀 Warp Speed</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim64" name="animation" value="64">
-      <label for="anim64">64. 🔊 Sound Wave Pulse</label>
+      <input type="radio" id="anim64" name="animation" value="61">
+      <label for="anim64">64. 🎯 Laser Trace</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim65" name="animation" value="65">
-      <label for="anim65">65. 🎪 Kaleidoscope Spin</label>
+      <input type="radio" id="anim65" name="animation" value="62">
+      <label for="anim65">65. 💎 Prism Refraction</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim66" name="animation" value="66">
-      <label for="anim66">66. 🌟 Supernova Expand</label>
+      <input type="radio" id="anim66" name="animation" value="63">
+      <label for="anim66">66. 🌐 Matrix Digital Rain</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim67" name="animation" value="67">
-      <label for="anim67">67. 🎬 Film Burn</label>
+      <input type="radio" id="anim67" name="animation" value="64">
+      <label for="anim67">67. 🔊 Sound Wave Pulse</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim68" name="animation" value="68">
-      <label for="anim68">68. 🌊 Ocean Wave</label>
+      <input type="radio" id="anim68" name="animation" value="65">
+      <label for="anim68">68. 🎪 Kaleidoscope Spin</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim69" name="animation" value="69">
-      <label for="anim69">69. ⚡ Tesla Coil</label>
+      <input type="radio" id="anim69" name="animation" value="66">
+      <label for="anim69">69. 🌟 Supernova Expand</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim70" name="animation" value="70">
-      <label for="anim70">70. 🎭 Venetian Blind</label>
+      <input type="radio" id="anim70" name="animation" value="67">
+      <label for="anim70">70. 🎬 Film Burn</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim71" name="animation" value="71">
-      <label for="anim71">71. 🌀 Black Hole Pull</label>
+      <input type="radio" id="anim71" name="animation" value="68">
+      <label for="anim71">71. 🌊 Ocean Wave</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim72" name="animation" value="72">
-      <label for="anim72">72. 💫 Comet Streak</label>
+      <input type="radio" id="anim72" name="animation" value="69">
+      <label for="anim72">72. ⚡ Tesla Coil</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim73" name="animation" value="73">
-      <label for="anim73">73. 🎪 Circus Reveal</label>
+      <input type="radio" id="anim73" name="animation" value="70">
+      <label for="anim73">73. 🎭 Venetian Blind</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim74" name="animation" value="74">
-      <label for="anim74">74. 🔥 Phoenix Rising</label>
+      <input type="radio" id="anim74" name="animation" value="71">
+      <label for="anim74">74. 🌀 Black Hole Pull</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim75" name="animation" value="75">
-      <label for="anim75">75. 🌈 Chromatic Aberration</label>
+      <input type="radio" id="anim75" name="animation" value="72">
+      <label for="anim75">75. 💫 Comet Streak</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim76" name="animation" value="76">
-      <label for="anim76">76. 🎯 Sniper Zoom</label>
+      <input type="radio" id="anim76" name="animation" value="73">
+      <label for="anim76">76. 🎪 Circus Reveal</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim77" name="animation" value="77">
-      <label for="anim77">77. 💎 Diamond Scatter</label>
+      <input type="radio" id="anim77" name="animation" value="74">
+      <label for="anim77">77. 🔥 Phoenix Rising</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim78" name="animation" value="78">
-      <label for="anim78">78. 🌊 Tidal Wave</label>
+      <input type="radio" id="anim78" name="animation" value="75">
+      <label for="anim78">78. 🌈 Chromatic Aberration</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim79" name="animation" value="79">
-      <label for="anim79">79. ⚡ Teleport Beam</label>
+      <input type="radio" id="anim79" name="animation" value="76">
+      <label for="anim79">79. 🎯 Sniper Zoom</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim80" name="animation" value="80">
-      <label for="anim80">80. 🎬 Time Lapse</label>
+      <input type="radio" id="anim80" name="animation" value="77">
+      <label for="anim80">80. 💎 Diamond Scatter</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim81" name="animation" value="81">
-      <label for="anim81">81. 🎬 Cinematic Bloom & Glow</label>
+      <input type="radio" id="anim81" name="animation" value="78">
+      <label for="anim81">81. 🌊 Tidal Wave</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim82" name="animation" value="82">
-      <label for="anim82">82. 🌊 Liquid Ink Dispersion</label>
+      <input type="radio" id="anim82" name="animation" value="79">
+      <label for="anim82">82. ⚡ Teleport Beam</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim83" name="animation" value="83">
-      <label for="anim83">83. 📐 3D Editorial Kinetic Flip</label>
+      <input type="radio" id="anim83" name="animation" value="80">
+      <label for="anim83">83. 🎬 Time Lapse</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim84" name="animation" value="84">
-      <label for="anim84">84. 🏎️ Kinetic Velocity Stretch</label>
+      <input type="radio" id="anim84" name="animation" value="82">
+      <label for="anim84">84. 🌊 Liquid Ink Dispersion</label>
     </div>
     <div class="animation-option">
-      <input type="radio" id="anim85" name="animation" value="85">
-      <label for="anim85">85. 🌌 Cosmic Orbit Assembly</label>
+      <input type="radio" id="anim85" name="animation" value="83">
+      <label for="anim85">85. 📐 3D Editorial Kinetic Flip</label>
     </div>
   </div>
   
@@ -5040,9 +5093,23 @@
     playBtn.addEventListener('click', playAnimation);
     resetBtn.addEventListener('click', resetAnimation);
     
+    // Toggle mobile drawer on header tap
+    const selectorHeader = document.querySelector('.animation-selector h3');
+    const selectorPanel = document.querySelector('.animation-selector');
+    
+    selectorHeader.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        selectorPanel.classList.toggle('open');
+      }
+    });
+
     animationRadios.forEach(radio => {
       radio.addEventListener('change', () => {
         resetAnimation();
+        // Collapse mobile drawer when option selected
+        if (window.innerWidth <= 768) {
+          selectorPanel.classList.remove('open');
+        }
       });
     });
     
