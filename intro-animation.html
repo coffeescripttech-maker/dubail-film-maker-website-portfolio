@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Intro Animation Test - DubaiFilmMaker</title>
-  
+
   <!-- Monument Extended Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
-  
+
   <!-- GSAP Library -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  
+
   <style>
     /* Monument Extended Font */
     @font-face {
@@ -21,20 +22,20 @@
       font-weight: 400;
       font-style: normal;
     }
-    
+
     @font-face {
       font-family: 'Monument Extended';
       src: local('Monument Extended Bold'), local('MonumentExtended-Bold');
       font-weight: 700;
       font-style: normal;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Monument Extended', 'Montserrat', sans-serif;
       font-weight: 700;
@@ -46,7 +47,7 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     /* Animation Container */
     .intro-container {
       position: relative;
@@ -57,22 +58,24 @@
       justify-content: center;
       overflow: hidden;
     }
-    
+
     /* 16:9 Frame (Logo Frame) - Left-aligned for diagonal layout */
     .frame-16-9 {
       position: absolute;
       width: 700px;
-      height: 393.75px; /* 16:9 ratio */
+      height: 393.75px;
+      /* 16:9 ratio */
       border: 5px solid #fff;
       border-radius: 20px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start; /* Left-align for diagonal effect */
+      align-items: flex-start;
+      /* Left-align for diagonal effect */
       justify-content: center;
       padding: 50px 60px;
       z-index: 10;
     }
-    
+
     /* SVG Border overlay */
     .frame-border-svg {
       position: absolute;
@@ -82,51 +85,55 @@
       height: 100%;
       pointer-events: none;
       z-index: 1;
-      opacity: 0; /* Hidden by default, shown in animation 8 */
+      opacity: 0;
+      /* Hidden by default, shown in animation 8 */
     }
-    
+
     .border-rect {
       stroke-dasharray: 2500;
       stroke-dashoffset: 2500;
     }
-    
+
     /* Text inside frame - diagonal staircase layout (left-aligned, thin font) */
     .frame-text {
       text-align: left;
       line-height: 1.05;
       font-size: 56px;
-      font-weight: 700; /* Bold for Monument Extended style */
+      font-weight: 700;
+      /* Bold for Monument Extended style */
       font-family: 'Monument Extended', 'Montserrat', sans-serif;
       letter-spacing: 0.08em;
       color: #fff;
       position: relative;
       z-index: 2;
     }
-    
+
     .frame-text .line {
       display: block;
       opacity: 1 !important;
       color: #fff;
     }
-    
+
     /* Diagonal staircase layout - precise letter alignment */
     .frame-text .line-1 {
       /* DUBAI - top left, no indent */
       margin-bottom: 2px;
       padding-left: 0;
     }
-    
+
     .frame-text .line-2 {
       /* FILM - F aligns with U from DUBAI */
       margin-bottom: 2px;
-      padding-left: 80px; /* F aligns under U */
+      padding-left: 80px;
+      /* F aligns under U */
     }
-    
+
     .frame-text .line-3 {
       /* MAKER - M aligns with I from FILM */
-      padding-left: 160px; /* M aligns under I */
+      padding-left: 160px;
+      /* M aligns under I */
     }
-    
+
     /* Single line text (morphed state) */
     .single-line-text {
       position: absolute;
@@ -138,7 +145,7 @@
       opacity: 0;
       z-index: 5;
     }
-    
+
     /* Controls */
     .controls {
       position: fixed;
@@ -149,7 +156,7 @@
       gap: 15px;
       z-index: 100;
     }
-    
+
     .btn {
       padding: 12px 24px;
       background: #fff;
@@ -161,16 +168,16 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    
+
     .btn:hover {
       background: #ddd;
       transform: scale(1.05);
     }
-    
+
     .btn:active {
       transform: scale(0.95);
     }
-    
+
     /* Info Panel */
     .info-panel {
       position: fixed;
@@ -185,18 +192,18 @@
       max-width: 300px;
       z-index: 100;
     }
-    
+
     .info-panel h3 {
       font-size: 14px;
       margin-bottom: 10px;
       color: #fff;
     }
-    
+
     .info-panel p {
       color: #ccc;
       margin-bottom: 8px;
     }
-    
+
     .info-panel code {
       background: rgba(0, 0, 0, 0.3);
       padding: 2px 6px;
@@ -204,7 +211,7 @@
       font-family: 'Courier New', monospace;
       color: #fff;
     }
-    
+
     /* Animation Selector */
     .animation-selector {
       position: fixed;
@@ -222,34 +229,34 @@
       overflow-x: hidden;
       border: 2px solid rgba(255, 255, 255, 0.2);
     }
-    
+
     /* Custom Scrollbar - Enhanced Visibility */
     .animation-selector::-webkit-scrollbar {
       width: 12px;
     }
-    
+
     .animation-selector::-webkit-scrollbar-track {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 6px;
       margin: 5px 0;
     }
-    
+
     .animation-selector::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.7);
       border-radius: 6px;
       border: 2px solid rgba(0, 0, 0, 0.3);
     }
-    
+
     .animation-selector::-webkit-scrollbar-thumb:hover {
       background: rgba(255, 255, 255, 0.9);
     }
-    
+
     /* Fallback for Firefox */
     .animation-selector {
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 255, 255, 0.7) rgba(0, 0, 0, 0.3);
     }
-    
+
     .animation-selector h3 {
       font-size: 14px;
       margin-bottom: 10px;
@@ -265,7 +272,7 @@
       border-radius: 8px 8px 0 0;
       z-index: 10;
     }
-    
+
     .scroll-hint {
       font-size: 11px;
       color: rgba(255, 255, 255, 0.7);
@@ -274,7 +281,7 @@
       margin-bottom: 10px;
       font-weight: 400;
     }
-    
+
     .animation-option {
       display: flex;
       align-items: center;
@@ -285,21 +292,21 @@
       border-radius: 4px;
       transition: background 0.2s ease;
     }
-    
+
     .animation-option:hover {
       background: rgba(255, 255, 255, 0.1);
     }
-    
+
     .animation-option input[type="radio"] {
       cursor: pointer;
     }
-    
+
     .animation-option label {
       cursor: pointer;
       font-size: 13px;
       color: #fff;
     }
-    
+
     /* Responsive */
     @media (max-width: 768px) {
       .frame-16-9 {
@@ -309,23 +316,23 @@
         border: 3px solid #fff;
         border-radius: 8px;
       }
-      
+
       .frame-text {
         font-size: 28px;
       }
-      
+
       .frame-text .line-2 {
         padding-left: 40px;
       }
-      
+
       .frame-text .line-3 {
         padding-left: 80px;
       }
-      
+
       .single-line-text {
         font-size: 40px;
       }
-      
+
       .info-panel {
         display: none;
       }
@@ -342,7 +349,8 @@
         border-radius: 20px 20px 0 0;
         border: none;
         border-top: 2px solid rgba(255, 255, 255, 0.2);
-        transform: translateY(330px); /* Collapsed showing 50px header */
+        transform: translateY(330px);
+        /* Collapsed showing 50px header */
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         background: rgba(10, 10, 10, 0.95);
         z-index: 200;
@@ -384,34 +392,35 @@
         z-index: 150;
       }
     }
-    
+
     @media (max-width: 480px) {
       .frame-16-9 {
         width: 280px;
         height: 158px;
         padding: 15px 20px;
       }
-      
+
       .frame-text {
         font-size: 22px;
       }
-      
+
       .frame-text .line-2 {
         padding-left: 30px;
       }
-      
+
       .frame-text .line-3 {
         padding-left: 60px;
       }
-      
+
       .single-line-text {
         font-size: 32px;
       }
     }
   </style>
 </head>
+
 <body>
-  
+
   <!-- Animation Container -->
   <div class="intro-container">
     <!-- 16:9 Frame with stacked text -->
@@ -420,21 +429,21 @@
       <svg class="frame-border-svg" viewBox="0 0 700 394" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect class="border-rect" x="2.5" y="2.5" width="695" height="389" rx="17.5" stroke="white" stroke-width="5" />
       </svg>
-      
+
       <div class="frame-text">
         <span class="line line-1">DUBAI</span>
         <span class="line line-2">FILM</span>
         <span class="line line-3">MAKER</span>
       </div>
     </div>
-    
+
     <!-- Single line text (hidden initially) -->
     <div class="single-line-text">DUBAIFILMMAKER</div>
   </div>
-  
+
   <!-- Animation Selector -->
   <div class="animation-selector">
-    <h3>Choose Animation (85 total):</h3>
+    <h3>Choose Animation (86 total):</h3>
     <div class="scroll-hint">↓ Scroll to see all options ↓</div>
     <div class="animation-option">
       <input type="radio" id="anim1" name="animation" value="81" checked>
@@ -776,8 +785,12 @@
       <input type="radio" id="anim85" name="animation" value="83">
       <label for="anim85">85. 📐 3D Editorial Kinetic Flip</label>
     </div>
+    <div class="animation-option">
+      <input type="radio" id="anim86" name="animation" value="86">
+      <label for="anim86">86. ✨ Morph D → Single Line</label>
+    </div>
   </div>
-  
+
   <!-- Info Panel -->
   <div class="info-panel">
     <h3>Animation Test</h3>
@@ -786,16 +799,16 @@
     <p><strong>Duration:</strong> <span id="duration">3.0s</span></p>
     <p>Click <code>Play</code> to start or <code>Reset</code> to restart.</p>
   </div>
-  
+
   <!-- Controls -->
   <div class="controls">
     <button class="btn" id="play-btn">Play Animation</button>
     <button class="btn" id="reset-btn">Reset</button>
   </div>
-  
+
   <script>
     console.log('🎬 Intro Animation Test - Ready');
-    
+
     // Elements
     const frame = document.querySelector('.frame-16-9');
     const frameText = document.querySelector('.frame-text');
@@ -806,50 +819,50 @@
     const animationRadios = document.querySelectorAll('input[name="animation"]');
     const currentAnimationSpan = document.getElementById('current-animation');
     const durationSpan = document.getElementById('duration');
-    
+
     let currentTimeline = null;
-    
+
     // Animation 1: Fade In Simple
     function animation1() {
       console.log('🎬 Animation 1: Fade In Simple');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 1 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0 });
-      
+
       // Simple fade in
       tl.to(singleLineText, {
         opacity: 1,
         duration: 1.5,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 2: Scale Up
     function animation2() {
       console.log('🎬 Animation 2: Scale Up');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 2 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0, scale: 0.5 });
-      
+
       // Scale up from center
       tl.to(singleLineText, {
         opacity: 1,
@@ -857,15 +870,15 @@
         duration: 1.2,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 3: Current DM Split (Your existing animation)
     function animation3() {
       console.log('🎬 Animation 3: Current DM Split');
-      
+
       // For this, we'll simulate the current animation
       // Create letter spans
       const text = 'DUBAIFILMMAKER';
@@ -878,62 +891,62 @@
         span.style.opacity = '0';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const letterD = letters[0];
       const letterM = letters[9];
       const leftGroup = Array.from(letters).slice(1, 5);
       const middleGroup = Array.from(letters).slice(5, 9);
       const rightGroup = Array.from(letters).slice(10);
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 3 complete');
         }
       });
-      
+
       // Hide frame
       gsap.set(frame, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       // Calculate positions
       const fontSize = 60;
       const closeDistance = fontSize * 0.6;
-      
+
       // Initial state: DM close together at center
-      gsap.set(letterD, { 
-        opacity: 1, 
+      gsap.set(letterD, {
+        opacity: 1,
         x: -(closeDistance / 2),
-        y: 0 
+        y: 0
       });
-      gsap.set(letterM, { 
-        opacity: 1, 
+      gsap.set(letterM, {
+        opacity: 1,
         x: (closeDistance / 2),
-        y: 0 
+        y: 0
       });
-      gsap.set([...leftGroup, ...middleGroup, ...rightGroup], { 
-        opacity: 0, 
-        scale: 0.76 
+      gsap.set([...leftGroup, ...middleGroup, ...rightGroup], {
+        opacity: 0,
+        scale: 0.76
       });
-      
+
       // Animation
       tl.to({}, { duration: 0.5 }); // Hold
-      
+
       tl.to(letterD, { x: 0, duration: 0.6, ease: 'power2.out' }, 0.5);
       tl.to(letterM, { x: 0, duration: 0.6, ease: 'power2.out' }, 0.5);
-      
+
       tl.to(leftGroup, { opacity: 1, scale: 1, stagger: 0.06, duration: 0.5, ease: 'cubic-bezier(0, 1, 0.8, 0)' }, 0.7);
       tl.to(middleGroup, { opacity: 1, scale: 1, stagger: 0.06, duration: 0.5, ease: 'cubic-bezier(0, 1, 0.8, 0)' }, 0.9);
       tl.to(rightGroup, { opacity: 1, scale: 1, stagger: 0.06, duration: 0.5, ease: 'cubic-bezier(0, 1, 0.8, 0)' }, 1.1);
-      
+
       durationSpan.textContent = '2.0s';
       return tl;
     }
-    
+
     // Animation 4: Slide From Sides
     function animation4() {
       console.log('🎬 Animation 4: Slide From Sides');
-      
+
       // Create letter spans
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -944,46 +957,46 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const half = Math.floor(letters.length / 2);
       const leftHalf = Array.from(letters).slice(0, half);
       const rightHalf = Array.from(letters).slice(half);
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 4 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(leftHalf, { opacity: 1, x: -300 });
       gsap.set(rightHalf, { opacity: 1, x: 300 });
-      
+
       // Slide in from sides
       tl.to(leftHalf, {
         x: 0,
         duration: 1,
         ease: 'power2.out'
       }, 0);
-      
+
       tl.to(rightHalf, {
         x: 0,
         duration: 1,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.0s';
       return tl;
     }
-    
+
     // Animation 5: Letter Pop In
     function animation5() {
       console.log('🎬 Animation 5: Letter Pop In');
-      
+
       // Create letter spans
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -994,21 +1007,21 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 5 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, scale: 0 });
-      
+
       // Letters pop in with stagger
       tl.to(letters, {
         opacity: 1,
@@ -1017,26 +1030,26 @@
         stagger: 0.05,
         ease: 'back.out(2)'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 6: Zoom Blur In
     function animation6() {
       console.log('🎬 Animation 6: Zoom Blur In');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 6 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0, scale: 3, filter: 'blur(20px)' });
-      
+
       // Zoom in with blur clearing
       tl.to(singleLineText, {
         opacity: 1,
@@ -1045,26 +1058,26 @@
         duration: 1.5,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 7: Rotate & Fade
     function animation7() {
       console.log('🎬 Animation 7: Rotate & Fade');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 7 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0, rotation: -45, scale: 0.8 });
-      
+
       // Rotate and fade in
       tl.to(singleLineText, {
         opacity: 1,
@@ -1073,15 +1086,15 @@
         duration: 1.2,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 8: Letter Shuffle
     function animation8() {
       console.log('🎬 Animation 8: Letter Shuffle');
-      
+
       // Create letter spans
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -1092,20 +1105,20 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 8 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       // Letters start from random positions
       letters.forEach((letter, i) => {
         gsap.set(letter, {
@@ -1115,7 +1128,7 @@
           rotation: gsap.utils.random(-90, 90)
         });
       });
-      
+
       // Shuffle to position
       tl.to(letters, {
         opacity: 1,
@@ -1126,15 +1139,15 @@
         stagger: 0.03,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 9: Wave Letter Reveal
     function animation9() {
       console.log('🎬 Animation 9: Wave Letter Reveal');
-      
+
       // Create letter spans for wave effect
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -1146,21 +1159,21 @@
         span.style.opacity = '0';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 9 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, y: 50, rotation: -15 });
-      
+
       // Letters wave in with stagger
       tl.to(letters, {
         opacity: 1,
@@ -1174,30 +1187,30 @@
         },
         ease: 'back.out(1.7)'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 10: 3D Flip Transition
     function animation10() {
       console.log('🎬 Animation 10: 3D Flip Transition');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 10 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
-        opacity: 0, 
+      gsap.set(singleLineText, {
+        opacity: 0,
         rotationY: -90,
         transformPerspective: 1000
       });
-      
+
       // Single line flips in
       tl.to(singleLineText, {
         opacity: 1,
@@ -1205,33 +1218,33 @@
         duration: 1.2,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 11: Electric Glitch Effect
     function animation11() {
       console.log('🎬 Animation 11: Electric Glitch');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 11 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0 });
-      
+
       // Single line glitches in
-      tl.fromTo(singleLineText, 
+      tl.fromTo(singleLineText,
         { opacity: 0, x: -50 },
         { opacity: 1, x: 0, duration: 0.1 },
         0
       );
-      
+
       // Add glitch flickers
       for (let i = 0; i < 6; i++) {
         tl.to(singleLineText, {
@@ -1240,28 +1253,28 @@
           duration: 0.05
         }, 0.1 + (i * 0.1));
       }
-      
+
       tl.to(singleLineText, { opacity: 1, x: 0, duration: 0.2 }, 0.7);
-      
+
       durationSpan.textContent = '1.0s';
       return tl;
     }
-    
+
     // Animation 12: Elastic Bounce
     function animation12() {
       console.log('🎬 Animation 12: Elastic Bounce');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 12 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0, scale: 0.5 });
-      
+
       // Single line bounces in
       tl.to(singleLineText, {
         opacity: 1,
@@ -1269,15 +1282,15 @@
         duration: 1.2,
         ease: 'elastic.out(1, 0.5)'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 13: Typewriter Effect
     function animation13() {
       console.log('🎬 Animation 13: Typewriter Effect');
-      
+
       // Create letter spans for typewriter
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -1289,21 +1302,21 @@
         span.style.opacity = '0';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 13 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0 });
-      
+
       // Typewriter effect - letters appear one by one
       letters.forEach((letter, i) => {
         tl.to(letter, {
@@ -1312,15 +1325,15 @@
           ease: 'steps(1)'
         }, i * 0.08);
       });
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 14: Split & Merge
     function animation14() {
       console.log('🎬 Animation 14: Split & Merge');
-      
+
       // Create letter spans
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -1331,46 +1344,46 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const half = Math.floor(letters.length / 2);
       const leftHalf = Array.from(letters).slice(0, half);
       const rightHalf = Array.from(letters).slice(half);
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 14 complete');
         }
       });
-      
+
       // Initial state - NO FRAME
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(leftHalf, { opacity: 1, x: -200 });
       gsap.set(rightHalf, { opacity: 1, x: 200 });
-      
+
       // Letters merge from sides
       tl.to(leftHalf, {
         x: 0,
         duration: 1,
         ease: 'power2.out'
       }, 0);
-      
+
       tl.to(rightHalf, {
         x: 0,
         duration: 1,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.0s';
       return tl;
     }
-    
+
     // Animation 15: Particle Explosion
     function animation15() {
       console.log('🎬 Animation 15: Particle Explosion');
-      
+
       // Create letter spans for particle effect
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
@@ -1382,35 +1395,35 @@
         span.style.opacity = '0';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => {
           console.log('✅ Animation 15 complete');
         }
       });
-      
+
       // Initial state - NO FRAME, just single line text
       gsap.set(frame, { opacity: 0 }); // Hide frame completely
       gsap.set(lines, { opacity: 0 }); // Hide stacked text
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
-        opacity: 0, 
+      gsap.set(letters, {
+        opacity: 0,
         scale: 3,
         x: 0,
         y: 0
       });
-      
+
       // Phase 1: Letters explode from center with rotation (0-1.5s)
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * Math.PI * 2;
         const distance = 300;
         const explodeX = Math.cos(angle) * distance;
         const explodeY = Math.sin(angle) * distance;
-        
+
         tl.fromTo(letter,
-          { 
+          {
             opacity: 0,
             scale: 3,
             x: explodeX,
@@ -1429,18 +1442,18 @@
           0 + (i * 0.02)
         );
       });
-      
+
       // Phase 2: Hold final position (1.5-2.5s)
       tl.to({}, { duration: 1 });
-      
+
       durationSpan.textContent = '2.5s';
       return tl;
     }
-    
+
     // Animation 16: Pin Drop
     function animation16() {
       console.log('🎬 Animation 16: Pin Drop');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1450,18 +1463,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 16 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, y: -150, rotation: gsap.utils.random(-20, 20) });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           opacity: 1,
@@ -1471,15 +1484,15 @@
           ease: 'bounce.out'
         }, i * 0.06);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 17: Spiral In
     function animation17() {
       console.log('🎬 Animation 17: Spiral In');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1489,17 +1502,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 17 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * Math.PI * 4;
         const radius = 300 - (i * 20);
@@ -1510,7 +1523,7 @@
           rotation: angle * (180 / Math.PI)
         });
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -1520,15 +1533,15 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 18: Wind Blow
     function animation18() {
       console.log('🎬 Animation 18: Wind Blow');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1538,23 +1551,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 18 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
-        opacity: 0, 
+      gsap.set(letters, {
+        opacity: 0,
         x: -400,
         rotation: -45,
         skewX: 20
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -1564,27 +1577,27 @@
         stagger: 0.03,
         ease: 'power3.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 19: Target Focus
     function animation19() {
       console.log('🎬 Animation 19: Target Focus');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 19 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
-        opacity: 0, 
+      gsap.set(singleLineText, {
+        opacity: 0,
         scale: 5,
         filter: 'blur(30px) brightness(3)'
       });
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         scale: 1,
@@ -1592,15 +1605,15 @@
         duration: 1.5,
         ease: 'power3.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 20: Perspective Tilt
     function animation20() {
       console.log('🎬 Animation 20: Perspective Tilt');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1610,22 +1623,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 20 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 800 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         rotationY: 90,
         transformOrigin: 'center center'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         rotationY: 0,
@@ -1633,15 +1646,15 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 21: Mechanical Assemble
     function animation21() {
       console.log('🎬 Animation 21: Mechanical Assemble');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1651,17 +1664,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 21 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         gsap.set(letter, {
           opacity: 0,
@@ -1670,7 +1683,7 @@
           rotation: gsap.utils.random(-180, 180),
           scale: 0.3
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           y: 0,
@@ -1681,15 +1694,15 @@
           ease: 'back.out(2)'
         }, i * 0.08);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 22: Film Roll
     function animation22() {
       console.log('🎬 Animation 22: Film Roll');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1699,23 +1712,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 22 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 0,
         rotationX: 90,
         transformOrigin: 'center bottom'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         rotationX: 0,
@@ -1723,15 +1736,15 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 23: Vortex Spin
     function animation23() {
       console.log('🎬 Animation 23: Vortex Spin');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1741,17 +1754,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 23 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         gsap.set(letter, {
           opacity: 0,
@@ -1759,7 +1772,7 @@
           rotation: 720
         });
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         scale: 1,
@@ -1768,15 +1781,15 @@
         stagger: 0.04,
         ease: 'power3.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 24: Crystal Reveal
     function animation24() {
       console.log('🎬 Animation 24: Crystal Reveal');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1786,23 +1799,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 24 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scale: 0,
         rotation: 180,
         filter: 'brightness(3)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         scale: 1,
@@ -1812,15 +1825,15 @@
         stagger: 0.05,
         ease: 'elastic.out(1, 0.5)'
       }, 0);
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 25: Launch Sequence
     function animation25() {
       console.log('🎬 Animation 25: Launch Sequence');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1830,22 +1843,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 25 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 500,
         scale: 0.5
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         y: 0,
@@ -1854,29 +1867,29 @@
         stagger: 0.03,
         ease: 'power4.out'
       }, 0);
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           y: -10,
           duration: 0.2,
           ease: 'power1.out'
         }, 0.8 + (i * 0.03));
-        
+
         tl.to(letter, {
           y: 0,
           duration: 0.2,
           ease: 'bounce.out'
         }, 1.0 + (i * 0.03));
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 26: Curtain Reveal
     function animation26() {
       console.log('🎬 Animation 26: Curtain Reveal');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1886,18 +1899,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const half = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 26 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         if (i < half) {
           gsap.set(letter, { opacity: 1, x: -200, scaleX: 0 });
@@ -1905,7 +1918,7 @@
           gsap.set(letter, { opacity: 1, x: 200, scaleX: 0 });
         }
       });
-      
+
       tl.to(letters, {
         x: 0,
         scaleX: 1,
@@ -1916,15 +1929,15 @@
         },
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 27: Ripple Effect
     function animation27() {
       console.log('🎬 Animation 27: Ripple Effect');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1934,19 +1947,19 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 27 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, scale: 0 });
-      
+
       letters.forEach((letter, i) => {
         const distance = Math.abs(i - center);
         tl.to(letter, {
@@ -1956,15 +1969,15 @@
           ease: 'back.out(2)'
         }, distance * 0.08);
       });
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 28: Liquid Fill
     function animation28() {
       console.log('🎬 Animation 28: Liquid Fill');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -1974,18 +1987,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 28 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, scaleY: 0, transformOrigin: 'bottom' });
-      
+
       tl.to(letters, {
         opacity: 1,
         scaleY: 1,
@@ -1993,15 +2006,15 @@
         stagger: 0.05,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 29: Dice Roll
     function animation29() {
       console.log('🎬 Animation 29: Dice Roll');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2011,17 +2024,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 29 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 1000 });
-      
+
       letters.forEach((letter, i) => {
         gsap.set(letter, {
           opacity: 0,
@@ -2029,7 +2042,7 @@
           rotationY: gsap.utils.random(360, 720),
           scale: 0.3
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           rotationX: 0,
@@ -2039,28 +2052,28 @@
           ease: 'power2.out'
         }, i * 0.06);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 30: Power On
     function animation30() {
       console.log('🎬 Animation 30: Power On');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 30 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
+      gsap.set(singleLineText, {
         opacity: 0,
         scaleY: 0.01,
         scaleX: 2,
         transformOrigin: 'center'
       });
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         scaleY: 1,
@@ -2068,47 +2081,47 @@
         duration: 0.3,
         ease: 'power2.out'
       }, 0);
-      
+
       tl.to(singleLineText, {
         opacity: 0.5,
         duration: 0.05
       }, 0.3);
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         duration: 0.05
       }, 0.35);
-      
+
       tl.to(singleLineText, {
         opacity: 0.7,
         duration: 0.05
       }, 0.4);
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         duration: 0.1
       }, 0.45);
-      
+
       durationSpan.textContent = '0.6s';
       return tl;
     }
-    
+
     // Animation 31: Sniper Scope
     function animation31() {
       console.log('🎬 Animation 31: Sniper Scope');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 31 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
+      gsap.set(singleLineText, {
         opacity: 0,
         scale: 10,
         filter: 'blur(50px)'
       });
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         scale: 1,
@@ -2116,15 +2129,15 @@
         duration: 1.2,
         ease: 'power3.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 32: Boomerang
     function animation32() {
       console.log('🎬 Animation 32: Boomerang');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2134,22 +2147,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 32 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         x: -500,
         rotation: -360
       });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           opacity: 1,
@@ -2158,22 +2171,22 @@
           duration: 0.5,
           ease: 'power2.out'
         }, i * 0.05);
-        
+
         tl.to(letter, {
           x: 0,
           duration: 0.3,
           ease: 'back.out(2)'
         }, i * 0.05 + 0.5);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 33: Accordion Fold
     function animation33() {
       console.log('🎬 Animation 33: Accordion Fold');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2183,22 +2196,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 33 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scaleX: 0,
         transformOrigin: 'left'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         scaleX: 1,
@@ -2206,15 +2219,15 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 34: Tornado Spin
     function animation34() {
       console.log('🎬 Animation 34: Tornado Spin');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2224,17 +2237,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 34 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * Math.PI * 6;
         gsap.set(letter, {
@@ -2244,7 +2257,7 @@
           scale: 0.3
         });
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         y: 0,
@@ -2254,15 +2267,15 @@
         stagger: 0.03,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 35: String Vibrate
     function animation35() {
       console.log('🎬 Animation 35: String Vibrate');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2272,18 +2285,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 35 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         for (let j = 0; j < 5; j++) {
           tl.to(letter, {
@@ -2292,22 +2305,22 @@
             ease: 'none'
           }, (i * 0.05) + (j * 0.08));
         }
-        
+
         tl.to(letter, {
           y: 0,
           duration: 0.1,
           ease: 'power2.out'
         }, (i * 0.05) + 0.4);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 36: Build Up
     function animation36() {
       console.log('🎬 Animation 36: Build Up');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2317,22 +2330,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 36 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 300,
         scaleY: 0.1
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         y: 0,
@@ -2341,15 +2354,15 @@
         stagger: 0.05,
         ease: 'bounce.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 37: Impact Burst
     function animation37() {
       console.log('🎬 Animation 37: Impact Burst');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2359,26 +2372,26 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 37 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, scale: 2 });
-      
+
       tl.to(letters[center], {
         opacity: 1,
         scale: 1,
         duration: 0.2,
         ease: 'back.out(3)'
       }, 0);
-      
+
       letters.forEach((letter, i) => {
         if (i !== center) {
           const distance = Math.abs(i - center);
@@ -2390,15 +2403,15 @@
           }, 0.2 + (distance * 0.05));
         }
       });
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 38: Mask Reveal
     function animation38() {
       console.log('🎬 Animation 38: Mask Reveal');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2408,23 +2421,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 38 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 50,
         scaleY: 0,
         transformOrigin: 'top'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         y: 0,
@@ -2436,15 +2449,15 @@
         },
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.3s';
       return tl;
     }
-    
+
     // Animation 39: Fast Forward
     function animation39() {
       console.log('🎬 Animation 39: Fast Forward');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2454,22 +2467,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 39 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         x: -800,
         scaleX: 3
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -2478,15 +2491,15 @@
         stagger: 0.02,
         ease: 'power4.out'
       }, 0);
-      
+
       durationSpan.textContent = '0.8s';
       return tl;
     }
-    
+
     // Animation 40: Random Chaos
     function animation40() {
       console.log('🎬 Animation 40: Random Chaos');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2496,17 +2509,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 40 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         gsap.set(letter, {
           opacity: 0,
@@ -2515,7 +2528,7 @@
           rotation: gsap.utils.random(-360, 360),
           scale: gsap.utils.random(0.2, 3)
         });
-        
+
         const startTime = gsap.utils.random(0, 0.5);
         tl.to(letter, {
           opacity: 1,
@@ -2527,27 +2540,27 @@
           ease: 'power3.out'
         }, startTime);
       });
-      
+
       durationSpan.textContent = '2.0s';
       return tl;
     }
-    
+
     // Animation 41: Neon Glow Pulse
     function animation41() {
       console.log('🎬 Animation 41: Neon Glow Pulse');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 41 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
+      gsap.set(singleLineText, {
         opacity: 0,
         scale: 0.8,
         filter: 'blur(10px) brightness(3)'
       });
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         scale: 1,
@@ -2555,7 +2568,7 @@
         duration: 1,
         ease: 'power2.out'
       }, 0);
-      
+
       // Pulsing glow effect
       tl.to(singleLineText, {
         filter: 'blur(2px) brightness(1.5)',
@@ -2564,15 +2577,15 @@
         repeat: 3,
         ease: 'sine.inOut'
       }, 1);
-      
+
       durationSpan.textContent = '2.2s';
       return tl;
     }
-    
+
     // Animation 42: Cinematic Wipe
     function animation42() {
       console.log('🎬 Animation 42: Cinematic Wipe');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2582,22 +2595,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 42 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 0,
         clipPath: 'inset(0 100% 0 0)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         clipPath: 'inset(0 0% 0 0)',
@@ -2605,15 +2618,15 @@
         stagger: 0.04,
         ease: 'power2.inOut'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 43: Fire Ignite
     function animation43() {
       console.log('🎬 Animation 43: Fire Ignite');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2623,23 +2636,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 43 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 100,
         filter: 'blur(10px) brightness(2)',
         scale: 0.5
       });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           opacity: 1,
@@ -2649,7 +2662,7 @@
           duration: 0.6,
           ease: 'power3.out'
         }, i * 0.04);
-        
+
         // Flicker effect
         tl.to(letter, {
           opacity: 0.7,
@@ -2659,15 +2672,15 @@
           repeat: 2
         }, i * 0.04 + 0.3);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 44: Liquid Morph
     function animation44() {
       console.log('🎬 Animation 44: Liquid Morph');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2677,17 +2690,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 44 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         gsap.set(letter, {
           opacity: 0,
@@ -2696,7 +2709,7 @@
           y: gsap.utils.random(-50, 50),
           skewX: gsap.utils.random(-20, 20)
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           scaleY: 1,
@@ -2707,15 +2720,15 @@
           ease: 'elastic.out(1, 0.5)'
         }, i * 0.05);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 45: Neon Scan Line
     function animation45() {
       console.log('🎬 Animation 45: Neon Scan Line');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2725,21 +2738,21 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 45 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         filter: 'brightness(0)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         filter: 'brightness(2)',
@@ -2747,34 +2760,34 @@
         stagger: 0.05,
         ease: 'none'
       }, 0);
-      
+
       tl.to(letters, {
         filter: 'brightness(1)',
         duration: 0.3,
         stagger: 0.05,
         ease: 'power2.out'
       }, 0.1);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 46: Crosshair Lock
     function animation46() {
       console.log('🎬 Animation 46: Crosshair Lock');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 46 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
+      gsap.set(singleLineText, {
         opacity: 0,
         scale: 0.1,
         rotation: 180
       });
-      
+
       tl.to(singleLineText, {
         opacity: 0.5,
         scale: 1.5,
@@ -2782,22 +2795,22 @@
         duration: 0.5,
         ease: 'power2.out'
       }, 0);
-      
+
       tl.to(singleLineText, {
         opacity: 1,
         scale: 1,
         duration: 0.4,
         ease: 'power2.out'
       }, 0.5);
-      
+
       durationSpan.textContent = '0.9s';
       return tl;
     }
-    
+
     // Animation 47: Quantum Shift
     function animation47() {
       console.log('🎬 Animation 47: Quantum Shift');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2807,17 +2820,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 47 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         // Quantum positions - multiple overlapping states
         for (let j = 0; j < 3; j++) {
@@ -2825,9 +2838,9 @@
           gsap.set(letter, {
             opacity: 0
           });
-          
+
           tl.fromTo(letter,
-            { 
+            {
               opacity: 0.3,
               x: gsap.utils.random(-100, 100),
               y: gsap.utils.random(-100, 100)
@@ -2843,15 +2856,15 @@
           );
         }
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 48: Stardust Trail
     function animation48() {
       console.log('🎬 Animation 48: Stardust Trail');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2861,17 +2874,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 48 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         x: -500,
         y: -300,
@@ -2879,7 +2892,7 @@
         scale: 0.3,
         filter: 'blur(5px) brightness(2)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -2891,15 +2904,15 @@
         stagger: 0.03,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 49: Origami Unfold
     function animation49() {
       console.log('🎬 Animation 49: Origami Unfold');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2909,24 +2922,24 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 49 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 1000 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         rotationY: 90,
         rotationX: 45,
         scaleY: 0,
         transformOrigin: 'center center'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         rotationY: 0,
@@ -2936,15 +2949,15 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.3s';
       return tl;
     }
-    
+
     // Animation 50: Hologram Materialize
     function animation50() {
       console.log('🎬 Animation 50: Hologram Materialize');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -2954,23 +2967,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 50 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scaleY: 5,
         scaleX: 0.2,
         filter: 'blur(10px)'
       });
-      
+
       letters.forEach((letter, i) => {
         // Flicker in
         for (let j = 0; j < 3; j++) {
@@ -2980,7 +2993,7 @@
             duration: 0.1
           }, (i * 0.05) + (j * 0.1));
         }
-        
+
         // Stabilize
         tl.to(letter, {
           opacity: 1,
@@ -2991,15 +3004,15 @@
           ease: 'power2.out'
         }, (i * 0.05) + 0.3);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 51: Gear Assembly
     function animation51() {
       console.log('🎬 Animation 51: Gear Assembly');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3009,17 +3022,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 51 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * 360;
         gsap.set(letter, {
@@ -3027,7 +3040,7 @@
           rotation: angle * 2,
           scale: 0.3
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           rotation: 0,
@@ -3036,15 +3049,15 @@
           ease: 'back.out(2)'
         }, i * 0.06);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 52: Shimmer Wave
     function animation52() {
       console.log('🎬 Animation 52: Shimmer Wave');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3054,40 +3067,40 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 52 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 1, filter: 'brightness(0.5)' });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           filter: 'brightness(2)',
           duration: 0.2,
           ease: 'power2.in'
         }, i * 0.06);
-        
+
         tl.to(letter, {
           filter: 'brightness(1)',
           duration: 0.3,
           ease: 'power2.out'
         }, i * 0.06 + 0.2);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 53: Slat Flip Board
     function animation53() {
       console.log('🎬 Animation 53: Slat Flip Board');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3097,22 +3110,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 53 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 800 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         rotationX: -90,
         transformOrigin: 'center top'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         rotationX: 0,
@@ -3120,15 +3133,15 @@
         stagger: 0.05,
         ease: 'back.out(1.5)'
       }, 0);
-      
+
       durationSpan.textContent = '1.3s';
       return tl;
     }
-    
+
     // Animation 54: Shockwave Burst
     function animation54() {
       console.log('🎬 Animation 54: Shockwave Burst');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3138,19 +3151,19 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 54 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0, scale: 3, filter: 'blur(10px)' });
-      
+
       // Center appears first
       tl.to(letters[center], {
         opacity: 1,
@@ -3159,7 +3172,7 @@
         duration: 0.3,
         ease: 'power3.out'
       }, 0);
-      
+
       // Shockwave outward
       letters.forEach((letter, i) => {
         if (i !== center) {
@@ -3173,15 +3186,15 @@
           }, 0.1 + (distance * 0.06));
         }
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 55: Galaxy Zoom
     function animation55() {
       console.log('🎬 Animation 55: Galaxy Zoom');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3191,17 +3204,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 55 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * Math.PI * 2;
         const radius = 800;
@@ -3213,7 +3226,7 @@
           rotation: angle * (180 / Math.PI) + 360,
           filter: 'blur(20px)'
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           x: 0,
@@ -3225,23 +3238,23 @@
           ease: 'power3.out'
         }, i * 0.03);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 56: Double Exposure
     function animation56() {
       console.log('🎬 Animation 56: Double Exposure');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 56 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 0 });
-      
+
       // First exposure
       tl.to(singleLineText, {
         opacity: 0.5,
@@ -3250,7 +3263,7 @@
         duration: 0.5,
         ease: 'power2.out'
       }, 0);
-      
+
       // Second exposure overlap
       tl.to(singleLineText, {
         opacity: 1,
@@ -3259,15 +3272,15 @@
         duration: 0.6,
         ease: 'power2.out'
       }, 0.3);
-      
+
       durationSpan.textContent = '0.9s';
       return tl;
     }
-    
+
     // Animation 57: Lightning Strike
     function animation57() {
       console.log('🎬 Animation 57: Lightning Strike');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3277,21 +3290,21 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 57 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0 });
-      
+
       // Random lightning strike pattern
       const strikeOrder = gsap.utils.shuffle([...Array(letters.length).keys()]);
-      
+
       strikeOrder.forEach((index, i) => {
         const letter = letters[index];
         tl.to(letter, {
@@ -3300,22 +3313,22 @@
           duration: 0.05,
           ease: 'none'
         }, i * 0.03);
-        
+
         tl.to(letter, {
           filter: 'brightness(1)',
           duration: 0.2,
           ease: 'power2.out'
         }, i * 0.03 + 0.05);
       });
-      
+
       durationSpan.textContent = '0.8s';
       return tl;
     }
-    
+
     // Animation 58: Magnetic Pull
     function animation58() {
       console.log('🎬 Animation 58: Magnetic Pull');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3325,18 +3338,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 58 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         const distance = Math.abs(i - center);
         const direction = i < center ? -1 : 1;
@@ -3345,7 +3358,7 @@
           x: direction * (distance + 1) * 100,
           rotation: direction * 45
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           x: 0,
@@ -3354,15 +3367,15 @@
           ease: 'power3.out'
         }, distance * 0.08);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 59: Ink Splash
     function animation59() {
       console.log('🎬 Animation 59: Ink Splash');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3372,22 +3385,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 59 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scale: 0.3,
         filter: 'blur(15px)'
       });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           opacity: 1,
@@ -3396,7 +3409,7 @@
           duration: 0.3,
           ease: 'power2.out'
         }, i * 0.04);
-        
+
         tl.to(letter, {
           scale: 1,
           filter: 'blur(0px)',
@@ -3404,15 +3417,15 @@
           ease: 'elastic.out(1, 0.5)'
         }, i * 0.04 + 0.3);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 60: Warp Speed
     function animation60() {
       console.log('🎬 Animation 60: Warp Speed');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3422,24 +3435,24 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 60 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         x: -1000,
         scaleX: 5,
         scaleY: 0.2,
         filter: 'blur(30px)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -3450,15 +3463,15 @@
         stagger: 0.02,
         ease: 'power4.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 61: Laser Trace
     function animation61() {
       console.log('🎬 Animation 61: Laser Trace');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3468,23 +3481,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 61 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scaleX: 0,
         transformOrigin: 'left center',
         filter: 'brightness(3) saturate(3)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         scaleX: 1,
@@ -3493,15 +3506,15 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.0s';
       return tl;
     }
-    
+
     // Animation 62: Prism Refraction
     function animation62() {
       console.log('🎬 Animation 62: Prism Refraction');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3511,23 +3524,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 62 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         // RGB split effect
         gsap.set(letter, { opacity: 0 });
-        
+
         tl.fromTo(letter,
-          { 
+          {
             opacity: 0,
             x: -20,
             filter: 'hue-rotate(240deg) saturate(3)'
@@ -3540,7 +3553,7 @@
           },
           i * 0.03
         );
-        
+
         tl.to(letter, {
           opacity: 1,
           filter: 'hue-rotate(0deg) saturate(1)',
@@ -3548,15 +3561,15 @@
           ease: 'power2.out'
         }, i * 0.03 + 0.2);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 63: Matrix Digital Rain
     function animation63() {
       console.log('🎬 Animation 63: Matrix Digital Rain');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3566,24 +3579,24 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 63 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         gsap.set(letter, {
           opacity: 0,
           y: -400,
           filter: 'brightness(2)'
         });
-        
+
         // Rain drop
         tl.to(letter, {
           opacity: 1,
@@ -3591,7 +3604,7 @@
           duration: 0.5,
           ease: 'power2.in'
         }, i * 0.05);
-        
+
         // Fade to normal
         tl.to(letter, {
           filter: 'brightness(1)',
@@ -3599,15 +3612,15 @@
           ease: 'power2.out'
         }, i * 0.05 + 0.5);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 64: Sound Wave Pulse
     function animation64() {
       console.log('🎬 Animation 64: Sound Wave Pulse');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3617,23 +3630,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 64 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 1, scaleY: 1 });
-      
+
       letters.forEach((letter, i) => {
         const distance = Math.abs(i - center);
         const delay = distance * 0.05;
-        
+
         // Pulse wave
         for (let j = 0; j < 3; j++) {
           tl.to(letter, {
@@ -3641,7 +3654,7 @@
             duration: 0.1,
             ease: 'power1.out'
           }, delay + (j * 0.2));
-          
+
           tl.to(letter, {
             scaleY: 1,
             duration: 0.1,
@@ -3649,15 +3662,15 @@
           }, delay + (j * 0.2) + 0.1);
         }
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 65: Kaleidoscope Spin
     function animation65() {
       console.log('🎬 Animation 65: Kaleidoscope Spin');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3667,17 +3680,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 65 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 1000 });
-      
+
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * 360;
         gsap.set(letter, {
@@ -3686,7 +3699,7 @@
           scale: 0,
           rotationY: 180
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           rotation: 0,
@@ -3696,15 +3709,15 @@
           ease: 'back.out(1.5)'
         }, i * 0.04);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 66: Supernova Expand
     function animation66() {
       console.log('🎬 Animation 66: Supernova Expand');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3714,32 +3727,32 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 66 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       // All letters start at center
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scale: 0,
         x: 0,
         y: 0,
         filter: 'brightness(5)'
       });
-      
+
       // Explosion from center
       letters.forEach((letter, i) => {
         const distance = Math.abs(i - center);
         const direction = i < center ? -1 : 1;
-        
+
         tl.fromTo(letter,
           {
             opacity: 0,
@@ -3758,15 +3771,15 @@
           distance * 0.08
         );
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 67: Film Burn
     function animation67() {
       console.log('🎬 Animation 67: Film Burn');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3776,23 +3789,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 67 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scaleY: 0,
         transformOrigin: 'bottom center',
         filter: 'brightness(3) contrast(2)'
       });
-      
+
       letters.forEach((letter, i) => {
         // Burn in effect
         tl.to(letter, {
@@ -3802,7 +3815,7 @@
           duration: 0.4,
           ease: 'power2.out'
         }, i * 0.05);
-        
+
         // Flicker
         tl.to(letter, {
           opacity: 0.8,
@@ -3812,15 +3825,15 @@
           repeat: 1
         }, i * 0.05 + 0.4);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 68: Ocean Wave
     function animation68() {
       console.log('🎬 Animation 68: Ocean Wave');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3830,29 +3843,29 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 68 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 1, y: 0 });
-      
+
       // Wave motion
       letters.forEach((letter, i) => {
         const waveDelay = i * 0.08;
-        
+
         for (let j = 0; j < 2; j++) {
           tl.to(letter, {
             y: -30,
             duration: 0.4,
             ease: 'sine.inOut'
           }, waveDelay + (j * 0.8));
-          
+
           tl.to(letter, {
             y: 0,
             duration: 0.4,
@@ -3860,15 +3873,15 @@
           }, waveDelay + (j * 0.8) + 0.4);
         }
       });
-      
+
       durationSpan.textContent = '2.0s';
       return tl;
     }
-    
+
     // Animation 69: Tesla Coil
     function animation69() {
       console.log('🎬 Animation 69: Tesla Coil');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3878,24 +3891,24 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 69 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0 });
-      
+
       // Electric arc effect
       const zapOrder = gsap.utils.shuffle([...Array(letters.length).keys()]);
-      
+
       zapOrder.forEach((index, i) => {
         const letter = letters[index];
-        
+
         // Flash in
         tl.to(letter, {
           opacity: 1,
@@ -3903,7 +3916,7 @@
           duration: 0.05,
           ease: 'none'
         }, i * 0.04);
-        
+
         // Stabilize
         tl.to(letter, {
           filter: 'brightness(1)',
@@ -3911,15 +3924,15 @@
           ease: 'power2.out'
         }, i * 0.04 + 0.05);
       });
-      
+
       durationSpan.textContent = '1.0s';
       return tl;
     }
-    
+
     // Animation 70: Venetian Blind
     function animation70() {
       console.log('🎬 Animation 70: Venetian Blind');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3929,23 +3942,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 70 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 800 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         rotationX: 90,
         scaleY: 0.1,
         transformOrigin: 'center center'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         rotationX: 0,
@@ -3954,15 +3967,15 @@
         stagger: 0.05,
         ease: 'power2.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 71: Black Hole Pull
     function animation71() {
       console.log('🎬 Animation 71: Black Hole Pull');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -3972,18 +3985,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
       const center = Math.floor(letters.length / 2);
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 71 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      
+
       letters.forEach((letter, i) => {
         const angle = (i / letters.length) * Math.PI * 2;
         const radius = 600;
@@ -3994,7 +4007,7 @@
           scale: 3,
           rotation: 360
         });
-        
+
         const distance = Math.abs(i - center);
         tl.to(letter, {
           opacity: 1,
@@ -4006,15 +4019,15 @@
           ease: 'power4.in'
         }, distance * 0.05);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 72: Comet Streak
     function animation72() {
       console.log('🎬 Animation 72: Comet Streak');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4024,17 +4037,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 72 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         x: -800,
         y: -400,
@@ -4042,7 +4055,7 @@
         scaleX: 3,
         filter: 'blur(20px) brightness(3)'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -4054,15 +4067,15 @@
         stagger: 0.03,
         ease: 'power4.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 73: Circus Reveal
     function animation73() {
       console.log('🎬 Animation 73: Circus Reveal');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4072,22 +4085,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 73 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scale: 0,
         rotation: gsap.utils.random(-720, 720)
       });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           opacity: 1,
@@ -4096,22 +4109,22 @@
           duration: 0.5,
           ease: 'back.out(3)'
         }, i * 0.05);
-        
+
         tl.to(letter, {
           scale: 1,
           duration: 0.3,
           ease: 'elastic.out(1, 0.5)'
         }, i * 0.05 + 0.5);
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 74: Phoenix Rising
     function animation74() {
       console.log('🎬 Animation 74: Phoenix Rising');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4121,24 +4134,24 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 74 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 200,
         rotation: gsap.utils.random(-30, 30),
         scale: 0.3,
         filter: 'brightness(2) blur(10px)'
       });
-      
+
       letters.forEach((letter, i) => {
         tl.to(letter, {
           opacity: 1,
@@ -4149,22 +4162,22 @@
           duration: 0.8,
           ease: 'power3.out'
         }, i * 0.04);
-        
+
         tl.to(letter, {
           y: 0,
           duration: 0.3,
           ease: 'bounce.out'
         }, i * 0.04 + 0.8);
       });
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 75: Chromatic Aberration
     function animation75() {
       console.log('🎬 Animation 75: Chromatic Aberration');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4174,18 +4187,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 75 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0 });
-      
+
       letters.forEach((letter, i) => {
         // Multi-layer RGB effect
         tl.fromTo(letter,
@@ -4193,13 +4206,13 @@
           { opacity: 0.3, x: -5, duration: 0.15, ease: 'none' },
           i * 0.03
         );
-        
+
         tl.fromTo(letter,
           { opacity: 0.3, x: -5, filter: 'hue-rotate(120deg)' },
           { opacity: 0.6, x: 5, duration: 0.15, ease: 'none' },
           i * 0.03 + 0.05
         );
-        
+
         tl.to(letter, {
           opacity: 1,
           x: 0,
@@ -4208,27 +4221,27 @@
           ease: 'power2.out'
         }, i * 0.03 + 0.1);
       });
-      
+
       durationSpan.textContent = '1.3s';
       return tl;
     }
-    
+
     // Animation 76: Sniper Zoom
     function animation76() {
       console.log('🎬 Animation 76: Sniper Zoom');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 76 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
-      gsap.set(singleLineText, { 
+      gsap.set(singleLineText, {
         opacity: 0,
         scale: 15,
         filter: 'blur(50px)'
       });
-      
+
       // Fast zoom in
       tl.to(singleLineText, {
         opacity: 1,
@@ -4237,22 +4250,22 @@
         duration: 0.6,
         ease: 'power4.out'
       }, 0);
-      
+
       // Lock on
       tl.to(singleLineText, {
         scale: 1,
         duration: 0.2,
         ease: 'power2.out'
       }, 0.6);
-      
+
       durationSpan.textContent = '0.8s';
       return tl;
     }
-    
+
     // Animation 77: Diamond Scatter
     function animation77() {
       console.log('🎬 Animation 77: Diamond Scatter');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4262,17 +4275,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 77 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 1000 });
-      
+
       letters.forEach((letter, i) => {
         const angle = gsap.utils.random(0, 360);
         const distance = gsap.utils.random(200, 400);
@@ -4285,7 +4298,7 @@
           scale: gsap.utils.random(0.3, 2),
           filter: 'brightness(3)'
         });
-        
+
         tl.to(letter, {
           opacity: 1,
           x: 0,
@@ -4298,15 +4311,15 @@
           ease: 'power3.out'
         }, gsap.utils.random(0, 0.3));
       });
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 78: Tidal Wave
     function animation78() {
       console.log('🎬 Animation 78: Tidal Wave');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4316,23 +4329,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 78 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         y: 100,
         scaleY: 2,
         transformOrigin: 'bottom center'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         y: -30,
@@ -4341,22 +4354,22 @@
         stagger: 0.04,
         ease: 'power2.out'
       }, 0);
-      
+
       tl.to(letters, {
         y: 0,
         duration: 0.5,
         stagger: 0.04,
         ease: 'bounce.out'
       }, 0.3);
-      
+
       durationSpan.textContent = '1.5s';
       return tl;
     }
-    
+
     // Animation 79: Teleport Beam
     function animation79() {
       console.log('🎬 Animation 79: Teleport Beam');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4366,23 +4379,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 79 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         scaleY: 10,
         scaleX: 0.1,
         filter: 'brightness(3) blur(5px)'
       });
-      
+
       letters.forEach((letter, i) => {
         // Beam down
         tl.to(letter, {
@@ -4393,7 +4406,7 @@
           duration: 0.3,
           ease: 'power2.out'
         }, i * 0.04);
-        
+
         // Flicker
         tl.to(letter, {
           opacity: 0.7,
@@ -4402,15 +4415,15 @@
           repeat: 1
         }, i * 0.04 + 0.3);
       });
-      
+
       durationSpan.textContent = '1.2s';
       return tl;
     }
-    
+
     // Animation 80: Time Lapse
     function animation80() {
       console.log('🎬 Animation 80: Time Lapse');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4420,18 +4433,18 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 80 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
       gsap.set(letters, { opacity: 0 });
-      
+
       // Fast forward effect
       letters.forEach((letter, i) => {
         for (let j = 0; j < 4; j++) {
@@ -4442,22 +4455,22 @@
             ease: 'none'
           }, (i * 0.03) + (j * 0.05));
         }
-        
+
         tl.to(letter, {
           x: 0,
           duration: 0.1,
           ease: 'power2.out'
         }, (i * 0.03) + 0.2);
       });
-      
+
       durationSpan.textContent = '1.0s';
       return tl;
     }
-    
+
     // Animation 81: Cinematic Bloom & Glow
     function animation81() {
       console.log('🎬 Animation 81: Cinematic Bloom & Glow');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4467,22 +4480,22 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 81 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         filter: 'blur(30px) brightness(5)',
         scale: 1.3
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         filter: 'blur(0px) brightness(1)',
@@ -4491,15 +4504,15 @@
         stagger: 0.05,
         ease: 'power3.out'
       }, 0);
-      
+
       durationSpan.textContent = '2.1s';
       return tl;
     }
-    
+
     // Animation 82: Liquid Ink Dispersion
     function animation82() {
       console.log('🎬 Animation 82: Liquid Ink Dispersion');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4509,23 +4522,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 82 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         filter: 'blur(15px) contrast(3)',
         scale: 0.6,
         transformOrigin: 'center center'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         scale: 1.1,
@@ -4533,7 +4546,7 @@
         stagger: 0.06,
         ease: 'sine.out'
       }, 0);
-      
+
       tl.to(letters, {
         filter: 'blur(0px) contrast(1)',
         scale: 1,
@@ -4541,15 +4554,15 @@
         stagger: 0.06,
         ease: 'power2.out'
       }, 0.3);
-      
+
       durationSpan.textContent = '2.0s';
       return tl;
     }
-    
+
     // Animation 83: 3D Editorial Kinetic Flip
     function animation83() {
       console.log('🎬 Animation 83: 3D Editorial Kinetic Flip');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4559,17 +4572,17 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 83 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 1200 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         rotationY: -110,
         rotationZ: -15,
@@ -4577,7 +4590,7 @@
         scale: 0.8,
         transformOrigin: '50% 100%'
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         rotationY: 0,
@@ -4588,15 +4601,15 @@
         stagger: 0.04,
         ease: 'power4.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.8s';
       return tl;
     }
-    
+
     // Animation 84: Kinetic Velocity Stretch
     function animation84() {
       console.log('🎬 Animation 84: Kinetic Velocity Stretch');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4606,23 +4619,23 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 84 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1 });
-      gsap.set(letters, { 
+      gsap.set(letters, {
         opacity: 0,
         x: -250,
         scaleX: 2.5,
         skewX: -25
       });
-      
+
       tl.to(letters, {
         opacity: 1,
         x: 0,
@@ -4632,15 +4645,15 @@
         stagger: 0.03,
         ease: 'power4.out'
       }, 0);
-      
+
       durationSpan.textContent = '1.4s';
       return tl;
     }
-    
+
     // Animation 85: Cosmic Orbit Assembly
     function animation85() {
       console.log('🎬 Animation 85: Cosmic Orbit Assembly');
-      
+
       const text = 'DUBAIFILMMAKER';
       singleLineText.innerHTML = '';
       text.split('').forEach((char, i) => {
@@ -4650,21 +4663,21 @@
         span.style.display = 'inline-block';
         singleLineText.appendChild(span);
       });
-      
+
       const letters = singleLineText.querySelectorAll('.letter');
-      
+
       const tl = gsap.timeline({
         onComplete: () => console.log('✅ Animation 85 complete')
       });
-      
+
       gsap.set(frame, { opacity: 0 });
       gsap.set(lines, { opacity: 0 });
       gsap.set(singleLineText, { opacity: 1, transformPerspective: 1500 });
-      
+
       letters.forEach((letter, i) => {
         const angle = gsap.utils.random(-Math.PI, Math.PI);
         const radius = gsap.utils.random(150, 250);
-        
+
         gsap.set(letter, {
           opacity: 0,
           x: Math.cos(angle) * radius,
@@ -4673,7 +4686,7 @@
           rotationX: gsap.utils.random(-90, 90),
           rotationY: gsap.utils.random(-90, 90)
         });
-        
+
         // Curved flight in
         tl.to(letter, {
           opacity: 1,
@@ -4686,25 +4699,97 @@
           ease: 'power3.out'
         }, i * 0.04);
       });
-      
+
       durationSpan.textContent = '2.1s';
       return tl;
     }
-    
+
+    // Animation 86: Morph D → Single Line
+    function animation86() {
+      console.log('🎬 Animation 86: Morph D → Single Line');
+
+      const text = 'DUBAIFILMMAKER';
+      singleLineText.innerHTML = '';
+      text.split('').forEach((ch) => {
+        const span = document.createElement('span');
+        span.textContent = ch;
+        span.className = 'letter';
+        span.style.display = 'inline-block';
+        span.style.opacity = '0';
+        singleLineText.appendChild(span);
+      });
+      const finalLetters = singleLineText.querySelectorAll('.letter');
+
+      // Ensure stacked letters are wrapped in <span class="letter">
+      if (document.querySelectorAll('.frame-text .line .letter').length === 0) {
+        document.querySelectorAll('.frame-text .line').forEach(line => {
+          const chars = line.textContent.split('');
+          line.textContent = '';
+          chars.forEach(c => {
+            const s = document.createElement('span');
+            s.textContent = c;
+            s.className = 'letter';
+            line.appendChild(s);
+          });
+        });
+      }
+      const lettersInFrame = document.querySelectorAll('.frame-text .line .letter');
+
+      const tl = gsap.timeline({ onComplete: () => console.log('✅ Animation 86 complete') });
+
+      // Hide the frame
+      tl.set(frame, { opacity: 0 }, 0);
+      // Keep stacked letters visible but small
+      tl.set(lettersInFrame, { opacity: 1, scale: 0.9 }, 0);
+      // Prepare single-line container
+      tl.set(singleLineText, { opacity: 1 }, 0);
+
+      // Morph: each stacked letter slides to its final position
+      lettersInFrame.forEach((src, idx) => {
+        const tgt = finalLetters[idx];
+        if (!tgt) return;
+        const srcRect = src.getBoundingClientRect();
+        const tgtRect = tgt.getBoundingClientRect();
+        const dx = tgtRect.left - srcRect.left;
+        const dy = tgtRect.top - srcRect.top;
+
+        tl.to(src, {
+          x: dx,
+          y: dy,
+          scale: 0.8,
+          opacity: 0,
+          duration: 0.9,
+          ease: 'power2.out'
+        }, 0.2 + idx * 0.03);
+      });
+
+      // Reveal final single-line letters
+      tl.to(finalLetters, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.6,
+        ease: 'back.out(2)',
+        stagger: { each: 0.04, from: 'center' }
+      }, '-=0.3');
+
+      durationSpan.textContent = '2.2s';
+      return tl;
+    }
+
     // Play selected animation
     function playAnimation() {
       const selectedValue = document.querySelector('input[name="animation"]:checked').value;
-      
+
       // Kill existing timeline
       if (currentTimeline) {
         currentTimeline.kill();
       }
-      
+
       // Reset all elements
       gsap.set([frame, frameText, lines, singleLineText], { clearProps: 'all' });
-      
+
       // Play selected animation
-      switch(selectedValue) {
+      switch (selectedValue) {
         case '1':
           currentTimeline = animation1();
           currentAnimationSpan.textContent = '1. Fade In Simple';
@@ -5045,58 +5130,62 @@
           currentTimeline = animation85();
           currentAnimationSpan.textContent = '85. 🌌 Cosmic Orbit Assembly';
           break;
+        case '86':
+          currentTimeline = animation86();
+          currentAnimationSpan.textContent = '86. ✨ Morph D → Single Line';
+          break;
       }
     }
-    
+
     // Reset animation
     function resetAnimation() {
       const borderRect = document.querySelector('.border-rect');
       const borderSvg = document.querySelector('.frame-border-svg');
-      
+
       if (currentTimeline) {
         currentTimeline.kill();
       }
-      
+
       // Reset to initial state - SHOW single line text only (no frame)
-      gsap.set(frame, { 
-        scale: 1, 
+      gsap.set(frame, {
+        scale: 1,
         opacity: 0,  // Hide frame
-        rotation: 0, 
+        rotation: 0,
         scaleX: 1,
         width: 700,
         height: 393.75,
         borderRadius: 20
       });
-      gsap.set(lines, { 
+      gsap.set(lines, {
         opacity: 0,  // Hide stacked text
-        x: 0, 
+        x: 0,
         y: 0,
         letterSpacing: '0.08em'
       });
-      gsap.set(singleLineText, { 
+      gsap.set(singleLineText, {
         opacity: 1,  // Show single line text
-        scale: 1, 
-        y: 0, 
-        rotation: 0 
+        scale: 1,
+        y: 0,
+        rotation: 0
       });
       gsap.set(borderSvg, { opacity: 0 });
-      gsap.set(borderRect, { 
+      gsap.set(borderRect, {
         strokeDashoffset: 2500,
         opacity: 0
       });
       singleLineText.innerHTML = 'DUBAIFILMMAKER';
-      
+
       console.log('🔄 Animation reset - showing DUBAIFILMMAKER (single line)');
     }
-    
+
     // Event listeners
     playBtn.addEventListener('click', playAnimation);
     resetBtn.addEventListener('click', resetAnimation);
-    
+
     // Toggle mobile drawer on header tap
     const selectorHeader = document.querySelector('.animation-selector h3');
     const selectorPanel = document.querySelector('.animation-selector');
-    
+
     selectorHeader.addEventListener('click', () => {
       if (window.innerWidth <= 768) {
         selectorPanel.classList.toggle('open');
@@ -5112,7 +5201,7 @@
         }
       });
     });
-    
+
     // Smooth scroll to selected animation option
     animationRadios.forEach((radio, index) => {
       radio.addEventListener('focus', () => {
@@ -5122,13 +5211,14 @@
         }
       });
     });
-    
+
     // Initialize - Reset to show single line text
     resetAnimation();
     console.log('✓ Ready to test animations');
-    console.log('📋 Total animations available: 85');
+    console.log('📋 Total animations available: 86');
     console.log('📜 Scroll the left panel to see all options');
   </script>
-  
+
 </body>
+
 </html>
