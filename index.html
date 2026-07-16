@@ -27,7 +27,6 @@
 
   <link href="assets/dist/build.min.css" rel="stylesheet" />
   <link href="assets/css/header-logo-match.css" rel="stylesheet" />
-  <link href="assets/css/intro-text-animation.css" rel="stylesheet" />
 
   <link rel="canonical" href="index.htm" />
 
@@ -382,6 +381,72 @@
         opacity: 1;
       }
     }
+    /* ===== INTRO PRELOADER OVERRIDES (from Poster site) ===== */
+    /* Remove the blur effect from the intro entirely */
+    .bloc-intro,
+    .bloc-intro.lottie-started,
+    .bloc-intro.lottie-ended {
+      backdrop-filter: none !important;
+    }
+    /* Skip the logo sliding-up after animation — fade out in place instead */
+    .bloc-intro.lottie-ended .intro-anim-surwrapper {
+      transform: none !important;
+    }
+    /* Keep the header logo visible during the intro */
+    .template-homepage.lottie-started .header__logo {
+      opacity: 1 !important;
+    }
+    /* Make the animation wrapper cover full screen on mobile so nothing peeks through */
+    @media (max-width: 767px) {
+      .bloc-intro {
+        width: 100dvw !important;
+        height: 100dvh !important;
+      }
+      .intro-anim-surwrapper {
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: #0000;
+      }
+      .intro-anim-wrapper {
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        transform: none !important;
+        background: #0000;
+      }
+      .intro-anim {
+        width: 100% !important;
+        height: 100% !important;
+        background: #0000;
+        transform: none;
+      }
+      .intro-anim.is-visible {
+        transform: none;
+      }
+    }
+    /* --- INTRO SCALE CONTROL ---
+       Adjust the number below to zoom in/out.
+       >1 = bigger (zoomed in),  <1 = smaller (see more edges)
+       Set it here, save, and refresh. */
+    :root {
+      --intro-scale: 1;
+    }
+    /* Dark background matching the animation's solid layer so gaps are invisible */
+    .bloc-intro {
+      background: #0000 !important;
+      width: 100vw !important;
+      height: 100dvh !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+    /* After animation ends, clear background for the curtain reveal */
+    .bloc-intro.lottie-ended {
+      background: transparent !important;
+    }
   </style>
 </head>
 
@@ -450,30 +515,12 @@
             <div class="bloc-intro">
               <div class="intro-anim-surwrapper">
                 <div class="intro-anim-wrapper">
-                  <div class="intro-anim" data-animation="assets/img/intro-animation.json">
-                    <!-- <img
-                        class="intro-logo-svg"
-                        src="assets/img/final_logo.svg"
-                        alt="DubaiFilmMaker"intro-text-animation
-                      /> -->
-                    <div class="intro-logo-svg intro-text-animation">
-                      <span class="letter">D</span>
-                      <span class="letter">U</span>
-                      <span class="letter">B</span>
-                      <span class="letter">A</span>
-                      <span class="letter">I</span>
-                      <span class="letter">F</span>
-                      <span class="letter">I</span>
-                      <span class="letter">L</span>
-                      <span class="letter">M</span>
-                      <span class="letter">M</span>
-                      <span class="letter">A</span>
-                      <span class="letter">K</span>
-                      <span class="letter">E</span>
-                      <span class="letter">R</span>
-                    </div>
-
-                  </div>
+                  <div
+                    class="intro-anim"
+                    data-animation="assets/img/intro-animation.json"
+                    data-scale="1"
+                    data-scale-mobile="2.0"
+                  ></div>
                 </div>
               </div>
               <div class="intro-timeline">
@@ -813,7 +860,7 @@
 
           // ── Phase 1 (runs during preloader) ──────────────────────────────
           // Only render the lightweight slider list and set video src attributes.
-          // No video.load() / play() calls yet — those steal GPU from GSAP.
+          // No video.load() / play() calls yet — those steal GPU from the animation.
           generateListItems(sliderProjects);
           generateVideoElements(sliderProjects, false); // false = don't load yet
           updateInitialState(sliderProjects);
@@ -825,26 +872,29 @@
             generateProjectsListing(projects);
           } else {
             // ── Phase 2 (runs AFTER preloader finishes) ───────────────────
-            // Defer heavy work until GSAP animation completes.
+            // Defer heavy work until Lottie animation completes.
             const renderAfterIntro = () => {
-              // Start loading videos now that GSAP is done
+              // Start loading videos now that the intro is done
               const existingVideos = document.querySelectorAll('.box--home__wrapper video.js-main-video');
               _startVideoLoading(existingVideos, sliderProjects.length);
               // Render the full projects listing grid
               generateProjectsListing(window.__allProjects);
             };
 
-            if (window.__gsapTextAnimationComplete) {
-              // Animation already done (e.g. came back via SPA but skipIntro not set)
-              renderAfterIntro();
-            } else {
-              window.addEventListener('gsap-text-animation-complete', renderAfterIntro, { once: true });
-              // Safety fallback: render after 4 seconds even if event never fires
-              setTimeout(() => {
-                if (!window.__allProjects) return; // already rendered
-                if (!document.getElementById('works').children.length) renderAfterIntro();
-              }, 4000);
-            }
+            // Watch for the intro-ended class that Rs() adds when Lottie finishes
+            var introCheck = new MutationObserver(function () {
+              if (document.documentElement.classList.contains('intro-ended')) {
+                introCheck.disconnect();
+                renderAfterIntro();
+              }
+            });
+            introCheck.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+            // Safety fallback: render after 5 seconds even if intro never fires
+            setTimeout(function () {
+              introCheck.disconnect();
+              if (!document.getElementById('works').children.length) renderAfterIntro();
+            }, 5000);
           }
         }
       } catch (err) {
@@ -858,315 +908,63 @@
     })();
   </script>
 
-  <!-- GSAP Animation Library -->
-
-  <!-- Text Animation Script - Letter-by-letter reveal -->
-  <!-- <script src="assets/js/intro-text-animation.js"></script> -->
-  <script src="assets/js/intro-logo-size-sync.js"></script>
-
-  <!-- GSAP Library -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-
-  <!-- Inline Animation Script -->
   <script>
-    // Configuration: Select intro text animation (1-8)
-    // 1 = Cinematic Bloom & Glow
-    // 2 = Shockwave Burst
-    // 3 = Impact Burst
-    // 4 = Kinetic Velocity Stretch
-    // 5 = Cinematic Wipe
-    // 6 = Quantum Shift
-    // 7 = Neon Scan Line
-    // 8 = Random Chaos
-    window.SELECTED_ANIMATION = 5;
+    // Intro animation toggle + scale control
+    // Priority: CSS variable (--intro-scale) → URL (?scale=) → localStorage
+    (function () {
+      var p = new URLSearchParams(location.search);
 
-    // Check sessionStorage for skipIntro flag (set by project detail close button)
-    const skipIntroFlag = sessionStorage.getItem('skipIntroAnimation') === 'true';
-    const skipIntroTimestamp = sessionStorage.getItem('skipIntroTimestamp');
-    const isRecentFlag = skipIntroTimestamp && (Date.now() - parseInt(skipIntroTimestamp)) < 5000;
+      // Check sessionStorage skip flag (set when returning from project pages)
+      var skipIntroFlag = sessionStorage.getItem('skipIntroAnimation') === 'true';
+      var skipIntroTimestamp = sessionStorage.getItem('skipIntroTimestamp');
+      var isRecentFlag = skipIntroTimestamp && (Date.now() - parseInt(skipIntroTimestamp)) < 5000;
+      var shouldSkipIntro = skipIntroFlag && isRecentFlag;
 
-    // Clear the flag after checking (one-time use)
-    if (skipIntroFlag) {
-      sessionStorage.removeItem('skipIntroAnimation');
-      sessionStorage.removeItem('skipIntroTimestamp');
-    }
-
-    const shouldSkipIntro = skipIntroFlag && isRecentFlag;
-
-    if (shouldSkipIntro) {
-
-      // Skip animation completely
-      const introWrapper = document.querySelector('.intro-anim-wrapper');
-      const blocIntro = document.querySelector('.bloc-intro');
-
-      if (introWrapper && blocIntro) {
-        blocIntro.classList.add('lottie-started');
-        blocIntro.classList.add('lottie-ended');
-        document.body.classList.add('intro-ended');
-        if (document.scrollingElement) {
-          document.scrollingElement.classList.add('intro-ended');
-        }
-        introWrapper.style.display = 'none';
-
-        const headerLogo = document.querySelector('.header__logo');
-        if (headerLogo) {
-          headerLogo.style.opacity = '1';
-          headerLogo.classList.add('loaded');
-        }
-      }
-    } else {
-      // Run full animation
-      const letters = document.querySelectorAll('.letter');
-
-      function animateLetters() {
-        const animIndex = window.SELECTED_ANIMATION || 1;
-
-        const tl = gsap.timeline({
-          onComplete: () => {
-            const event = new CustomEvent('gsap-text-animation-complete', {
-              detail: { duration: tl.duration() }
-            });
-            window.dispatchEvent(event);
-            window.__gsapTextAnimationComplete = true;
-          }
-        });
-
-        switch (animIndex) {
-          case 1: // Cinematic Bloom & Glow
-            gsap.set(letters, {
-              opacity: 0,
-              filter: 'blur(30px) brightness(5)',
-              scale: 1.3,
-              transformOrigin: 'center center'
-            });
-            tl.to(letters, {
-              opacity: 1,
-              filter: 'blur(0px) brightness(1)',
-              scale: 1,
-              duration: 1.4,
-              stagger: 0.05,
-              ease: 'power3.out'
-            }, 0);
-            break;
-
-          case 2: // Shockwave Burst
-            {
-              const center = Math.floor(letters.length / 2);
-              gsap.set(letters, { opacity: 0, scale: 3, filter: 'blur(10px)' });
-
-              // Center appears first
-              tl.to(letters[center], {
-                opacity: 1,
-                scale: 1,
-                filter: 'blur(0px)',
-                duration: 0.3,
-                ease: 'power3.out'
-              }, 0);
-
-              // Shockwave outward
-              letters.forEach((letter, i) => {
-                if (i !== center) {
-                  const distance = Math.abs(i - center);
-                  tl.to(letter, {
-                    opacity: 1,
-                    scale: 1,
-                    filter: 'blur(0px)',
-                    duration: 0.4,
-                    ease: 'power2.out'
-                  }, 0.1 + (distance * 0.06));
-                }
-              });
-            }
-            break;
-
-          case 3: // Impact Burst
-            {
-              const center = Math.floor(letters.length / 2);
-              gsap.set(letters, { opacity: 0, scale: 2 });
-
-              tl.to(letters[center], {
-                opacity: 1,
-                scale: 1,
-                duration: 0.2,
-                ease: 'back.out(3)'
-              }, 0);
-
-              letters.forEach((letter, i) => {
-                if (i !== center) {
-                  const distance = Math.abs(i - center);
-                  tl.to(letter, {
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.3,
-                    ease: 'back.out(2)'
-                  }, 0.2 + (distance * 0.05));
-                }
-              });
-            }
-            break;
-
-          case 4: // Kinetic Velocity Stretch
-            gsap.set(letters, {
-              opacity: 0,
-              x: -250,
-              scaleX: 2.5,
-              skewX: -25
-            });
-            tl.to(letters, {
-              opacity: 1,
-              x: 0,
-              scaleX: 1,
-              skewX: 0,
-              duration: 0.9,
-              stagger: 0.03,
-              ease: 'power4.out'
-            }, 0);
-            break;
-
-          case 5: // Cinematic Wipe
-            gsap.set(letters, {
-              opacity: 0,
-              scaleX: 0,
-              transformOrigin: "left center",
-              display: "inline-block"
-            });
-
-            tl.to(letters, {
-              opacity: 1,
-              scaleX: 1,
-              duration: 0.8,
-              stagger: 0.04,
-              ease: "power2.out"
-            }, 0);
-            break;
-
-          case 6: // Quantum Shift
-            gsap.set(letters, { opacity: 0 });
-            letters.forEach((letter, i) => {
-              for (let j = 0; j < 3; j++) {
-                const offset = j * 0.05;
-                tl.fromTo(letter,
-                  {
-                    opacity: 0.3,
-                    x: gsap.utils.random(-100, 100),
-                    y: gsap.utils.random(-100, 100)
-                  },
-                  {
-                    opacity: j === 2 ? 1 : 0,
-                    x: 0,
-                    y: 0,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                  },
-                  (i * 0.04) + offset
-                );
-              }
-            });
-            break;
-
-          case 7: // Neon Scan Line
-            gsap.set(letters, {
-              opacity: 0,
-              filter: 'brightness(0)'
-            });
-            tl.to(letters, {
-              opacity: 1,
-              filter: 'brightness(2)',
-              duration: 0.1,
-              stagger: 0.05,
-              ease: 'none'
-            }, 0);
-            tl.to(letters, {
-              filter: 'brightness(1)',
-              duration: 0.3,
-              stagger: 0.05,
-              ease: 'power2.out'
-            }, 0.1);
-            break;
-
-          case 8: // Random Chaos
-            letters.forEach((letter, i) => {
-              gsap.set(letter, {
-                opacity: 0,
-                x: gsap.utils.random(-300, 300),
-                y: gsap.utils.random(-200, 200),
-                rotation: gsap.utils.random(-360, 360),
-                scale: gsap.utils.random(0.2, 3)
-              });
-
-              const startTime = gsap.utils.random(0, 0.5);
-              tl.to(letter, {
-                opacity: 1,
-                x: 0,
-                y: 0,
-                rotation: 0,
-                scale: 1,
-                duration: gsap.utils.random(0.8, 1.2),
-                ease: 'power3.out'
-              }, startTime);
-            });
-            break;
-
-          default:
-            // Fallback to Bloom & Glow
-            gsap.set(letters, {
-              opacity: 0,
-              filter: 'blur(30px) brightness(5)',
-              scale: 1.3,
-              transformOrigin: 'center center'
-            });
-            tl.to(letters, {
-              opacity: 1,
-              filter: 'blur(0px) brightness(1)',
-              scale: 1,
-              duration: 1.4,
-              stagger: 0.05,
-              ease: 'power3.out'
-            }, 0);
-        }
-
-        return tl;
+      // Clear the flag after checking (one-time use)
+      if (skipIntroFlag) {
+        sessionStorage.removeItem('skipIntroAnimation');
+        sessionStorage.removeItem('skipIntroTimestamp');
       }
 
-      // Start animation on page load
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => { animateLetters(); }, 500);
-      });
+      window.__posterIntroEnabled = shouldSkipIntro
+        ? false
+        : p.has('intro')
+          ? p.get('intro') === '1'
+          : localStorage.getItem('poster_intro') !== 'disabled';
 
-      // Listen for animation completion → trigger upward movement to header
-      window.addEventListener('gsap-text-animation-complete', () => {
-        const blocIntro = document.querySelector('.bloc-intro');
-        const introWrapper = document.querySelector('.intro-anim-wrapper');
-
-        if (blocIntro && introWrapper) {
-          blocIntro.classList.add('lottie-ended');
-
-          // Wait for CSS upward movement to complete (800ms transition)
-          setTimeout(() => {
-            const headerLogo = document.querySelector('.header__logo');
-            if (headerLogo) {
-              headerLogo.style.opacity = '1';
-              headerLogo.classList.add('loaded');
-            }
-
-            const preloaderText = document.querySelector('.intro-text-animation');
-            if (preloaderText) {
-              preloaderText.style.transition = 'opacity 0.3s ease';
-              preloaderText.style.opacity = '0';
-            }
-          }, 800);
-
-          // Add intro-ended class after full transition
-          setTimeout(() => {
-            document.body.classList.add('intro-ended');
-            if (document.scrollingElement) {
-              document.scrollingElement.classList.add('intro-ended');
-            }
-            setTimeout(() => { introWrapper.style.display = 'none'; }, 300);
-          }, 1200);
+      // Read scale: data-scale element → data-scale-mobile (mobile) → localStorage → URL → CSS var → 1
+      var el = document.querySelector('.intro-anim');
+      var elScale = el ? parseFloat(el.getAttribute('data-scale')) : null;
+      var mobScale =
+        el && window.innerWidth <= 767
+          ? parseFloat(el.getAttribute('data-scale-mobile'))
+          : null;
+      var lsScale = parseFloat(localStorage.getItem('poster_intro_scale'));
+      var urlScale = p.has('scale') ? parseFloat(p.get('scale')) : null;
+      var cssScale = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--intro-scale')
+      );
+      var scale = mobScale || elScale || lsScale || urlScale || cssScale || 1;
+      if (scale > 0 && scale !== 1) window.__posterIntroScale = scale;
+    })();
+    // Apply scale + slice to the Lottie SVG after it renders
+    (function () {
+      var el = document.querySelector('.intro-anim');
+      if (!el) return;
+      var scale = window.__posterIntroScale || 1;
+      var obs = new MutationObserver(function () {
+        var svg = el.querySelector('svg');
+        if (!svg) return;
+        if (svg.getAttribute('preserveAspectRatio') !== 'xMidYMid slice') {
+          svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
         }
+        if (scale !== 1) {
+          el.style.transform = 'scale(' + scale + ')';
+        }
+        obs.disconnect();
       });
-    } // End of else block
+      obs.observe(el, { childList: true, subtree: true });
+    })();
   </script>
 
 
@@ -1672,12 +1470,6 @@
 
   <script src="assets/js/app-init.js"></script>
   <script src="assets/js/site-config.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="assets/js/intro-text-animation.js"></script> -->
-  <script>
-
-
-  </script>
 </body>
 
 </html>
